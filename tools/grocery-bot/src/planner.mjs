@@ -206,7 +206,7 @@ function buildTasks(state, world, profile, phase) {
 
   const totalActiveMissing = Array.from(activeDemand.values()).reduce((sum, count) => sum + count, 0);
   const totalFreeSlots = state.bots.reduce((sum, bot) => sum + Math.max(0, 3 - (bot.inventory || []).length), 0);
-  const allowPreviewPrefetch = (phase === 'early' || phase === 'mid') && totalFreeSlots > totalActiveMissing;
+  const allowPreviewPrefetch = phase !== 'cutoff' && totalFreeSlots > totalActiveMissing;
 
   const neededTypes = getNeededTypes(
     activeDemand,
@@ -1089,6 +1089,13 @@ function planSingleBotRecovery({
   const inventoryCount = (bot.inventory || []).length;
   const forceInventoryFlush = forcePartialDrop && inventoryCount > 0;
 
+  if (!suppressDropOff && roundsLeft <= 1) {
+    const atDropoff = bot.position[0] === state.drop_off[0] && bot.position[1] === state.drop_off[1];
+    if (atDropoff && hasDeliverableInventory(bot, world.activeDemand)) {
+      return { bot: bot.id, action: 'drop_off' };
+    }
+  }
+
   if (forceInventoryFlush && !suppressDropOff) {
     const atDropoff = bot.position[0] === state.drop_off[0] && bot.position[1] === state.drop_off[1];
     if (atDropoff) {
@@ -1210,6 +1217,14 @@ function planSingleBot({
   const bot = state.bots[0];
   const botCount = state.bots.length;
   const roundsLeft = Math.max(0, state.max_rounds - state.round);
+
+  if (!suppressDropOff && roundsLeft <= 1) {
+    const atDropoff = bot.position[0] === state.drop_off[0] && bot.position[1] === state.drop_off[1];
+    if (atDropoff && hasDeliverableInventory(bot, world.activeDemand)) {
+      return { bot: bot.id, action: 'drop_off' };
+    }
+  }
+
   const inventoryCounts = mapCountFromInventory(bot.inventory);
   const activeGap = copyCounts(world.activeDemand);
   for (const [type, count] of inventoryCounts.entries()) {
@@ -1284,7 +1299,7 @@ function planSingleBot({
     return directDrop;
   }
 
-  if (activeRemaining <= 1) {
+  if (activeRemaining === 0) {
     return planSingleBotRecovery({
       state,
       world,
@@ -1301,8 +1316,8 @@ function planSingleBot({
     });
   }
 
-  const commitActiveOnly = completionCommitMode || activeRemaining <= 3;
-  const allowPreview = !commitActiveOnly && (phase === 'early' || phase === 'mid') && freeSlots > activeRemaining;
+  const commitActiveOnly = completionCommitMode;
+  const allowPreview = !commitActiveOnly && phase !== 'cutoff' && freeSlots > activeRemaining;
   const typeSupply = buildTypeSupply({
     activeDemand: activeGap,
     previewDemand: world.previewDemand,

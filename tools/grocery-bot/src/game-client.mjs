@@ -1,4 +1,8 @@
 import { buildActionEnvelope, parseServerMessage } from './protocol.mjs';
+import NodeWebSocket from 'ws';
+
+const WebSocketImpl = globalThis.WebSocket || NodeWebSocket;
+const WS_OPEN_READY_STATE = 1;
 
 function withTimeout(promise, timeoutMs, timeoutMessage) {
   return new Promise((resolve, reject) => {
@@ -18,8 +22,48 @@ function withTimeout(promise, timeoutMs, timeoutMessage) {
 
 function wsEventPromise(ws, eventName) {
   return new Promise((resolve) => {
-    ws.addEventListener(eventName, resolve, { once: true });
+    if (typeof ws.addEventListener === 'function') {
+      ws.addEventListener(eventName, resolve, { once: true });
+      return;
+    }
+
+    if (typeof ws.once === 'function') {
+      ws.once(eventName, resolve);
+      return;
+    }
+
+    ws.on(eventName, resolve);
   });
+}
+
+function bindWsEvent(ws, eventName, handler) {
+  if (typeof ws.addEventListener === 'function') {
+    ws.addEventListener(eventName, handler);
+    return;
+  }
+
+  ws.on(eventName, handler);
+}
+
+function normalizeMessagePayload(event) {
+  if (typeof event === 'string') {
+    return event;
+  }
+
+  if (event && typeof event.data === 'string') {
+    return event.data;
+  }
+
+  const candidate = event?.data ?? event;
+  if (typeof candidate === 'string') {
+    return candidate;
+  }
+
+  if (Buffer.isBuffer(candidate)) {
+    return candidate.toString('utf8');
+  }
+
+  return String(candidate);
 }
 
 function isSameCell(a, b) {
@@ -318,10 +362,10 @@ export class GroceryGameClient {
   }
 
   async connect() {
-    this.ws = new WebSocket(this.url);
+    this.ws = new WebSocketImpl(this.url);
 
-    this.ws.addEventListener('message', (event) => {
-      const payload = String(event.data);
+    bindWsEvent(this.ws, 'message', (event) => {
+      const payload = normalizeMessagePayload(event);
       if (this.pending.length > 0) {
         const resolver = this.pending.shift();
         resolver(payload);
@@ -330,16 +374,20 @@ export class GroceryGameClient {
       }
     });
 
-    this.ws.addEventListener('close', (event) => {
+    bindWsEvent(this.ws, 'close', (event, reason) => {
+      const closeCode = typeof event?.code === 'number' ? event.code : event;
       this.closed = true;
-      this.closeReason = `WebSocket closed (${event.code})`;
+      this.closeReason = `WebSocket closed (${closeCode ?? 'unknown'})`;
+      if (reason && !String(reason).startsWith('[object')) {
+        this.closeReason += `: ${String(reason)}`;
+      }
       while (this.pending.length > 0) {
         const resolver = this.pending.shift();
         resolver(null);
       }
     });
 
-    this.ws.addEventListener('error', () => {
+    bindWsEvent(this.ws, 'error', () => {
       this.closeReason = 'WebSocket error';
     });
 
@@ -359,7 +407,7 @@ export class GroceryGameClient {
   }
 
   sendActions(actions) {
-    if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
+    if (!this.ws || this.ws.readyState !== WS_OPEN_READY_STATE) {
       throw new Error('WebSocket is not open');
     }
 
@@ -369,7 +417,7 @@ export class GroceryGameClient {
   }
 
   close() {
-    if (this.ws && this.ws.readyState <= WebSocket.OPEN) {
+    if (this.ws && this.ws.readyState <= WS_OPEN_READY_STATE) {
       this.ws.close();
     }
   }

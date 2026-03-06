@@ -2,7 +2,7 @@
   "easy": {
     "assignment": {
       "congestion_penalty": 0.1,
-      "preview_item_weight": 0.15
+      "preview_item_weight": 0.40
     },
     "recovery": {
       "no_progress_rounds": 15,

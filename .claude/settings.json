@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /home/magnus/Git/nm-i-ai/.claude/hooks/post-edit-test.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
