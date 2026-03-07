@@ -275,6 +275,10 @@ function shouldKeepMission({
       return { keep: false, reason: 'target_missing' };
     }
 
+    if (sumCounts(uncoveredActive) > 0) {
+      return { keep: false, reason: 'preview_blocked_by_active' };
+    }
+
     if (!previewAllowed || previewSlotsRemaining <= 0) {
       return { keep: false, reason: 'preview_suppressed' };
     }

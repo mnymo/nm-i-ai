@@ -184,6 +184,48 @@ test('buildMediumMissionAssignments suppresses preview missions while active dem
   assert.equal(missionPlan.metrics.previewSuppressed, true);
 });
 
+test('buildMediumMissionAssignments invalidates carried-over preview mission when active demand is uncovered', () => {
+  const state = baseState({
+    orders: [
+      { id: 'o0', items_required: ['milk'], items_delivered: [], status: 'active', complete: false },
+      { id: 'o1', items_required: ['pasta'], items_delivered: [], status: 'preview', complete: false },
+    ],
+    items: [
+      { id: 'milk_0', type: 'milk', position: [3, 3] },
+      { id: 'pasta_0', type: 'pasta', position: [5, 3] },
+    ],
+  });
+
+  const existingMissionsByBot = new Map([
+    [0, {
+      missionType: 'collect_preview',
+      orderId: 'o0',
+      targetItemId: 'pasta_0',
+      targetType: 'pasta',
+      zoneId: 0,
+      targetCell: null,
+      assignedAtRound: 0,
+      lastProgressRound: 0,
+      ttl: 6,
+      noPathRounds: 0,
+    }],
+  ]);
+
+  const missionPlan = buildMediumMissionAssignments({
+    state,
+    world: buildWorldContext(state),
+    graph: buildGraph(state),
+    profile: defaultProfiles.medium,
+    phase: 'early',
+    round: 1,
+    existingMissionsByBot,
+  });
+
+  assert.notEqual(missionPlan.missionsByBot.get(0).missionType, 'collect_preview');
+  assert.equal(missionPlan.missionsByBot.get(0).missionType, 'collect_active');
+  assert.equal(missionPlan.metrics.activeMissionsAssigned >= 1, true);
+});
+
 test('buildMediumMissionAssignments allows only one preview mission in medium', () => {
   const state = baseState({
     orders: [
