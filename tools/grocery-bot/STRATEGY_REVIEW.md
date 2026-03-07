@@ -30,6 +30,7 @@
 - Medium is now the active bottleneck.
 - The current target is to push the medium benchmark from `109` to `>116`.
 - Detailed experiment history now lives in [`EXPERIMENT_LOG.md`](./EXPERIMENT_LOG.md).
+- Structural refactor backlog now lives in [`STRUCTURE_REVIEW.md`](./STRUCTURE_REVIEW.md).
 
 ## Current Strategy (As Implemented)
 

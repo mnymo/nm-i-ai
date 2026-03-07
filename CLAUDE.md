@@ -62,9 +62,12 @@ tools/grocery-bot/
 ├── src/
 │   ├── planner.mjs              planSingleBot + GroceryPlanner class — read for strategy changes
 │   ├── planner-singlebot.mjs    Single-bot evaluation, recovery, cooldowns, oscillation detection
-│   ├── planner-multibot.mjs     Multi-bot assignment, routing, deadlock (medium+)
+│   ├── planner-multibot.mjs     Multi-bot task generation, costs, reservations, action helpers
+│   ├── planner-multibot-common.mjs Shared multi-bot demand/zone helpers
+│   ├── planner-missions.mjs     Medium mission assignment and mission action resolution
 │   ├── planner-utils.mjs        Shared helpers (demand, phase, congestion, path utils)
-│   ├── game-client.mjs          WebSocket loop, action sanitizer, pickup tracking
+│   ├── game-client.mjs          WebSocket loop, replay logging, send guard
+│   ├── game-client-sanitizer.mjs Client-side legality sanitizer and nudge logic
 │   ├── routing.mjs              Time-aware A* + path reservations (collision avoidance)
 │   ├── assignment.mjs           Min-cost bot-to-item matching
 │   ├── optimizer.mjs            Profile parameter search (random mutation over replay)
@@ -117,6 +120,34 @@ For each improvement iteration:
 6. Simulate offline: `--mode simulate` against the latest replay (measures action agreement, not score)
 7. If change looks good → play live to confirm actual score
 8. If score improves → run `--mode tune` against the new replay and merge params
+
+## Structural Policy
+
+- Prefer separation of concerns over adding more logic to an already-large file.
+- `300+` lines means stop and ask whether the change belongs in a narrower module.
+- `500+` lines requires one of:
+  - shrink the file in the same change, or
+  - record a concrete split plan in `tools/grocery-bot/STRUCTURE_REVIEW.md`
+- Use behavior-based module boundaries:
+  - planner shell/state orchestration
+  - single-bot evaluation/recovery
+  - multi-bot mission/assignment policy
+  - multi-bot routing/action resolution
+  - shared planner utilities
+  - replay/analysis reporting
+  - client protocol/sanitization
+
+Current structure map and file-size exceptions live in `tools/grocery-bot/STRUCTURE_REVIEW.md`.
+
+## Specs And Experiments
+
+- No feature is complete without specs for the intended behavior.
+- Every experiment must add:
+  - at least one targeted spec for the changed behavior
+  - a regression spec for the motivating failure mode when relevant
+  - replay/analysis specs when new metrics are introduced
+  - an entry in `tools/grocery-bot/EXPERIMENT_LOG.md`
+- For replay-driven strategy work, update tests before spending more live tokens unless the behavior is already covered by existing specs.
 
 ## Active Improvement Backlog
 

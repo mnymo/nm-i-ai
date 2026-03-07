@@ -17,13 +17,41 @@ Use this file together with [CLAUDE.md](/home/magnus/prog/nm-i-ai/CLAUDE.md) whe
 4. Run `node --test tools/grocery-bot/test/*.test.mjs`.
 5. Prefer simulate -> analyze -> change cycles over blind live runs.
 
+## Structural Policy
+
+- Prefer separation of concerns over adding more logic to an already-large file.
+- `300+` lines: stop and check whether the change should go in a narrower module instead.
+- `500+` lines: either shrink the file in the same change or record a concrete follow-up split in `tools/grocery-bot/STRUCTURE_REVIEW.md`.
+- Treat `tools/grocery-bot/STRUCTURE_REVIEW.md` as the current decomposition map for planner/client/test hotspots.
+- Default module boundaries for grocery bot work:
+  - planner shell/state orchestration
+  - single-bot evaluation/recovery
+  - multi-bot mission/assignment policy
+  - multi-bot routing/action resolution
+  - shared planner utilities
+  - replay/analysis reporting
+  - client protocol/sanitization
+
+## Specs And Experiments
+
+- Every feature must ship with specs for the intended behavior.
+- Every experiment must add:
+  - at least one targeted spec for the changed behavior
+  - a regression spec for the motivating failure mode when applicable
+  - replay/analysis specs if new planner metrics or replay metrics are introduced
+  - an `EXPERIMENT_LOG.md` entry with hypothesis, change, validation, and verdict
+- Do not spend more live tokens on replay-driven strategy changes until the changed behavior is covered by specs or an explicit existing spec is identified.
+
 ## Key Files
 
 - Strategy orchestration: `tools/grocery-bot/src/planner.mjs`
 - Single-bot recovery and cooldowns: `tools/grocery-bot/src/planner-singlebot.mjs`
-- Multi-bot routing: `tools/grocery-bot/src/planner-multibot.mjs`
+- Multi-bot task generation and reservations: `tools/grocery-bot/src/planner-multibot.mjs`
+- Medium mission policy: `tools/grocery-bot/src/planner-missions.mjs`
+- Client legality sanitizer: `tools/grocery-bot/src/game-client-sanitizer.mjs`
 - Shared helpers: `tools/grocery-bot/src/planner-utils.mjs`
 - Replay and summaries: `tools/grocery-bot/src/replay.mjs`
+- Structure map and split backlog: `tools/grocery-bot/STRUCTURE_REVIEW.md`
 
 ## MCP
 

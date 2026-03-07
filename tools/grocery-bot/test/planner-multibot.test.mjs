@@ -4,9 +4,9 @@ import assert from 'node:assert/strict';
 import {
   buildCostMatrix,
   buildTasks,
-  buildMediumMissionAssignments,
   estimateZonePenalty,
 } from '../src/planner-multibot.mjs';
+import { buildMediumMissionAssignments } from '../src/planner-missions.mjs';
 import { GridGraph } from '../src/grid-graph.mjs';
 import { defaultProfiles } from '../src/profile.mjs';
 import { buildWorldContext } from '../src/world-model.mjs';

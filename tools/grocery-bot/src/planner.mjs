@@ -13,12 +13,14 @@ import {
 import {
   buildTasks,
   buildCostMatrix,
-  buildMediumMissionAssignments,
   makeOccupancyReservations,
   actionFromTask,
-  resolveMissionAction,
   chooseFallbackAction,
 } from './planner-multibot.mjs';
+import {
+  buildMediumMissionAssignments,
+  resolveMissionAction,
+} from './planner-missions.mjs';
 import {
   mapCountFromInventory,
   copyCounts,
