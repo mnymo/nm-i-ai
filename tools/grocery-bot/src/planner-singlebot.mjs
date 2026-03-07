@@ -719,7 +719,7 @@ export function planSingleBotRecovery({
   const bot = state.bots[0];
   const roundsLeft = Math.max(0, state.max_rounds - state.round);
   const inventoryCount = (bot.inventory || []).length;
-  const forceInventoryFlush = forcePartialDrop && inventoryCount > 0;
+  const forceInventoryFlush = forcePartialDrop && inventoryCount > 0 && hasDeliverableInventory(bot, world.activeDemand);
 
   if (!suppressDropOff && roundsLeft <= 1) {
     const atDropoff = bot.position[0] === state.drop_off[0] && bot.position[1] === state.drop_off[1];

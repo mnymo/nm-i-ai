@@ -505,7 +505,7 @@ test('single-bot planner forces partial drop after prolonged no-progress recover
   assert.deepEqual(third, [{ bot: 0, action: 'drop_off' }]);
 });
 
-test('single-bot planner force-flushes non-deliverable inventory after prolonged no-progress', () => {
+test('single-bot planner does not attempt drop-off of non-deliverable inventory after prolonged no-progress', () => {
   const profile = structuredClone(defaultProfiles.easy);
   profile.recovery.no_progress_rounds = 2;
   profile.recovery.partial_drop_no_progress_rounds = 2;
@@ -525,7 +525,12 @@ test('single-bot planner force-flushes non-deliverable inventory after prolonged
   planner.plan({ ...stagnantState, round: 1 });
   const third = planner.plan({ ...stagnantState, round: 2 });
 
-  assert.deepEqual(third, [{ bot: 0, action: 'drop_off' }]);
+  // With non-deliverable inventory (butter, but only yogurt is needed), the bot should
+  // navigate toward the needed item instead of attempting a futile drop-off.
+  assert.notDeepEqual(third, [{ bot: 0, action: 'drop_off' }]);
+  assert.strictEqual(third[0].bot, 0);
+  assert.ok(['move_right', 'move_left', 'move_up', 'move_down'].includes(third[0].action),
+    `Expected a move action toward yogurt, got: ${third[0].action}`);
 });
 
 test('single-bot planner avoids starting infeasible trip at final round', () => {

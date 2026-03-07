@@ -1,4 +1,12 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(node -e \":*)",
+      "Bash(grep -n \"force-flushes non-deliverable\" tools/grocery-bot/test/*.test.mjs)",
+      "Bash(node tools/grocery-bot/index.mjs --mode simulate --difficulty easy --profile easy --replay tools/grocery-bot/out/2026-03-07T14-48-05-791Z-easy-easy/replay.jsonl)",
+      "Bash(node tools/grocery-bot/index.mjs --mode estimate-max --replay tools/grocery-bot/out/2026-03-07T14-48-05-791Z-easy-easy/replay.jsonl)"
+    ]
+  },
   "hooks": {
     "PostToolUse": [
       {
