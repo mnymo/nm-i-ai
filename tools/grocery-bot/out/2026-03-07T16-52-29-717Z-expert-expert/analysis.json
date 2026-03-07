@@ -1,0 +1,191 @@
+{
+  "finalScore": 33,
+  "ordersCompleted": 3,
+  "itemsDelivered": 18,
+  "totalTicks": 300,
+  "scoreByWindow": [
+    {
+      "start": 0,
+      "end": 24,
+      "delta": 0
+    },
+    {
+      "start": 25,
+      "end": 49,
+      "delta": 3
+    },
+    {
+      "start": 50,
+      "end": 74,
+      "delta": 6
+    },
+    {
+      "start": 75,
+      "end": 99,
+      "delta": 12
+    },
+    {
+      "start": 100,
+      "end": 124,
+      "delta": 10
+    },
+    {
+      "start": 125,
+      "end": 149,
+      "delta": 2
+    },
+    {
+      "start": 150,
+      "end": 174,
+      "delta": 0
+    },
+    {
+      "start": 175,
+      "end": 199,
+      "delta": 0
+    },
+    {
+      "start": 200,
+      "end": 224,
+      "delta": 0
+    },
+    {
+      "start": 225,
+      "end": 249,
+      "delta": 0
+    },
+    {
+      "start": 250,
+      "end": 274,
+      "delta": 0
+    },
+    {
+      "start": 275,
+      "end": 299,
+      "delta": 0
+    }
+  ],
+  "stagnationWindows": [
+    {
+      "startTick": 0,
+      "endTick": 30,
+      "length": 31
+    },
+    {
+      "startTick": 47,
+      "endTick": 61,
+      "length": 15
+    },
+    {
+      "startTick": 62,
+      "endTick": 77,
+      "length": 16
+    },
+    {
+      "startTick": 88,
+      "endTick": 97,
+      "length": 10
+    },
+    {
+      "startTick": 110,
+      "endTick": 127,
+      "length": 18
+    },
+    {
+      "startTick": 128,
+      "endTick": 299,
+      "length": 172
+    }
+  ],
+  "failedPickups": {
+    "total": 0,
+    "byItemId": {},
+    "byItemType": {}
+  },
+  "actionEfficiency": {
+    "sanitizerOverrides": {
+      "total": 0,
+      "byReason": {}
+    },
+    "waitActions": 657,
+    "nonScoringDropoffs": 0
+  },
+  "multiBotCoordination": {
+    "botCount": 10,
+    "totalStalls": 1040,
+    "maxStalledBots": 8,
+    "peakTaskCount": 24,
+    "forcedWaitActions": 365,
+    "endInventoryByBot": [
+      {
+        "bot": 0,
+        "inventoryCount": 3,
+        "deliverableActiveItems": 0,
+        "nonDeliverableItems": 3
+      },
+      {
+        "bot": 1,
+        "inventoryCount": 0,
+        "deliverableActiveItems": 0,
+        "nonDeliverableItems": 0
+      },
+      {
+        "bot": 2,
+        "inventoryCount": 1,
+        "deliverableActiveItems": 0,
+        "nonDeliverableItems": 1
+      },
+      {
+        "bot": 3,
+        "inventoryCount": 0,
+        "deliverableActiveItems": 0,
+        "nonDeliverableItems": 0
+      },
+      {
+        "bot": 4,
+        "inventoryCount": 2,
+        "deliverableActiveItems": 0,
+        "nonDeliverableItems": 2
+      },
+      {
+        "bot": 5,
+        "inventoryCount": 0,
+        "deliverableActiveItems": 0,
+        "nonDeliverableItems": 0
+      },
+      {
+        "bot": 6,
+        "inventoryCount": 0,
+        "deliverableActiveItems": 0,
+        "nonDeliverableItems": 0
+      },
+      {
+        "bot": 7,
+        "inventoryCount": 0,
+        "deliverableActiveItems": 0,
+        "nonDeliverableItems": 0
+      },
+      {
+        "bot": 8,
+        "inventoryCount": 1,
+        "deliverableActiveItems": 1,
+        "nonDeliverableItems": 0
+      },
+      {
+        "bot": 9,
+        "inventoryCount": 0,
+        "deliverableActiveItems": 0,
+        "nonDeliverableItems": 0
+      }
+    ]
+  },
+  "wastedInventoryAtEnd": [
+    "cereal",
+    "bananas",
+    "milk",
+    "butter",
+    "cream",
+    "cheese",
+    "apples"
+  ]
+}
