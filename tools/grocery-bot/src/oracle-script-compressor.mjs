@@ -5,14 +5,9 @@ function cloneTick(tick) {
   return {
     tick: tick.tick,
     actions: tick.actions.map((action) => ({ ...action })),
-    expected_state: tick.expected_state ? {
-      score: tick.expected_state.score,
-      bots: tick.expected_state.bots.map((bot) => ({
-        id: bot.id,
-        position: [...bot.position],
-        inventory: [...bot.inventory],
-      })),
-    } : undefined,
+    expected_state: tick.expected_state
+      ? JSON.parse(JSON.stringify(tick.expected_state))
+      : undefined,
   };
 }
 

@@ -353,10 +353,17 @@ test('replay compression preserves expected state and reports actual script-end 
   assert.equal(script.replay_target_meta.target_reachable_within_prefix, true);
   assert.equal(script.replay_target_meta.score_at_script_end, 0);
   assert.equal(script.replay_target_meta.compression_mode, 'handoff_early');
-  assert.deepEqual(script.ticks[0].expected_state, {
-    score: 0,
-    bots: [{ id: 0, position: [9, 8], inventory: [] }],
-  });
+  assert.equal(script.ticks[0].expected_state.type, null);
+  assert.equal(script.ticks[0].expected_state.round, null);
+  assert.equal(script.ticks[0].expected_state.max_rounds, null);
+  assert.equal(script.ticks[0].expected_state.score, 0);
+  assert.equal(script.ticks[0].expected_state.drop_off, null);
+  assert.deepEqual(script.ticks[0].expected_state.drop_offs, []);
+  assert.deepEqual(script.ticks[0].expected_state.bots, [
+    { id: 0, position: [9, 8], inventory: [] },
+  ]);
+  assert.deepEqual(script.ticks[0].expected_state.items, []);
+  assert.deepEqual(script.ticks[0].expected_state.orders, []);
 });
 
 test('oracle evaluator allows stacked starting bots to wait on the same cell', () => {
@@ -640,14 +647,19 @@ test('replay compressor rewinds to earliest tick that reaches the target score',
   assert.equal(compressed.replay_target_meta.compression_mode, 'preserve_score');
   assert.equal(compressed.last_scripted_tick, 10);
   assert.equal(compressed.replay_target_meta.final_tick_delta, 0);
-  assert.deepEqual(compressed.ticks[0].expected_state, {
-    score: 0,
-    bots: [
-      { id: 0, position: [4, 8], inventory: [] },
-      { id: 1, position: [8, 8], inventory: [] },
-      { id: 2, position: [7, 8], inventory: [] },
-    ],
-  });
+  assert.equal(compressed.ticks[0].expected_state.type, null);
+  assert.equal(compressed.ticks[0].expected_state.round, null);
+  assert.equal(compressed.ticks[0].expected_state.max_rounds, null);
+  assert.equal(compressed.ticks[0].expected_state.score, 0);
+  assert.equal(compressed.ticks[0].expected_state.drop_off, null);
+  assert.deepEqual(compressed.ticks[0].expected_state.drop_offs, []);
+  assert.deepEqual(compressed.ticks[0].expected_state.bots, [
+    { id: 0, position: [4, 8], inventory: [] },
+    { id: 1, position: [8, 8], inventory: [] },
+    { id: 2, position: [7, 8], inventory: [] },
+  ]);
+  assert.equal(compressed.ticks[0].expected_state.items.length, oracle.items.length);
+  assert.deepEqual(compressed.ticks[0].expected_state.orders, []);
 });
 
 test('replay compressor supports explicit handoff_early mode', () => {
