@@ -97,8 +97,9 @@ Purpose: keep an operational record of strategy experiments so we can avoid repe
 - Validation:
   - `node --test tools/grocery-bot/test/planner-multibot.test.mjs` -> pass
   - `node --test tools/grocery-bot/test/*.test.mjs` -> pass
-- Verdict: `pending live validation`
-- Notes: this is a throughput/release-control experiment. Promote only if the next medium run cuts wait actions and total stalls without reintroducing sanitizer overrides or failed pickups.
+  - live medium run `2026-03-07T18-26-51-234Z-medium-medium` -> `4`
+- Verdict: `revert`
+- Notes: this reduced waits but broke score conversion badly: `0` completed orders, `21` failed pickups, `5` non-scoring dropoffs, and wasted inventory returned. The throughput idea as implemented was too aggressive and destabilized useful commitment.
 
 ## Guidance
 
