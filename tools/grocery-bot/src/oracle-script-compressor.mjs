@@ -1,4 +1,4 @@
-import { parseJsonl } from './replay-io.mjs';
+import { extractLayout, parseJsonl, rebuildSnapshot } from './replay-io.mjs';
 import { buildExpectedScriptState } from './replay-transition-diff.mjs';
 
 function cloneTick(tick) {
@@ -76,7 +76,9 @@ export function findLongestMatchingReplayTick(sourceReplayPath, validationReplay
 }
 
 export function extractScriptFromReplay(replayPath, stopTick = null) {
-  const tickRows = buildTickRows(replayPath);
+  const replayRows = parseJsonl(replayPath);
+  const layout = extractLayout(replayRows);
+  const tickRows = replayRows.filter((row) => row.type === 'tick');
   const ticks = [];
 
   for (const row of tickRows) {
@@ -86,7 +88,7 @@ export function extractScriptFromReplay(replayPath, stopTick = null) {
     ticks.push({
       tick: row.tick,
       actions: (row.actions_sent || row.actions_planned || []).map((action) => ({ ...action })),
-      expected_state: buildExpectedScriptState(row.state_snapshot),
+      expected_state: buildExpectedScriptState(rebuildSnapshot(row.state_snapshot, layout)),
     });
   }
 

@@ -1,7 +1,7 @@
 {
   "description": "Compressed replay-derived script for expert",
   "strategy": "replay_rewind_preserve_v1",
-  "generated_at": "2026-03-07T23:41:20.987Z",
+  "generated_at": "2026-03-07T23:51:02.345Z",
   "oracle_source": "/home/magnus/prog/nm-i-ai/tools/grocery-bot/config/oracle-expert.json",
   "orders_covered": null,
   "estimated_score": 2,
@@ -76,10 +76,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 0,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 0,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -1200,10 +1208,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 1,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 0,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -2324,10 +2340,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 2,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 0,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -3448,10 +3472,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 3,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 0,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -4572,10 +4604,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 4,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 0,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -5696,10 +5736,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 5,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 0,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -6820,10 +6868,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 6,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 0,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -7944,10 +8000,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 7,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 0,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -9068,10 +9132,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 8,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 0,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -10192,10 +10264,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 9,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 0,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -11316,10 +11396,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 10,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 0,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -12440,10 +12528,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 11,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 0,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -13564,10 +13660,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 12,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 0,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -14688,10 +14792,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 13,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 0,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -15813,10 +15925,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 14,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 0,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -16937,10 +17057,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 15,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 0,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -18063,10 +18191,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 16,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 0,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -19189,10 +19325,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 17,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 0,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -20315,10 +20459,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 18,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 0,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -21441,10 +21593,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 19,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 0,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -22568,10 +22728,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 20,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 0,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -23694,10 +23862,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 21,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 0,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -24822,10 +24998,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 22,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 0,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -25950,10 +26134,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 23,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 0,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -27078,10 +27270,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 24,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 0,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -28206,10 +28406,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 25,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 0,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -29334,10 +29542,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 26,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 0,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -30463,10 +30679,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 27,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 0,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -31591,10 +31815,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 28,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 0,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -32721,10 +32953,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 29,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 1,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -33851,10 +34091,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 30,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 1,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -34982,10 +35230,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 31,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 1,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -36113,10 +36369,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 32,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 1,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -37244,10 +37508,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 33,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 1,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -38378,10 +38650,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 34,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 1,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -39511,10 +39791,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 35,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 1,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -40647,10 +40935,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 36,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 1,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -41782,10 +42078,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 37,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 2,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -42917,10 +43221,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 38,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 2,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -44052,10 +44364,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 39,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 2,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -45188,10 +45508,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 40,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 2,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -46323,10 +46651,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 41,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 2,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -47460,10 +47796,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 42,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 2,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -48597,10 +48941,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 43,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 2,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -49734,10 +50086,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 44,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 2,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -50871,10 +51231,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 45,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 2,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -52008,10 +52376,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 46,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 2,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -53145,10 +53521,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 47,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 2,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -54282,10 +54666,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 48,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 2,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -55419,10 +55811,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 49,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 2,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -56556,10 +56956,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 50,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 2,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
@@ -57694,10 +58102,18 @@
       "expected_state": {
         "type": "game_state",
         "round": 51,
-        "max_rounds": null,
+        "max_rounds": 300,
         "score": 2,
-        "drop_off": null,
-        "drop_offs": [],
+        "drop_off": [
+          1,
+          16
+        ],
+        "drop_offs": [
+          [
+            1,
+            16
+          ]
+        ],
         "bots": [
           {
             "id": 0,
