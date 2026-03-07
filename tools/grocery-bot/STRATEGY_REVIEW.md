@@ -29,6 +29,7 @@
 - Easy is no longer the active bottleneck.
 - Medium is now the active bottleneck.
 - The current target is to push the medium benchmark from `109` to `>116`.
+- Detailed experiment history now lives in [`EXPERIMENT_LOG.md`](./EXPERIMENT_LOG.md).
 
 ## Current Strategy (As Implemented)
 
