@@ -46,6 +46,8 @@ export class GroceryPlanner {
     this.loopDetectionsThisTick = 0;
     this.targetFocusByBot = new Map();
     this.missionsByBot = new Map();
+    this.scriptDisabled = false;
+    this.scriptDivergedAtRound = null;
   }
 
   resetIntentState() {
@@ -66,19 +68,74 @@ export class GroceryPlanner {
     return this.lastMetrics;
   }
 
-  plan(state) {
-    // Script replay: if we have precomputed actions for this tick, use them verbatim
-    if (this.script?.tickMap?.has(state.round)) {
-      const scriptedActions = this.script.tickMap.get(state.round);
-      this.lastScore = state.score;
-      this.lastMetrics = { phase: 'scripted', scripted: true };
-      // Update position tracking so handoff to live planner is smooth
-      for (const bot of state.bots) {
-        this.previousPositions.set(`${bot.id}`, encodeCoord(bot.position));
-        const inventoryKey = (bot.inventory || []).slice().sort().join('|');
-        this.lastInventoryByBot.set(bot.id, inventoryKey);
+  matchesExpectedScriptState(state, expectedState) {
+    if (!expectedState) {
+      return true;
+    }
+
+    if ((expectedState.score ?? 0) !== (state.score ?? 0)) {
+      return false;
+    }
+
+    const expectedBots = new Map((expectedState.bots || []).map((bot) => [bot.id, bot]));
+    if (expectedBots.size !== (state.bots || []).length) {
+      return false;
+    }
+
+    for (const bot of state.bots || []) {
+      const expectedBot = expectedBots.get(bot.id);
+      if (!expectedBot) {
+        return false;
       }
-      return scriptedActions;
+
+      if (encodeCoord(expectedBot.position) !== encodeCoord(bot.position)) {
+        return false;
+      }
+
+      const expectedInventory = [...(expectedBot.inventory || [])].sort().join('|');
+      const actualInventory = [...(bot.inventory || [])].sort().join('|');
+      if (expectedInventory !== actualInventory) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  plan(state) {
+    let scriptFallbackMetrics = null;
+    // Script replay: if we have precomputed actions for this tick, use them verbatim
+    if (!this.scriptDisabled && this.script?.tickMap?.has(state.round)) {
+      const scriptEntry = this.script.entryMap?.get(state.round) || {
+        tick: state.round,
+        actions: this.script.tickMap.get(state.round),
+      };
+      const expectedStateMatched = this.matchesExpectedScriptState(state, scriptEntry.expected_state);
+      if (expectedStateMatched) {
+        const scriptedActions = this.script.tickMap.get(state.round);
+        this.lastScore = state.score;
+        this.lastMetrics = {
+          phase: 'scripted',
+          scripted: true,
+          scriptTrusted: Boolean(scriptEntry.expected_state),
+          scriptExpectedStateMatched: Boolean(scriptEntry.expected_state),
+        };
+        // Update position tracking so handoff to live planner is smooth
+        for (const bot of state.bots) {
+          this.previousPositions.set(`${bot.id}`, encodeCoord(bot.position));
+          const inventoryKey = (bot.inventory || []).slice().sort().join('|');
+          this.lastInventoryByBot.set(bot.id, inventoryKey);
+        }
+        return scriptedActions;
+      }
+
+      this.scriptDisabled = true;
+      this.scriptDivergedAtRound = state.round;
+      scriptFallbackMetrics = {
+        scriptDiverged: true,
+        scriptDivergedAtRound: state.round,
+        scriptExpectedStateMatched: false,
+      };
     }
 
     this.resetTriggered = false;
@@ -236,7 +293,7 @@ export class GroceryPlanner {
     const world = buildWorldContext(state);
 
     if (state.bots.length === 1) {
-      return executeSingleBotTurn({
+      const actions = executeSingleBotTurn({
         planner: this,
         state,
         world,
@@ -255,13 +312,20 @@ export class GroceryPlanner {
         operationalProgress,
         activeOrderId,
       });
+      if (scriptFallbackMetrics) {
+        this.lastMetrics = {
+          ...(this.lastMetrics || {}),
+          ...scriptFallbackMetrics,
+        };
+      }
+      return actions;
     }
 
     const blockedItemsByBot = new Map(
       state.bots.map((bot) => [bot.id, this.blockedPickupByBot.get(bot.id) || new Map()]),
     );
     if (runtime.multi_bot_strategy === 'mission_v1') {
-      return executeMissionStrategy({
+      const actions = executeMissionStrategy({
         planner: this,
         state,
         world,
@@ -273,10 +337,17 @@ export class GroceryPlanner {
         previousPositionByBot,
         previousInventoryKeyByBot,
       });
+      if (scriptFallbackMetrics) {
+        this.lastMetrics = {
+          ...(this.lastMetrics || {}),
+          ...scriptFallbackMetrics,
+        };
+      }
+      return actions;
     }
 
     if (runtime.multi_bot_strategy === 'warehouse_v1') {
-      return executeWarehouseStrategy({
+      const actions = executeWarehouseStrategy({
         planner: this,
         state,
         world,
@@ -288,9 +359,16 @@ export class GroceryPlanner {
         previousPositionByBot,
         previousInventoryKeyByBot,
       });
+      if (scriptFallbackMetrics) {
+        this.lastMetrics = {
+          ...(this.lastMetrics || {}),
+          ...scriptFallbackMetrics,
+        };
+      }
+      return actions;
     }
 
-    return executeAssignedTaskStrategy({
+    const actions = executeAssignedTaskStrategy({
       planner: this,
       state,
       world,
@@ -301,5 +379,12 @@ export class GroceryPlanner {
       blockedItemsByBot,
       oracle: this.oracle,
     });
+    if (scriptFallbackMetrics) {
+      this.lastMetrics = {
+        ...(this.lastMetrics || {}),
+        ...scriptFallbackMetrics,
+      };
+    }
+    return actions;
   }
 }

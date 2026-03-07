@@ -29,13 +29,15 @@ export function loadScriptFile(scriptPath) {
   try {
     const data = JSON.parse(fs.readFileSync(scriptPath, 'utf8'));
     const tickMap = new Map();
+    const entryMap = new Map();
     for (const entry of data.ticks || []) {
       tickMap.set(entry.tick, entry.actions);
+      entryMap.set(entry.tick, entry);
     }
 
     return {
       ok: true,
-      data: { ...data, tickMap },
+      data: { ...data, tickMap, entryMap },
       message: `Script loaded: ${tickMap.size} ticks (0-${data.last_scripted_tick}) from ${scriptPath}`,
     };
   } catch (error) {

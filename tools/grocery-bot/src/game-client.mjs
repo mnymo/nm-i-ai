@@ -249,7 +249,11 @@ export class GroceryGameClient {
         const planningStartedAt = loopStartedAt;
         const plannedActions = planner.plan(message);
         const planningFinishedAt = Date.now();
-        const { actions, sanitizerOverrides } = sanitizeActionsForStateDetailed(plannedActions, message, runtime);
+        const plannerMetricsBeforeSanitize = planner.getLastMetrics() || {};
+        const trustedScriptReplay = plannerMetricsBeforeSanitize.scriptTrusted === true;
+        const { actions, sanitizerOverrides } = trustedScriptReplay
+          ? { actions: plannedActions, sanitizerOverrides: [] }
+          : sanitizeActionsForStateDetailed(plannedActions, message, runtime);
         const sanitizeFinishedAt = Date.now();
         const serialized = await this.sendActionsForRound(actions, message.round);
         const sendFinishedAt = Date.now();
@@ -278,6 +282,7 @@ export class GroceryGameClient {
           sendLatencyMs: sendFinishedAt - sanitizeFinishedAt,
           clientLoopLatencyMs: sendFinishedAt - loopStartedAt,
           sendThrottleDelayMs: this.lastSendDelayMs,
+          trustedScriptReplay,
         };
 
         if (!layoutLogged && replayLogger) {

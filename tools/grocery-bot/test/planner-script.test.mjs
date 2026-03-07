@@ -25,6 +25,9 @@ test('planner replays scripted tick verbatim and hands off to live planner after
       tickMap: new Map([
         [0, [{ bot: 0, action: 'wait' }]],
       ]),
+      entryMap: new Map([
+        [0, { tick: 0, actions: [{ bot: 0, action: 'wait' }] }],
+      ]),
     },
   });
 
@@ -35,4 +38,69 @@ test('planner replays scripted tick verbatim and hands off to live planner after
   const live = planner.plan(baseState({ round: 1 }));
   assert.deepEqual(live, [{ bot: 0, action: 'pick_up', item_id: 'item_0' }]);
   assert.notEqual(planner.getLastMetrics().scripted, true);
+});
+
+test('planner trusts replay-derived scripted tick when expected state matches', () => {
+  const state = baseState({ round: 0 });
+  const planner = new GroceryPlanner(defaultProfiles.easy, {
+    script: {
+      tickMap: new Map([
+        [0, [{ bot: 0, action: 'wait' }]],
+      ]),
+      entryMap: new Map([
+        [0, {
+          tick: 0,
+          actions: [{ bot: 0, action: 'wait' }],
+          expected_state: {
+            score: 0,
+            bots: [{ id: 0, position: [1, 1], inventory: [] }],
+          },
+        }],
+      ]),
+    },
+  });
+
+  const scripted = planner.plan(state);
+  assert.deepEqual(scripted, [{ bot: 0, action: 'wait' }]);
+  assert.equal(planner.getLastMetrics().scripted, true);
+  assert.equal(planner.getLastMetrics().scriptTrusted, true);
+  assert.equal(planner.getLastMetrics().scriptExpectedStateMatched, true);
+});
+
+test('planner disables script and falls back to live planning on expected-state divergence', () => {
+  const planner = new GroceryPlanner(defaultProfiles.easy, {
+    script: {
+      tickMap: new Map([
+        [0, [{ bot: 0, action: 'wait' }]],
+        [1, [{ bot: 0, action: 'wait' }]],
+      ]),
+      entryMap: new Map([
+        [0, {
+          tick: 0,
+          actions: [{ bot: 0, action: 'wait' }],
+          expected_state: {
+            score: 1,
+            bots: [{ id: 0, position: [1, 1], inventory: [] }],
+          },
+        }],
+        [1, {
+          tick: 1,
+          actions: [{ bot: 0, action: 'wait' }],
+          expected_state: {
+            score: 0,
+            bots: [{ id: 0, position: [1, 1], inventory: [] }],
+          },
+        }],
+      ]),
+    },
+  });
+
+  const first = planner.plan(baseState({ round: 0 }));
+  assert.deepEqual(first, [{ bot: 0, action: 'pick_up', item_id: 'item_0' }]);
+  assert.equal(planner.getLastMetrics().scriptDiverged, true);
+  assert.equal(planner.getLastMetrics().scriptDivergedAtRound, 0);
+
+  const second = planner.plan(baseState({ round: 1 }));
+  assert.notEqual(planner.getLastMetrics().scripted, true);
+  assert.deepEqual(second, [{ bot: 0, action: 'pick_up', item_id: 'item_0' }]);
 });

@@ -264,3 +264,66 @@ test('game client enforces a minimum 20ms interval between round sends', async (
   assert.equal(sent[1].sentAt - sent[0].sentAt >= 15, true);
   assert.equal(client.lastSendDelayMs >= 0, true);
 });
+
+test('game client bypasses sanitizer for trusted replay-script actions', async () => {
+  const sentActions = [];
+  const client = new GroceryGameClient({ token: 'test-token', minRoundSendIntervalMs: 0 });
+  client.connect = async () => {};
+  client.recv = async function recv() {
+    return this._messages.shift() ?? null;
+  };
+  client.sendActionsForRound = async function sendActionsForRound(actions) {
+    sentActions.push(actions);
+    return JSON.stringify(actions);
+  };
+  client.close = () => {};
+  client._messages = [
+    JSON.stringify(baseState({ round: 0, drop_off: [0, 0] })),
+    JSON.stringify({ type: 'game_over', score: 0, items: 0, orders: 0, reason: 'test' }),
+  ];
+
+  const planner = {
+    profile: { runtime: {} },
+    plan() {
+      return [{ bot: 0, action: 'drop_off' }];
+    },
+    getLastMetrics() {
+      return { scripted: true, scriptTrusted: true };
+    },
+  };
+
+  await client.run({ planner, difficulty: 'easy', profileName: 'easy' });
+  assert.deepEqual(sentActions, [[{ bot: 0, action: 'drop_off' }]]);
+});
+
+test('game client still sanitizes non-trusted scripted actions', async () => {
+  const sentActions = [];
+  const client = new GroceryGameClient({ token: 'test-token', minRoundSendIntervalMs: 0 });
+  client.connect = async () => {};
+  client.recv = async function recv() {
+    return this._messages.shift() ?? null;
+  };
+  client.sendActionsForRound = async function sendActionsForRound(actions) {
+    sentActions.push(actions);
+    return JSON.stringify(actions);
+  };
+  client.close = () => {};
+  client._messages = [
+    JSON.stringify(baseState({ round: 0, drop_off: [0, 0] })),
+    JSON.stringify({ type: 'game_over', score: 0, items: 0, orders: 0, reason: 'test' }),
+  ];
+
+  const planner = {
+    profile: { runtime: {} },
+    plan() {
+      return [{ bot: 0, action: 'drop_off' }];
+    },
+    getLastMetrics() {
+      return { scripted: true, scriptTrusted: false };
+    },
+  };
+
+  await client.run({ planner, difficulty: 'easy', profileName: 'easy' });
+  assert.notDeepEqual(sentActions, [[{ bot: 0, action: 'drop_off' }]]);
+  assert.equal(sentActions[0][0].action.startsWith('move_'), true);
+});

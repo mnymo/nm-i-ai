@@ -83,6 +83,7 @@ function main() {
     final_last_tick: script.last_scripted_tick,
     target_score: script.replay_target_meta.target_score,
     target_tick: script.replay_target_meta.target_tick,
+    score_at_script_end: script.replay_target_meta.score_at_script_end,
     final_tick_delta: script.replay_target_meta.final_tick_delta,
   };
 
@@ -90,8 +91,8 @@ function main() {
   fs.writeFileSync(args.outReport, `${JSON.stringify(report, null, 2)}\n`);
 
   console.error(`Baseline: ${report.baseline_score} score / tick ${report.baseline_last_tick}`);
-  console.error(`Compressed: ${report.final_score} score / tick ${report.final_last_tick}`);
-  console.error(`Target score/tick: ${report.target_score} / ${report.target_tick}`);
+  console.error(`Compressed prefix: ${report.final_score} score / tick ${report.final_last_tick}`);
+  console.error(`Replay target score/tick after handoff: ${report.target_score} / ${report.target_tick}`);
   console.error(`Tick delta: ${report.final_tick_delta}`);
   console.error(`Script: ${args.outScript}`);
   console.error(`Report: ${args.outReport}`);

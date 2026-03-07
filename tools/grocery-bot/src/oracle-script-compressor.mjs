@@ -4,6 +4,14 @@ function cloneTick(tick) {
   return {
     tick: tick.tick,
     actions: tick.actions.map((action) => ({ ...action })),
+    expected_state: tick.expected_state ? {
+      score: tick.expected_state.score,
+      bots: tick.expected_state.bots.map((bot) => ({
+        id: bot.id,
+        position: [...bot.position],
+        inventory: [...bot.inventory],
+      })),
+    } : undefined,
   };
 }
 
@@ -22,6 +30,14 @@ export function extractScriptFromReplay(replayPath, stopTick = null) {
     ticks.push({
       tick: row.tick,
       actions: (row.actions_sent || row.actions_planned || []).map((action) => ({ ...action })),
+      expected_state: row.state_snapshot ? {
+        score: row.state_snapshot.score ?? 0,
+        bots: (row.state_snapshot.bots || []).map((bot) => ({
+          id: bot.id,
+          position: [...bot.position],
+          inventory: [...(bot.inventory || [])],
+        })),
+      } : undefined,
     });
   }
 
@@ -48,6 +64,17 @@ function earliestTickMeetingScore(scoreTimeline, targetScore) {
   return hit?.tick ?? scoreTimeline.at(-1)?.tick ?? -1;
 }
 
+function scoreAtOrBeforeTick(scoreTimeline, targetTick) {
+  let score = 0;
+  for (const entry of scoreTimeline) {
+    if (entry.tick > targetTick) {
+      break;
+    }
+    score = entry.score;
+  }
+  return score;
+}
+
 export function compressOracleReplayScript({
   oracle,
   replayPath,
@@ -64,6 +91,7 @@ export function compressOracleReplayScript({
     earliestTickMeetingScore(scoreTimeline, requiredScore),
   );
   const targetTick = Math.max(0, scoreSeenTick - 1);
+  const scoreAtScriptEnd = scoreAtOrBeforeTick(scoreTimeline, targetTick);
 
   const extracted = extractScriptFromReplay(replayPath, targetTick);
 
@@ -73,9 +101,9 @@ export function compressOracleReplayScript({
     generated_at: new Date().toISOString(),
     oracle_source: null,
     orders_covered: targetOrdersCovered,
-    estimated_score: requiredScore,
+    estimated_score: scoreAtScriptEnd,
     last_scripted_tick: extracted.last_scripted_tick,
-    cutoff_reason: 'replay_target_score_reached',
+    cutoff_reason: 'handoff_before_replay_target_score_tick',
     per_order_estimates: [],
     aggregate_efficiency: {
       total_waits: extracted.ticks.flatMap((tick) => tick.actions).filter((action) => action.action === 'wait').length,
@@ -89,6 +117,7 @@ export function compressOracleReplayScript({
       baseline_last_tick: baselineLastTick,
       target_score: requiredScore,
       target_tick: scoreSeenTick,
+      score_at_script_end: scoreAtScriptEnd,
       script_cutoff_tick: targetTick,
       final_tick_delta: baselineLastTick - extracted.last_scripted_tick,
     },

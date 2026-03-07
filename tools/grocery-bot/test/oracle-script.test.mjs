@@ -310,6 +310,46 @@ test('oracle/script file loaders expose parsed oracle and tickMap data', () => {
   assert.equal(loadedOracle.data.known_orders.length, 3);
   assert.equal(loadedScript.ok, true);
   assert.deepEqual(loadedScript.data.tickMap.get(1), [{ bot: 0, action: 'drop_off' }]);
+  assert.equal(loadedScript.data.entryMap.get(1).tick, 1);
+});
+
+test('replay compression preserves expected state and reports actual script-end score', () => {
+  const oracle = buildFixtureOracle();
+  const replayPath = writeReplayWithActions(oracle, [
+    {
+      type: 'tick',
+      tick: 0,
+      actions_sent: [{ bot: 0, action: 'move_left' }],
+      state_snapshot: {
+        score: 0,
+        bots: [{ id: 0, position: [9, 8], inventory: [] }],
+      },
+    },
+    {
+      type: 'tick',
+      tick: 1,
+      actions_sent: [{ bot: 0, action: 'drop_off' }],
+      state_snapshot: {
+        score: 5,
+        bots: [{ id: 0, position: [1, 8], inventory: ['oats'] }],
+      },
+    },
+  ]);
+
+  const script = compressOracleReplayScript({
+    oracle,
+    replayPath,
+    targetScore: 5,
+  });
+
+  assert.equal(script.last_scripted_tick, 0);
+  assert.equal(script.estimated_score, 0);
+  assert.equal(script.replay_target_meta.target_score, 5);
+  assert.equal(script.replay_target_meta.score_at_script_end, 0);
+  assert.deepEqual(script.ticks[0].expected_state, {
+    score: 0,
+    bots: [{ id: 0, position: [9, 8], inventory: [] }],
+  });
 });
 
 test('oracle evaluator allows stacked starting bots to wait on the same cell', () => {
@@ -586,7 +626,17 @@ test('replay compressor rewinds to earliest tick that reaches the target score',
     replayPath,
   });
 
-  assert.equal(compressed.estimated_score, 6);
+  assert.equal(compressed.estimated_score, 0);
+  assert.equal(compressed.replay_target_meta.target_score, 6);
+  assert.equal(compressed.replay_target_meta.score_at_script_end, 0);
   assert.equal(compressed.last_scripted_tick, 9);
   assert.equal(compressed.replay_target_meta.final_tick_delta, 1);
+  assert.deepEqual(compressed.ticks[0].expected_state, {
+    score: 0,
+    bots: [
+      { id: 0, position: [4, 8], inventory: [] },
+      { id: 1, position: [8, 8], inventory: [] },
+      { id: 2, position: [7, 8], inventory: [] },
+    ],
+  });
 });
