@@ -1,9 +1,10 @@
 {
-  "generated_at": "2026-03-07T22:19:18.631Z",
-  "elapsed_ms": 56289,
+  "generated_at": "2026-03-07T22:29:51.772Z",
+  "elapsed_ms": 52508,
   "oracle_source": "/home/magnus/prog/nm-i-ai/tools/grocery-bot/config/oracle-expert.json",
   "replay": "/home/magnus/prog/nm-i-ai/tools/grocery-bot/out/2026-03-07T20-37-02-748Z-expert-expert/replay.jsonl",
   "strategy": "auto",
+  "objective": "handoff_first",
   "iterations_requested": 100,
   "seed": 7004,
   "candidates_tested": 89,
@@ -12,111 +13,21 @@
   "best_candidate": {
     "strategy": "modular",
     "settings": {
-      "maxActiveBots": 1,
-      "maxTripItems": 1,
+      "maxActiveBots": 2,
+      "maxTripItems": 3,
       "previewRunnerCap": 0,
-      "previewItemCap": 2,
-      "targetCutoffTick": 299
+      "previewItemCap": 6,
+      "targetCutoffTick": 180
     },
     "orders_covered": 2,
-    "estimated_score": 22,
-    "last_scripted_tick": 282,
+    "estimated_score": 19,
+    "last_scripted_tick": 177,
     "beats_score_target": false,
     "beats_tick_target": true
   },
   "top_candidates": [
     {
       "rank": 1,
-      "strategy": "modular",
-      "settings": {
-        "maxActiveBots": 1,
-        "maxTripItems": 1,
-        "previewRunnerCap": 0,
-        "previewItemCap": 2,
-        "targetCutoffTick": 299
-      },
-      "orders_covered": 2,
-      "estimated_score": 22,
-      "last_scripted_tick": 282,
-      "total_waits": 2558
-    },
-    {
-      "rank": 2,
-      "strategy": "modular",
-      "settings": {
-        "maxActiveBots": 1,
-        "maxTripItems": 1,
-        "previewRunnerCap": 1,
-        "previewItemCap": 0,
-        "targetCutoffTick": 299
-      },
-      "orders_covered": 2,
-      "estimated_score": 22,
-      "last_scripted_tick": 282,
-      "total_waits": 2558
-    },
-    {
-      "rank": 3,
-      "strategy": "modular",
-      "settings": {
-        "maxActiveBots": 1,
-        "maxTripItems": 1,
-        "previewRunnerCap": 0,
-        "previewItemCap": 6,
-        "targetCutoffTick": 299
-      },
-      "orders_covered": 2,
-      "estimated_score": 22,
-      "last_scripted_tick": 282,
-      "total_waits": 2558
-    },
-    {
-      "rank": 4,
-      "strategy": "modular",
-      "settings": {
-        "maxActiveBots": 1,
-        "maxTripItems": 1,
-        "previewRunnerCap": 2,
-        "previewItemCap": 4,
-        "targetCutoffTick": 299
-      },
-      "orders_covered": 2,
-      "estimated_score": 22,
-      "last_scripted_tick": 282,
-      "total_waits": 2558
-    },
-    {
-      "rank": 5,
-      "strategy": "modular",
-      "settings": {
-        "maxActiveBots": 1,
-        "maxTripItems": 2,
-        "previewRunnerCap": 1,
-        "previewItemCap": 4,
-        "targetCutoffTick": 260
-      },
-      "orders_covered": 2,
-      "estimated_score": 21,
-      "last_scripted_tick": 259,
-      "total_waits": 2350
-    },
-    {
-      "rank": 6,
-      "strategy": "modular",
-      "settings": {
-        "maxActiveBots": 2,
-        "maxTripItems": 3,
-        "previewRunnerCap": 0,
-        "previewItemCap": 0,
-        "targetCutoffTick": 240
-      },
-      "orders_covered": 2,
-      "estimated_score": 20,
-      "last_scripted_tick": 223,
-      "total_waits": 1832
-    },
-    {
-      "rank": 7,
       "strategy": "modular",
       "settings": {
         "maxActiveBots": 2,
@@ -131,7 +42,7 @@
       "total_waits": 1442
     },
     {
-      "rank": 8,
+      "rank": 2,
       "strategy": "modular",
       "settings": {
         "maxActiveBots": 2,
@@ -146,7 +57,7 @@
       "total_waits": 1612
     },
     {
-      "rank": 9,
+      "rank": 3,
       "strategy": "modular",
       "settings": {
         "maxActiveBots": 2,
@@ -161,7 +72,7 @@
       "total_waits": 1612
     },
     {
-      "rank": 10,
+      "rank": 4,
       "strategy": "modular",
       "settings": {
         "maxActiveBots": 2,
@@ -176,37 +87,97 @@
       "total_waits": 1627
     },
     {
-      "rank": 11,
+      "rank": 5,
       "strategy": "modular",
       "settings": {
         "maxActiveBots": 2,
         "maxTripItems": 3,
         "previewRunnerCap": 0,
         "previewItemCap": 0,
-        "targetCutoffTick": 160
+        "targetCutoffTick": 240
       },
-      "orders_covered": 1,
-      "estimated_score": 13,
-      "last_scripted_tick": 151,
-      "total_waits": 1242
+      "orders_covered": 2,
+      "estimated_score": 20,
+      "last_scripted_tick": 223,
+      "total_waits": 1832
     },
     {
-      "rank": 12,
+      "rank": 6,
+      "strategy": "modular",
+      "settings": {
+        "maxActiveBots": 1,
+        "maxTripItems": 2,
+        "previewRunnerCap": 1,
+        "previewItemCap": 4,
+        "targetCutoffTick": 260
+      },
+      "orders_covered": 2,
+      "estimated_score": 21,
+      "last_scripted_tick": 259,
+      "total_waits": 2350
+    },
+    {
+      "rank": 7,
+      "strategy": "modular",
+      "settings": {
+        "maxActiveBots": 1,
+        "maxTripItems": 1,
+        "previewRunnerCap": 0,
+        "previewItemCap": 2,
+        "targetCutoffTick": 299
+      },
+      "orders_covered": 2,
+      "estimated_score": 22,
+      "last_scripted_tick": 282,
+      "total_waits": 2558
+    },
+    {
+      "rank": 8,
+      "strategy": "modular",
+      "settings": {
+        "maxActiveBots": 1,
+        "maxTripItems": 1,
+        "previewRunnerCap": 1,
+        "previewItemCap": 0,
+        "targetCutoffTick": 299
+      },
+      "orders_covered": 2,
+      "estimated_score": 22,
+      "last_scripted_tick": 282,
+      "total_waits": 2558
+    },
+    {
+      "rank": 9,
+      "strategy": "modular",
+      "settings": {
+        "maxActiveBots": 1,
+        "maxTripItems": 1,
+        "previewRunnerCap": 0,
+        "previewItemCap": 6,
+        "targetCutoffTick": 299
+      },
+      "orders_covered": 2,
+      "estimated_score": 22,
+      "last_scripted_tick": 282,
+      "total_waits": 2558
+    },
+    {
+      "rank": 10,
       "strategy": "modular",
       "settings": {
         "maxActiveBots": 1,
         "maxTripItems": 1,
         "previewRunnerCap": 2,
-        "previewItemCap": 2,
-        "targetCutoffTick": 200
+        "previewItemCap": 4,
+        "targetCutoffTick": 299
       },
-      "orders_covered": 1,
-      "estimated_score": 13,
-      "last_scripted_tick": 184,
-      "total_waits": 1672
+      "orders_covered": 2,
+      "estimated_score": 22,
+      "last_scripted_tick": 282,
+      "total_waits": 2558
     },
     {
-      "rank": 13,
+      "rank": 11,
       "strategy": "modular",
       "settings": {
         "maxActiveBots": 1,
@@ -221,7 +192,7 @@
       "total_waits": 1356
     },
     {
-      "rank": 14,
+      "rank": 12,
       "strategy": "modular",
       "settings": {
         "maxActiveBots": 1,
@@ -236,7 +207,7 @@
       "total_waits": 1356
     },
     {
-      "rank": 15,
+      "rank": 13,
       "strategy": "modular",
       "settings": {
         "maxActiveBots": 1,
@@ -251,52 +222,82 @@
       "total_waits": 1356
     },
     {
+      "rank": 14,
+      "strategy": "modular",
+      "settings": {
+        "maxActiveBots": 2,
+        "maxTripItems": 3,
+        "previewRunnerCap": 0,
+        "previewItemCap": 0,
+        "targetCutoffTick": 160
+      },
+      "orders_covered": 1,
+      "estimated_score": 13,
+      "last_scripted_tick": 151,
+      "total_waits": 1242
+    },
+    {
+      "rank": 15,
+      "strategy": "modular",
+      "settings": {
+        "maxActiveBots": 1,
+        "maxTripItems": 1,
+        "previewRunnerCap": 2,
+        "previewItemCap": 2,
+        "targetCutoffTick": 200
+      },
+      "orders_covered": 1,
+      "estimated_score": 13,
+      "last_scripted_tick": 184,
+      "total_waits": 1672
+    },
+    {
       "rank": 16,
       "strategy": "legacy",
       "settings": {
         "maxTripItems": 1,
-        "prefetchDepth": 1,
-        "pathHorizon": 60,
-        "pickupHoldTicks": 3,
+        "prefetchDepth": 4,
+        "pathHorizon": 45,
+        "pickupHoldTicks": 0,
         "dropHoldTicks": 0,
         "targetCutoffTick": 160
       },
       "orders_covered": 0,
-      "estimated_score": 2,
-      "last_scripted_tick": 48,
-      "total_waits": 77
+      "estimated_score": 0,
+      "last_scripted_tick": 21,
+      "total_waits": 27
     },
     {
       "rank": 17,
       "strategy": "legacy",
       "settings": {
-        "maxTripItems": 3,
-        "prefetchDepth": 1,
-        "pathHorizon": 120,
-        "pickupHoldTicks": 2,
-        "dropHoldTicks": 0,
-        "targetCutoffTick": 260
+        "maxTripItems": 1,
+        "prefetchDepth": 4,
+        "pathHorizon": 60,
+        "pickupHoldTicks": 0,
+        "dropHoldTicks": 1,
+        "targetCutoffTick": 160
       },
       "orders_covered": 0,
-      "estimated_score": 2,
-      "last_scripted_tick": 50,
-      "total_waits": 296
+      "estimated_score": 0,
+      "last_scripted_tick": 21,
+      "total_waits": 27
     },
     {
       "rank": 18,
       "strategy": "legacy",
       "settings": {
-        "maxTripItems": 3,
-        "prefetchDepth": 1,
+        "maxTripItems": 1,
+        "prefetchDepth": 4,
         "pathHorizon": 90,
-        "pickupHoldTicks": 2,
-        "dropHoldTicks": 0,
-        "targetCutoffTick": 299
+        "pickupHoldTicks": 0,
+        "dropHoldTicks": 2,
+        "targetCutoffTick": 200
       },
       "orders_covered": 0,
-      "estimated_score": 2,
-      "last_scripted_tick": 50,
-      "total_waits": 296
+      "estimated_score": 0,
+      "last_scripted_tick": 21,
+      "total_waits": 27
     },
     {
       "rank": 19,
@@ -304,15 +305,15 @@
       "settings": {
         "maxTripItems": 2,
         "prefetchDepth": 2,
-        "pathHorizon": 120,
-        "pickupHoldTicks": 3,
-        "dropHoldTicks": 0,
-        "targetCutoffTick": 299
+        "pathHorizon": 90,
+        "pickupHoldTicks": 1,
+        "dropHoldTicks": 1,
+        "targetCutoffTick": 180
       },
       "orders_covered": 0,
-      "estimated_score": 1,
-      "last_scripted_tick": 35,
-      "total_waits": 94
+      "estimated_score": 0,
+      "last_scripted_tick": 23,
+      "total_waits": 78
     },
     {
       "rank": 20,
@@ -321,14 +322,14 @@
         "maxTripItems": 2,
         "prefetchDepth": 2,
         "pathHorizon": 120,
-        "pickupHoldTicks": 3,
-        "dropHoldTicks": 2,
-        "targetCutoffTick": 200
+        "pickupHoldTicks": 1,
+        "dropHoldTicks": 1,
+        "targetCutoffTick": 299
       },
       "orders_covered": 0,
-      "estimated_score": 1,
-      "last_scripted_tick": 35,
-      "total_waits": 94
+      "estimated_score": 0,
+      "last_scripted_tick": 23,
+      "total_waits": 78
     }
   ]
 }

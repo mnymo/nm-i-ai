@@ -15,6 +15,7 @@ function parseArgs(argv) {
     outScript: null,
     outReport: null,
     strategy: 'auto',
+    objective: 'handoff_first',
     iterations: 1000,
     scoreToBeat: null,
     ticksToBeat: null,
@@ -39,6 +40,9 @@ function parseArgs(argv) {
       index += 1;
     } else if (key === '--strategy') {
       args.strategy = value;
+      index += 1;
+    } else if (key === '--objective') {
+      args.objective = value;
       index += 1;
     } else if (key === '--iterations') {
       args.iterations = Number.parseInt(value, 10);
@@ -74,6 +78,7 @@ function parseArgs(argv) {
     outScript: path.resolve(process.cwd(), args.outScript),
     outReport: path.resolve(process.cwd(), args.outReport),
     strategy: args.strategy,
+    objective: args.objective,
     iterations: Number.isFinite(args.iterations) ? Math.max(1, args.iterations) : 1000,
     scoreToBeat: Number.isFinite(args.scoreToBeat) ? args.scoreToBeat : null,
     ticksToBeat: Number.isFinite(args.ticksToBeat) ? args.ticksToBeat : null,
@@ -88,14 +93,17 @@ function main() {
   const startedAt = Date.now();
   let lastProgressPrinted = 0;
 
-  function reportProgress({ completed, total, latestStrategy, candidatesKept }) {
+  function reportProgress({ completed, total, latestStrategy, candidatesKept, best }) {
     const shouldPrint = completed <= 5 || completed - lastProgressPrinted >= 25 || completed === total;
     if (!shouldPrint) {
       return;
     }
     lastProgressPrinted = completed;
+    const bestText = best
+      ? ` best=${best.strategy}:${best.ordersCovered}o/${best.estimatedScore}s@${best.lastScriptedTick}`
+      : '';
     console.error(
-      `[progress] ${completed}/${total} evaluated (${latestStrategy}), valid=${candidatesKept}`,
+      `[progress] ${completed}/${total} evaluated (${latestStrategy}), valid=${candidatesKept}${bestText}`,
     );
   }
 
@@ -104,6 +112,7 @@ function main() {
     replayPath: args.replay,
     oracleSource: args.oracle,
     strategy: args.strategy,
+    objective: args.objective,
     candidateLimit: args.iterations,
     seed: args.seed,
     searchSpace: 'wide',
@@ -116,6 +125,7 @@ function main() {
     oracle_source: args.oracle,
     replay: args.replay,
     strategy: args.strategy,
+    objective: args.objective,
     iterations_requested: args.iterations,
     seed: args.seed,
     ...buildOracleSearchReport({
@@ -123,6 +133,7 @@ function main() {
       scoreToBeat: args.scoreToBeat,
       tickToBeat: args.ticksToBeat,
       top: args.top,
+      objective: args.objective,
     }),
   };
 
@@ -131,6 +142,7 @@ function main() {
     optimization_meta: {
       optimizer: 'optimize-oracle-script',
       strategy: args.strategy,
+      objective: args.objective,
       iterations_requested: args.iterations,
       candidates_tested: candidates.length,
       score_to_beat: args.scoreToBeat,
@@ -146,6 +158,7 @@ function main() {
   fs.writeFileSync(args.outReport, `${JSON.stringify(report, null, 2)}\n`);
 
   console.error(`Strategy: ${args.strategy}`);
+  console.error(`Objective: ${args.objective}`);
   console.error(`Iterations requested: ${args.iterations}`);
   console.error(`Candidates tested: ${candidates.length}`);
   console.error(`Best strategy: ${bestScript.strategy}`);

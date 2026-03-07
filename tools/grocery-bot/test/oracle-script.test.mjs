@@ -9,6 +9,7 @@ import { loadOracleFile, loadScriptFile } from '../src/oracle-script-io.mjs';
 import { buildLegacyOracleScript } from '../src/oracle-script-legacy.mjs';
 import {
   buildOracleSearchReport,
+  compareGeneratedScripts,
   generateBestOracleScript,
   generateOracleScriptCandidates,
 } from '../src/oracle-script-search.mjs';
@@ -211,8 +212,63 @@ test('wide oracle search report includes target metadata and ranked candidates',
   assert.equal(report.candidates_tested, candidates.length);
   assert.equal(report.score_to_beat, 10);
   assert.equal(report.tick_to_beat, 35);
+  assert.equal(report.objective, 'score_first');
   assert.ok(report.top_candidates.length <= 5);
   assert.equal(typeof report.best_candidate.beats_score_target, 'boolean');
+});
+
+test('oracle search progress callback includes current best candidate summary', () => {
+  const oracle = buildFixtureOracle();
+  const replayPath = writeFixtureReplay(oracle);
+  const progressEvents = [];
+
+  generateOracleScriptCandidates({
+    oracle,
+    replayPath,
+    oracleSource: 'fixture',
+    strategy: 'auto',
+    candidateLimit: 6,
+    seed: 123,
+    searchSpace: 'wide',
+    onProgress(event) {
+      progressEvents.push(event);
+    },
+  });
+
+  assert.ok(progressEvents.length > 0);
+  const last = progressEvents.at(-1);
+  assert.equal(last.completed, last.total);
+  assert.ok(last.best);
+  assert.equal(typeof last.best.ordersCovered, 'number');
+  assert.equal(typeof last.best.estimatedScore, 'number');
+  assert.equal(typeof last.best.lastScriptedTick, 'number');
+});
+
+test('handoff-first objective prefers earlier script cutoff over slightly higher score', () => {
+  const early = {
+    orders_covered: 2,
+    estimated_score: 20,
+    last_scripted_tick: 180,
+    aggregate_efficiency: { total_waits: 100 },
+  };
+  const late = {
+    orders_covered: 2,
+    estimated_score: 22,
+    last_scripted_tick: 260,
+    aggregate_efficiency: { total_waits: 80 },
+  };
+
+  const scoreFirst = generateOracleScriptCandidates;
+  assert.equal(
+    // late wins on score-first
+    compareGeneratedScripts(early, late, 'score_first') > 0,
+    true,
+  );
+  assert.equal(
+    // early wins on handoff-first
+    compareGeneratedScripts(early, late, 'handoff_first') < 0,
+    true,
+  );
 });
 
 test('oracle/script file loaders expose parsed oracle and tickMap data', () => {

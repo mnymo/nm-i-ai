@@ -10,17 +10,26 @@ function scoreScript(script) {
   };
 }
 
-export function compareGeneratedScripts(left, right) {
+export function compareGeneratedScripts(left, right, objective = 'score_first') {
   const leftScore = scoreScript(left);
   const rightScore = scoreScript(right);
   if (rightScore.ordersCovered !== leftScore.ordersCovered) {
     return rightScore.ordersCovered - leftScore.ordersCovered;
   }
-  if (rightScore.estimatedScore !== leftScore.estimatedScore) {
-    return rightScore.estimatedScore - leftScore.estimatedScore;
-  }
-  if (leftScore.lastScriptedTick !== rightScore.lastScriptedTick) {
-    return leftScore.lastScriptedTick - rightScore.lastScriptedTick;
+  if (objective === 'handoff_first') {
+    if (leftScore.lastScriptedTick !== rightScore.lastScriptedTick) {
+      return leftScore.lastScriptedTick - rightScore.lastScriptedTick;
+    }
+    if (rightScore.estimatedScore !== leftScore.estimatedScore) {
+      return rightScore.estimatedScore - leftScore.estimatedScore;
+    }
+  } else {
+    if (rightScore.estimatedScore !== leftScore.estimatedScore) {
+      return rightScore.estimatedScore - leftScore.estimatedScore;
+    }
+    if (leftScore.lastScriptedTick !== rightScore.lastScriptedTick) {
+      return leftScore.lastScriptedTick - rightScore.lastScriptedTick;
+    }
   }
   return leftScore.waits - rightScore.waits;
 }
@@ -132,6 +141,7 @@ export function generateOracleScriptCandidates({
   seed = 7004,
   searchSpace = 'compact',
   onProgress = null,
+  objective = 'score_first',
 }) {
   const candidates = [];
   let progressCompleted = 0;
@@ -192,7 +202,7 @@ export function generateOracleScriptCandidates({
           options: merged,
           script: { ...script, strategy: 'modular', settings: merged },
         });
-        if (!bestSoFar || compareGeneratedScripts(bestSoFar, script) > 0) {
+        if (!bestSoFar || compareGeneratedScripts(bestSoFar, script, objective) > 0) {
           bestSoFar = { ...script, strategy: 'modular', settings: merged };
         }
       } catch {
@@ -219,7 +229,7 @@ export function generateOracleScriptCandidates({
           options: merged,
           script: { ...script, strategy: 'legacy', settings: merged },
         });
-        if (!bestSoFar || compareGeneratedScripts(bestSoFar, script) > 0) {
+        if (!bestSoFar || compareGeneratedScripts(bestSoFar, script, objective) > 0) {
           bestSoFar = { ...script, strategy: 'legacy', settings: merged };
         }
       } catch {
@@ -231,7 +241,7 @@ export function generateOracleScriptCandidates({
     }
   }
 
-  return candidates.sort((left, right) => compareGeneratedScripts(left.script, right.script));
+  return candidates.sort((left, right) => compareGeneratedScripts(left.script, right.script, objective));
 }
 
 export function buildOracleSearchReport({
@@ -239,12 +249,14 @@ export function buildOracleSearchReport({
   scoreToBeat = null,
   tickToBeat = null,
   top = 10,
+  objective = 'score_first',
 }) {
   const best = candidates[0]?.script || null;
   return {
     candidates_tested: candidates.length,
     score_to_beat: scoreToBeat,
     tick_to_beat: tickToBeat,
+    objective,
     best_candidate: best ? {
       strategy: best.strategy,
       settings: best.settings,
@@ -277,6 +289,7 @@ export function generateBestOracleScript({
   seed = 7004,
   searchSpace = 'compact',
   onProgress = null,
+  objective = 'score_first',
 }) {
   const candidates = generateOracleScriptCandidates({
     oracle,
@@ -289,6 +302,7 @@ export function generateBestOracleScript({
     seed,
     searchSpace,
     onProgress,
+    objective,
   });
   if (candidates.length === 0) {
     throw new Error(`No valid oracle script candidates for strategy=${strategy}`);
