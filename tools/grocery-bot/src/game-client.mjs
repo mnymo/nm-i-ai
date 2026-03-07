@@ -359,6 +359,8 @@ export class GroceryGameClient {
     this.pending = [];
     this.closed = false;
     this.closeReason = null;
+    this.lastSentRound = null;
+    this.lastSentPayload = null;
   }
 
   async connect() {
@@ -407,12 +409,24 @@ export class GroceryGameClient {
   }
 
   sendActions(actions) {
+    return this.sendActionsForRound(actions, null);
+  }
+
+  sendActionsForRound(actions, round = null) {
     if (!this.ws || this.ws.readyState !== WS_OPEN_READY_STATE) {
       throw new Error('WebSocket is not open');
     }
 
+    if (typeof round === 'number' && this.lastSentRound === round) {
+      throw new Error(`Action payload already sent for round ${round}`);
+    }
+
     const payload = buildActionEnvelope(actions);
     this.ws.send(payload);
+    if (typeof round === 'number') {
+      this.lastSentRound = round;
+      this.lastSentPayload = payload;
+    }
     return payload;
   }
 
@@ -485,9 +499,14 @@ export class GroceryGameClient {
           }
         }
 
+        const loopStartedAt = Date.now();
+        const planningStartedAt = loopStartedAt;
         const plannedActions = planner.plan(message);
+        const planningFinishedAt = Date.now();
         const { actions, sanitizerOverrides } = sanitizeActionsForStateDetailed(plannedActions, message, runtime);
-        const serialized = this.sendActions(actions);
+        const sanitizeFinishedAt = Date.now();
+        const serialized = this.sendActionsForRound(actions, message.round);
+        const sendFinishedAt = Date.now();
 
         const failedPickupsThisTick = pickupResults.filter((result) => result.succeeded === false).length;
         failedPickupHistory.push(failedPickupsThisTick);
@@ -508,6 +527,10 @@ export class GroceryGameClient {
           approachBlacklistSize: baseMetrics.approachBlacklistSize ?? 0,
           orderEtaAtDecision: baseMetrics.orderEtaAtDecision ?? null,
           projectedCompletionFeasible: baseMetrics.projectedCompletionFeasible ?? null,
+          planningLatencyMs: planningFinishedAt - planningStartedAt,
+          sanitizeLatencyMs: sanitizeFinishedAt - planningFinishedAt,
+          sendLatencyMs: sendFinishedAt - sanitizeFinishedAt,
+          clientLoopLatencyMs: sendFinishedAt - loopStartedAt,
         };
 
         if (!layoutLogged && replayLogger) {

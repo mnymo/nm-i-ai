@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { sanitizeActionsForState } from '../src/game-client.mjs';
+import { GroceryGameClient, sanitizeActionsForState } from '../src/game-client.mjs';
 
 function baseState(overrides = {}) {
   return {
@@ -100,4 +100,41 @@ test('sanitizeActionsForState keeps wait when no movement is possible', () => {
   });
   const actions = sanitizeActionsForState([{ bot: 0, action: 'wait' }], state);
   assert.deepEqual(actions, [{ bot: 0, action: 'wait' }]);
+});
+
+test('game client sends at most one payload per round', () => {
+  const sent = [];
+  const client = new GroceryGameClient({ token: 'test-token' });
+  client.ws = {
+    readyState: 1,
+    send(payload) {
+      sent.push(payload);
+    },
+  };
+
+  const first = client.sendActionsForRound([{ bot: 0, action: 'wait' }], 12);
+  assert.equal(typeof first, 'string');
+  assert.equal(sent.length, 1);
+
+  assert.throws(
+    () => client.sendActionsForRound([{ bot: 0, action: 'wait' }], 12),
+    /already sent for round 12/,
+  );
+  assert.equal(sent.length, 1);
+});
+
+test('game client allows sends for new rounds after the hard limit guard', () => {
+  const sent = [];
+  const client = new GroceryGameClient({ token: 'test-token' });
+  client.ws = {
+    readyState: 1,
+    send(payload) {
+      sent.push(payload);
+    },
+  };
+
+  client.sendActionsForRound([{ bot: 0, action: 'wait' }], 12);
+  client.sendActionsForRound([{ bot: 0, action: 'move_right' }], 13);
+
+  assert.equal(sent.length, 2);
 });

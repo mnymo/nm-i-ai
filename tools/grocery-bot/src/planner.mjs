@@ -499,6 +499,7 @@ export class GroceryPlanner {
       const blockedItems = new Set(Array.from(existingBlockedPickup.keys()));
       const blockedApproaches = this.blockedApproachByBot.get(botId) || new Map();
       const approachStats = this.approachStatsByBot.get(botId) || new Map();
+      const pendingPickup = this.pendingPickups.get(botId) || null;
       const previousTargetFocus = this.targetFocusByBot.get(botId) || { itemId: null, ticks: 0, orderId: null };
       const inventoryEmpty = (state.bots[0].inventory || []).length === 0;
       let orderStallBailoutTriggered = false;
@@ -547,20 +548,44 @@ export class GroceryPlanner {
       const effectiveForcePartialDrop = forcePartialDrop || loopBreakActive || pickupFailureSpiralActive;
       const completionCommitMode = effectiveRecoveryMode || this.noProgressRounds >= Math.max(8, Math.floor(recoveryThreshold / 2));
       const decisionStats = {};
-      const action = planSingleBot({
-        state,
-        world,
-        graph,
-        phase,
-        profile: this.profile,
-        blockedItems,
-        blockedApproaches,
-        approachStats,
-        recoveryMode: effectiveRecoveryMode,
-        completionCommitMode,
-        forcePartialDrop: effectiveForcePartialDrop,
-        decisionStats,
-      });
+      const bot = state.bots[0];
+      let pendingPickupLockActive = false;
+      let action = null;
+      if (
+        pendingPickup
+        && state.round < pendingPickup.resolveAfterRound
+        && (bot.inventory || []).length < pendingPickup.expectedMinInventory
+        && bot.position[0] === pendingPickup.approachCell[0]
+        && bot.position[1] === pendingPickup.approachCell[1]
+      ) {
+        const pendingItem = (state.items || []).find((item) => item.id === pendingPickup.itemId);
+        if (
+          pendingItem
+          && (bot.inventory || []).length < 3
+          && adjacentManhattan(bot.position, pendingItem.position)
+        ) {
+          pendingPickupLockActive = true;
+          decisionStats.targetItemId = pendingItem.id;
+          action = { bot: bot.id, action: 'pick_up', item_id: pendingItem.id };
+        }
+      }
+
+      if (!action) {
+        action = planSingleBot({
+          state,
+          world,
+          graph,
+          phase,
+          profile: this.profile,
+          blockedItems,
+          blockedApproaches,
+          approachStats,
+          recoveryMode: effectiveRecoveryMode,
+          completionCommitMode,
+          forcePartialDrop: effectiveForcePartialDrop,
+          decisionStats,
+        });
+      }
 
       const nonScoringDropStreak = this.nonScoringDropStreakByBot.get(botId) || 0;
       let finalAction = action;
@@ -649,6 +674,7 @@ export class GroceryPlanner {
         targetLockTicks,
         targetStallTriggered,
         orderStallBailoutTriggered,
+        pendingPickupLockActive,
       };
 
       this.lastActionByBot.set(botId, finalAction.action);

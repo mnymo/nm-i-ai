@@ -245,6 +245,39 @@ test('single-bot planner does not immediately penalize pickup until second unres
   assert.deepEqual(a1, [{ bot: 0, action: 'pick_up', item_id: 'milk_active' }]);
 });
 
+test('single-bot planner locks unresolved pickup intent during verification window', () => {
+  const profile = structuredClone(defaultProfiles.easy);
+  profile.recovery.no_progress_rounds = 100;
+  const planner = new GroceryPlanner(profile);
+
+  planner.pendingPickups.set(0, {
+    itemId: 'cheese_active',
+    expectedMinInventory: 3,
+    resolveAfterRound: 11,
+    approachCell: [5, 7],
+  });
+
+  const state = baseState({
+    round: 10,
+    score: 33,
+    grid: { width: 12, height: 10, walls: [] },
+    bots: [{ id: 0, position: [5, 7], inventory: ['yogurt', 'yogurt'] }],
+    items: [
+      { id: 'cheese_active', type: 'cheese', position: [5, 6] },
+      { id: 'milk_other', type: 'milk', position: [7, 6] },
+    ],
+    orders: [
+      { id: 'o0', items_required: ['yogurt', 'cheese', 'yogurt', 'milk'], items_delivered: [], status: 'active', complete: false },
+    ],
+    drop_off: [1, 8],
+  });
+
+  const action = planner.plan(state);
+
+  assert.deepEqual(action, [{ bot: 0, action: 'pick_up', item_id: 'cheese_active' }]);
+  assert.equal(planner.getLastMetrics().pendingPickupLockActive, true);
+});
+
 test('single-bot planner blacklists failed approach after configured consecutive failure threshold', () => {
   const profile = structuredClone(defaultProfiles.easy);
   profile.runtime.max_consecutive_pick_failures_before_forbid = 1;
