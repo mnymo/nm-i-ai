@@ -101,6 +101,16 @@ Purpose: keep an operational record of strategy experiments so we can avoid repe
 - Verdict: `revert`
 - Notes: this reduced waits but broke score conversion badly: `0` completed orders, `21` failed pickups, `5` non-scoring dropoffs, and wasted inventory returned. The throughput idea as implemented was too aggressive and destabilized useful commitment.
 
+### Soft order flush for nearly-complete active orders
+
+- Hypothesis: the stable branch is losing medium score because it keeps allowing preview work when the active order is already almost coverable, delaying completion cadence.
+- Change: medium-only assignment mode now detects a small-remaining active order, suppresses preview pickup tasks during that flush window, and boosts drop / active-pick demand scores to close the current order faster.
+- Validation:
+  - `node --test tools/grocery-bot/test/planner-multibot.test.mjs` -> pass
+  - `node --test tools/grocery-bot/test/*.test.mjs` -> pass
+- Verdict: `pending live validation`
+- Notes: this is intended to be a soft wave-close policy, not a rigid finisher role. Promote only if the next medium run improves order completion cadence without reintroducing pickup failures or wasted inventory.
+
 ## Guidance
 
 - Prefer experiments that are soft cost-shaping changes over hard role locks.
