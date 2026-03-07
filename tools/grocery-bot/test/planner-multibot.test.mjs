@@ -1,7 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { buildCostMatrix, buildTasks, estimateZonePenalty } from '../src/planner-multibot.mjs';
+import {
+  buildCompletionWaveContext,
+  buildCostMatrix,
+  buildTasks,
+  estimateZonePenalty,
+} from '../src/planner-multibot.mjs';
 import { defaultProfiles } from '../src/profile.mjs';
 import { buildWorldContext } from '../src/world-model.mjs';
 
@@ -118,4 +123,63 @@ test('estimateZonePenalty prefers same-zone preview picking', () => {
   const rightPenalty = estimateZonePenalty({ bot: state.bots[2], task, state, profile: defaultProfiles.medium });
 
   assert.equal(leftPenalty < rightPenalty, true);
+});
+
+test('buildCompletionWaveContext selects the bot carrying active-demand value as finisher', () => {
+  const state = baseState({
+    bots: [
+      { id: 0, position: [6, 1], inventory: ['milk'] },
+      { id: 1, position: [2, 1], inventory: [] },
+      { id: 2, position: [10, 1], inventory: [] },
+    ],
+  });
+  const world = buildWorldContext(state);
+
+  const wave = buildCompletionWaveContext(state, world, defaultProfiles.medium);
+
+  assert.equal(wave.finisherBotId, 0);
+});
+
+test('buildCostMatrix penalizes preview work for the finisher during active completion wave', () => {
+  const state = baseState({
+    bots: [
+      { id: 0, position: [6, 1], inventory: ['milk'] },
+      { id: 1, position: [2, 1], inventory: [] },
+      { id: 2, position: [10, 1], inventory: [] },
+    ],
+    items: [
+      { id: 'milk_0', type: 'milk', position: [7, 3] },
+      { id: 'pasta_0', type: 'pasta', position: [7, 3] },
+    ],
+    orders: [
+      { id: 'o0', items_required: ['milk', 'bread'], items_delivered: [], status: 'active', complete: false },
+      { id: 'o1', items_required: ['pasta'], items_delivered: [], status: 'preview', complete: false },
+    ],
+  });
+  const world = buildWorldContext(state);
+  const wave = buildCompletionWaveContext(state, world, defaultProfiles.medium);
+  const tasks = [
+    {
+      key: 'item:milk_0',
+      kind: 'pick_up',
+      target: [7, 3],
+      item: { id: 'milk_0', type: 'milk', position: [7, 3] },
+      botScoped: false,
+      demandScore: 1,
+      sourceOrder: 'active',
+    },
+    {
+      key: 'item:pasta_0',
+      kind: 'pick_up',
+      target: [7, 3],
+      item: { id: 'pasta_0', type: 'pasta', position: [7, 3] },
+      botScoped: false,
+      demandScore: 0.25,
+      sourceOrder: 'preview',
+    },
+  ];
+
+  const matrix = buildCostMatrix(state, tasks, defaultProfiles.medium, 'early', { completionWave: wave });
+
+  assert.equal(matrix[0][0] < matrix[0][1], true);
 });

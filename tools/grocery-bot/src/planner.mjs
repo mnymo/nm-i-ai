@@ -13,6 +13,7 @@ import {
 import {
   buildTasks,
   buildCostMatrix,
+  buildCompletionWaveContext,
   makeOccupancyReservations,
   actionFromTask,
   chooseFallbackAction,
@@ -685,7 +686,8 @@ export class GroceryPlanner {
     const blockedItemsByBot = new Map(
       state.bots.map((bot) => [bot.id, this.blockedPickupByBot.get(bot.id) || new Map()]),
     );
-    const costs = buildCostMatrix(state, tasks, this.profile, phase, { blockedItemsByBot });
+    const completionWave = buildCompletionWaveContext(state, world, this.profile);
+    const costs = buildCostMatrix(state, tasks, this.profile, phase, { blockedItemsByBot, completionWave });
     const { assignment } = solveMinCostAssignment(costs);
 
     const taskByBot = new Map();

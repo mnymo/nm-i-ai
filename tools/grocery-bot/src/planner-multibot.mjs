@@ -4,6 +4,7 @@ import { countInventoryByType } from './world-model.mjs';
 import {
   cloneDemand,
   hasDeliverableInventory,
+  countDeliverableInventory,
   shouldScheduleDropOff,
   getNeededTypes,
   estimateCongestion,
@@ -69,6 +70,68 @@ export function estimateZonePenalty({ bot, task, state, profile }) {
   const basePenalty = task.sourceOrder === 'preview' ? previewPenalty : activePenalty;
 
   return zoneDelta * basePenalty;
+}
+
+export function buildCompletionWaveContext(state, world, profile) {
+  const activeDemandCount = sumCounts(world.activeDemand);
+  if (state.bots.length <= 1 || activeDemandCount <= 0) {
+    return null;
+  }
+
+  let finisherBotId = null;
+  let finisherDeliverableCount = 0;
+  let finisherDistanceToDropoff = Infinity;
+  let finisherInventoryCount = -1;
+
+  for (const bot of state.bots) {
+    const deliverableCount = countDeliverableInventory(bot, world.activeDemand);
+    const distanceToDropoff = manhattanDistance(bot.position, state.drop_off);
+    const inventoryCount = (bot.inventory || []).length;
+    const betterCandidate =
+      deliverableCount > finisherDeliverableCount
+      || (
+        deliverableCount === finisherDeliverableCount
+        && (
+          distanceToDropoff < finisherDistanceToDropoff
+          || (distanceToDropoff === finisherDistanceToDropoff && inventoryCount > finisherInventoryCount)
+          || (distanceToDropoff === finisherDistanceToDropoff && inventoryCount === finisherInventoryCount && (finisherBotId === null || bot.id < finisherBotId))
+        )
+      );
+
+    if (!betterCandidate) {
+      continue;
+    }
+
+    finisherBotId = bot.id;
+    finisherDeliverableCount = deliverableCount;
+    finisherDistanceToDropoff = distanceToDropoff;
+    finisherInventoryCount = inventoryCount;
+  }
+
+  const totalFreeSlots = state.bots.reduce((sum, bot) => sum + Math.max(0, 3 - (bot.inventory || []).length), 0);
+  const previewReserveSlots = profile.assignment.preview_reserve_slots ?? Math.max(2, Math.ceil(state.bots.length / 3));
+  const previewAllowed = totalFreeSlots > activeDemandCount + previewReserveSlots;
+  const previewCandidates = [...state.bots]
+    .filter((bot) => bot.id !== finisherBotId)
+    .sort((a, b) => {
+      const inventoryDelta = (a.inventory || []).length - (b.inventory || []).length;
+      if (inventoryDelta !== 0) {
+        return inventoryDelta;
+      }
+
+      const dropoffDelta = manhattanDistance(b.position, state.drop_off) - manhattanDistance(a.position, state.drop_off);
+      if (dropoffDelta !== 0) {
+        return dropoffDelta;
+      }
+
+      return a.id - b.id;
+    });
+
+  return {
+    activeDemandCount,
+    finisherBotId,
+    previewRunnerBotId: previewAllowed ? (previewCandidates[0]?.id ?? null) : null,
+  };
 }
 
 export function buildTasks(state, world, profile, phase) {
@@ -177,6 +240,7 @@ export function buildCostMatrix(state, tasks, profile, phase, context = {}) {
   const matrix = [];
   const urgency = phase === 'endgame' ? 1.5 : phase === 'cutoff' ? 2.0 : 1;
   const blockedItemsByBot = context.blockedItemsByBot || new Map();
+  const completionWave = context.completionWave || null;
 
   for (const bot of state.bots) {
     const row = [];
@@ -210,15 +274,43 @@ export function buildCostMatrix(state, tasks, profile, phase, context = {}) {
         : 0;
       const demandBonus = task.demandScore * profile.assignment.remaining_demand_priority;
       const zonePenalty = estimateZonePenalty({ bot, task, state, profile });
+      let wavePenalty = 0;
+      let waveBonus = 0;
+
+      if (completionWave) {
+        const isFinisher = completionWave.finisherBotId === bot.id;
+        const isPreviewRunner = completionWave.previewRunnerBotId === bot.id;
+        const previewDuringActivePenalty = profile.assignment.preview_during_active_penalty ?? 1.8;
+        const finisherDropoffBonus = profile.assignment.finisher_dropoff_bonus ?? 2.2;
+        const finisherActivePickupBonus = profile.assignment.finisher_active_pickup_bonus ?? 0.7;
+
+        if (task.kind === 'drop_off' && isFinisher) {
+          waveBonus += finisherDropoffBonus;
+        }
+
+        if (task.kind === 'pick_up' && task.sourceOrder === 'active' && isFinisher) {
+          waveBonus += finisherActivePickupBonus;
+        }
+
+        if (task.kind === 'pick_up' && task.sourceOrder === 'preview') {
+          if (isFinisher) {
+            wavePenalty += previewDuringActivePenalty * 2;
+          } else if (!isPreviewRunner) {
+            wavePenalty += previewDuringActivePenalty;
+          }
+        }
+      }
 
       const score =
         travelToTask * profile.assignment.travel_to_item +
         travelToDropOff * profile.assignment.travel_item_to_dropoff +
         congestion * profile.assignment.congestion_penalty +
         contention * profile.assignment.contention_penalty +
-        zonePenalty -
+        zonePenalty +
+        wavePenalty -
         demandBonus * urgency -
-        profile.assignment.urgency_bonus * urgency;
+        profile.assignment.urgency_bonus * urgency -
+        waveBonus;
 
       row.push(score);
     }
