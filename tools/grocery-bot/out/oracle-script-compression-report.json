@@ -1,14 +1,15 @@
 {
-  "generated_at": "2026-03-07T23:01:20.965Z",
+  "generated_at": "2026-03-07T23:07:20.888Z",
   "replay": "/home/magnus/prog/nm-i-ai/tools/grocery-bot/out/2026-03-07T20-37-02-748Z-expert-expert/replay.jsonl",
   "oracle_source": "/home/magnus/prog/nm-i-ai/tools/grocery-bot/config/oracle-expert.json",
-  "strategy": "replay_rewind_v1",
+  "strategy": "replay_rewind_preserve_v1",
+  "compression_mode": "preserve_score",
   "baseline_score": 91,
   "baseline_last_tick": 299,
-  "final_score": 65,
-  "final_last_tick": 224,
-  "target_score": 71,
-  "target_tick": 225,
-  "score_at_script_end": 65,
-  "final_tick_delta": 75
+  "final_score": 91,
+  "final_last_tick": 292,
+  "target_score": 91,
+  "target_tick": 292,
+  "score_at_script_end": 91,
+  "final_tick_delta": 7
 }

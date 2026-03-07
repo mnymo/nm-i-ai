@@ -1,28 +1,29 @@
 {
   "description": "Compressed replay-derived script for expert",
-  "strategy": "replay_rewind_v1",
-  "generated_at": "2026-03-07T23:01:20.965Z",
+  "strategy": "replay_rewind_preserve_v1",
+  "generated_at": "2026-03-07T23:07:20.888Z",
   "oracle_source": "/home/magnus/prog/nm-i-ai/tools/grocery-bot/config/oracle-expert.json",
   "orders_covered": null,
-  "estimated_score": 65,
-  "last_scripted_tick": 224,
-  "cutoff_reason": "handoff_before_replay_target_score_tick",
+  "estimated_score": 91,
+  "last_scripted_tick": 292,
+  "cutoff_reason": "preserve_replay_target_score_tick",
   "per_order_estimates": [],
   "aggregate_efficiency": {
-    "total_waits": 252,
-    "total_picks": 44,
-    "total_drops": 25,
+    "total_waits": 280,
+    "total_picks": 47,
+    "total_drops": 33,
     "average_items_per_trip": 0
   },
   "replay_target_meta": {
     "source_replay": "/home/magnus/prog/nm-i-ai/tools/grocery-bot/out/2026-03-07T20-37-02-748Z-expert-expert/replay.jsonl",
     "baseline_score": 91,
     "baseline_last_tick": 299,
-    "target_score": 71,
-    "target_tick": 225,
-    "score_at_script_end": 65,
-    "script_cutoff_tick": 224,
-    "final_tick_delta": 75
+    "compression_mode": "preserve_score",
+    "target_score": 91,
+    "target_tick": 292,
+    "score_at_script_end": 91,
+    "script_cutoff_tick": 292,
+    "final_tick_delta": 7
   },
   "ticks": [
     {
@@ -31824,6 +31825,9564 @@
             "position": [
               25,
               16
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 225,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_left"
+        },
+        {
+          "bot": 1,
+          "action": "move_left"
+        },
+        {
+          "bot": 2,
+          "action": "move_up"
+        },
+        {
+          "bot": 3,
+          "action": "move_left"
+        },
+        {
+          "bot": 4,
+          "action": "wait"
+        },
+        {
+          "bot": 5,
+          "action": "move_down"
+        },
+        {
+          "bot": 6,
+          "action": "move_left"
+        },
+        {
+          "bot": 7,
+          "action": "wait"
+        },
+        {
+          "bot": 8,
+          "action": "move_right"
+        },
+        {
+          "bot": 9,
+          "action": "wait"
+        }
+      ],
+      "expected_state": {
+        "score": 71,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              23,
+              16
+            ],
+            "inventory": [
+              "cereal"
+            ]
+          },
+          {
+            "id": 1,
+            "position": [
+              7,
+              16
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 2,
+            "position": [
+              19,
+              16
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              24,
+              15
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 6,
+            "position": [
+              21,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              1,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 9,
+            "position": [
+              25,
+              15
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 226,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_left"
+        },
+        {
+          "bot": 1,
+          "action": "move_left"
+        },
+        {
+          "bot": 2,
+          "action": "move_left"
+        },
+        {
+          "bot": 3,
+          "action": "move_left"
+        },
+        {
+          "bot": 4,
+          "action": "wait"
+        },
+        {
+          "bot": 5,
+          "action": "move_left"
+        },
+        {
+          "bot": 6,
+          "action": "move_left"
+        },
+        {
+          "bot": 7,
+          "action": "wait"
+        },
+        {
+          "bot": 8,
+          "action": "move_right"
+        },
+        {
+          "bot": 9,
+          "action": "wait"
+        }
+      ],
+      "expected_state": {
+        "score": 71,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              22,
+              16
+            ],
+            "inventory": [
+              "cereal"
+            ]
+          },
+          {
+            "id": 1,
+            "position": [
+              6,
+              16
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 2,
+            "position": [
+              19,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              25,
+              16
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              24,
+              16
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 6,
+            "position": [
+              20,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              2,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 9,
+            "position": [
+              25,
+              15
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 227,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_left"
+        },
+        {
+          "bot": 1,
+          "action": "move_left"
+        },
+        {
+          "bot": 2,
+          "action": "move_left"
+        },
+        {
+          "bot": 3,
+          "action": "move_left"
+        },
+        {
+          "bot": 4,
+          "action": "wait"
+        },
+        {
+          "bot": 5,
+          "action": "move_left"
+        },
+        {
+          "bot": 6,
+          "action": "move_left"
+        },
+        {
+          "bot": 7,
+          "action": "wait"
+        },
+        {
+          "bot": 8,
+          "action": "move_up"
+        },
+        {
+          "bot": 9,
+          "action": "move_left"
+        }
+      ],
+      "expected_state": {
+        "score": 71,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              21,
+              16
+            ],
+            "inventory": [
+              "cereal"
+            ]
+          },
+          {
+            "id": 1,
+            "position": [
+              5,
+              16
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 2,
+            "position": [
+              18,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              25,
+              16
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              23,
+              16
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 6,
+            "position": [
+              19,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              3,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 9,
+            "position": [
+              25,
+              15
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 228,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_left"
+        },
+        {
+          "bot": 1,
+          "action": "move_left"
+        },
+        {
+          "bot": 2,
+          "action": "move_left"
+        },
+        {
+          "bot": 3,
+          "action": "move_left"
+        },
+        {
+          "bot": 4,
+          "action": "wait"
+        },
+        {
+          "bot": 5,
+          "action": "move_left"
+        },
+        {
+          "bot": 6,
+          "action": "move_left"
+        },
+        {
+          "bot": 7,
+          "action": "wait"
+        },
+        {
+          "bot": 8,
+          "action": "move_right"
+        },
+        {
+          "bot": 9,
+          "action": "move_left"
+        }
+      ],
+      "expected_state": {
+        "score": 71,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              20,
+              16
+            ],
+            "inventory": [
+              "cereal"
+            ]
+          },
+          {
+            "id": 1,
+            "position": [
+              4,
+              16
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 2,
+            "position": [
+              17,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              24,
+              16
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              22,
+              16
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 6,
+            "position": [
+              18,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              3,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 9,
+            "position": [
+              24,
+              15
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 229,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_left"
+        },
+        {
+          "bot": 1,
+          "action": "move_left"
+        },
+        {
+          "bot": 2,
+          "action": "move_left"
+        },
+        {
+          "bot": 3,
+          "action": "move_left"
+        },
+        {
+          "bot": 4,
+          "action": "move_left"
+        },
+        {
+          "bot": 5,
+          "action": "move_left"
+        },
+        {
+          "bot": 6,
+          "action": "move_left"
+        },
+        {
+          "bot": 7,
+          "action": "wait"
+        },
+        {
+          "bot": 8,
+          "action": "move_up"
+        },
+        {
+          "bot": 9,
+          "action": "move_left"
+        }
+      ],
+      "expected_state": {
+        "score": 71,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              19,
+              16
+            ],
+            "inventory": [
+              "cereal"
+            ]
+          },
+          {
+            "id": 1,
+            "position": [
+              3,
+              16
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 2,
+            "position": [
+              16,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              23,
+              16
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              21,
+              16
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 6,
+            "position": [
+              17,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              4,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 9,
+            "position": [
+              23,
+              15
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 230,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_left"
+        },
+        {
+          "bot": 1,
+          "action": "move_left"
+        },
+        {
+          "bot": 2,
+          "action": "move_left"
+        },
+        {
+          "bot": 3,
+          "action": "move_left"
+        },
+        {
+          "bot": 4,
+          "action": "wait"
+        },
+        {
+          "bot": 5,
+          "action": "move_left"
+        },
+        {
+          "bot": 6,
+          "action": "move_left"
+        },
+        {
+          "bot": 7,
+          "action": "wait"
+        },
+        {
+          "bot": 8,
+          "action": "move_up"
+        },
+        {
+          "bot": 9,
+          "action": "move_left"
+        }
+      ],
+      "expected_state": {
+        "score": 71,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              18,
+              16
+            ],
+            "inventory": [
+              "cereal"
+            ]
+          },
+          {
+            "id": 1,
+            "position": [
+              2,
+              16
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 2,
+            "position": [
+              15,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              22,
+              16
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              25,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              20,
+              16
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 6,
+            "position": [
+              16,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              4,
+              14
+            ],
+            "inventory": []
+          },
+          {
+            "id": 9,
+            "position": [
+              22,
+              15
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 231,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_left"
+        },
+        {
+          "bot": 1,
+          "action": "drop_off"
+        },
+        {
+          "bot": 2,
+          "action": "move_left"
+        },
+        {
+          "bot": 3,
+          "action": "move_left"
+        },
+        {
+          "bot": 4,
+          "action": "wait"
+        },
+        {
+          "bot": 5,
+          "action": "move_left"
+        },
+        {
+          "bot": 6,
+          "action": "move_left"
+        },
+        {
+          "bot": 7,
+          "action": "move_down"
+        },
+        {
+          "bot": 8,
+          "action": "pick_up",
+          "item_id": "item_76"
+        },
+        {
+          "bot": 9,
+          "action": "move_left"
+        }
+      ],
+      "expected_state": {
+        "score": 71,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              17,
+              16
+            ],
+            "inventory": [
+              "cereal"
+            ]
+          },
+          {
+            "id": 1,
+            "position": [
+              1,
+              16
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 2,
+            "position": [
+              14,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              21,
+              16
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              25,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              19,
+              16
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 6,
+            "position": [
+              15,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              4,
+              13
+            ],
+            "inventory": []
+          },
+          {
+            "id": 9,
+            "position": [
+              21,
+              15
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 232,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_left"
+        },
+        {
+          "bot": 1,
+          "action": "move_right"
+        },
+        {
+          "bot": 2,
+          "action": "move_left"
+        },
+        {
+          "bot": 3,
+          "action": "move_left"
+        },
+        {
+          "bot": 4,
+          "action": "move_left"
+        },
+        {
+          "bot": 5,
+          "action": "move_left"
+        },
+        {
+          "bot": 6,
+          "action": "move_left"
+        },
+        {
+          "bot": 7,
+          "action": "wait"
+        },
+        {
+          "bot": 8,
+          "action": "move_up"
+        },
+        {
+          "bot": 9,
+          "action": "move_right"
+        }
+      ],
+      "expected_state": {
+        "score": 72,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              16,
+              16
+            ],
+            "inventory": [
+              "cereal"
+            ]
+          },
+          {
+            "id": 1,
+            "position": [
+              1,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              13,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              20,
+              16
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              25,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              18,
+              16
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 6,
+            "position": [
+              14,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              4,
+              13
+            ],
+            "inventory": [
+              "rice"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              20,
+              15
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 233,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_left"
+        },
+        {
+          "bot": 1,
+          "action": "move_right"
+        },
+        {
+          "bot": 2,
+          "action": "move_left"
+        },
+        {
+          "bot": 3,
+          "action": "move_left"
+        },
+        {
+          "bot": 4,
+          "action": "move_left"
+        },
+        {
+          "bot": 5,
+          "action": "move_left"
+        },
+        {
+          "bot": 6,
+          "action": "move_left"
+        },
+        {
+          "bot": 7,
+          "action": "wait"
+        },
+        {
+          "bot": 8,
+          "action": "move_up"
+        },
+        {
+          "bot": 9,
+          "action": "move_right"
+        }
+      ],
+      "expected_state": {
+        "score": 72,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              15,
+              16
+            ],
+            "inventory": [
+              "cereal"
+            ]
+          },
+          {
+            "id": 1,
+            "position": [
+              2,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              12,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              19,
+              16
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              24,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              17,
+              16
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 6,
+            "position": [
+              13,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              4,
+              12
+            ],
+            "inventory": [
+              "rice"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              21,
+              15
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 234,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_left"
+        },
+        {
+          "bot": 1,
+          "action": "move_right"
+        },
+        {
+          "bot": 2,
+          "action": "move_left"
+        },
+        {
+          "bot": 3,
+          "action": "move_left"
+        },
+        {
+          "bot": 4,
+          "action": "move_left"
+        },
+        {
+          "bot": 5,
+          "action": "move_left"
+        },
+        {
+          "bot": 6,
+          "action": "move_up"
+        },
+        {
+          "bot": 7,
+          "action": "move_up"
+        },
+        {
+          "bot": 8,
+          "action": "pick_up",
+          "item_id": "item_72"
+        },
+        {
+          "bot": 9,
+          "action": "move_right"
+        }
+      ],
+      "expected_state": {
+        "score": 72,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              14,
+              16
+            ],
+            "inventory": [
+              "cereal"
+            ]
+          },
+          {
+            "id": 1,
+            "position": [
+              3,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              11,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              18,
+              16
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              23,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              16,
+              16
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 6,
+            "position": [
+              12,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              4,
+              11
+            ],
+            "inventory": [
+              "rice"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              22,
+              15
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 235,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_left"
+        },
+        {
+          "bot": 1,
+          "action": "move_right"
+        },
+        {
+          "bot": 2,
+          "action": "move_left"
+        },
+        {
+          "bot": 3,
+          "action": "move_left"
+        },
+        {
+          "bot": 4,
+          "action": "move_left"
+        },
+        {
+          "bot": 5,
+          "action": "move_left"
+        },
+        {
+          "bot": 6,
+          "action": "move_down"
+        },
+        {
+          "bot": 7,
+          "action": "move_down"
+        },
+        {
+          "bot": 8,
+          "action": "move_up"
+        },
+        {
+          "bot": 9,
+          "action": "move_right"
+        }
+      ],
+      "expected_state": {
+        "score": 72,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              13,
+              16
+            ],
+            "inventory": [
+              "cereal"
+            ]
+          },
+          {
+            "id": 1,
+            "position": [
+              4,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              10,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              17,
+              16
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              22,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              15,
+              16
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 6,
+            "position": [
+              12,
+              14
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              4,
+              11
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              23,
+              15
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 236,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_left"
+        },
+        {
+          "bot": 1,
+          "action": "move_right"
+        },
+        {
+          "bot": 2,
+          "action": "move_left"
+        },
+        {
+          "bot": 3,
+          "action": "move_left"
+        },
+        {
+          "bot": 4,
+          "action": "move_left"
+        },
+        {
+          "bot": 5,
+          "action": "move_left"
+        },
+        {
+          "bot": 6,
+          "action": "move_right"
+        },
+        {
+          "bot": 7,
+          "action": "move_up"
+        },
+        {
+          "bot": 8,
+          "action": "pick_up",
+          "item_id": "item_70"
+        },
+        {
+          "bot": 9,
+          "action": "move_right"
+        }
+      ],
+      "expected_state": {
+        "score": 72,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              12,
+              16
+            ],
+            "inventory": [
+              "cereal"
+            ]
+          },
+          {
+            "id": 1,
+            "position": [
+              5,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              9,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              16,
+              16
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              21,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              14,
+              16
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 6,
+            "position": [
+              12,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              4,
+              10
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              24,
+              15
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 237,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_left"
+        },
+        {
+          "bot": 1,
+          "action": "move_right"
+        },
+        {
+          "bot": 2,
+          "action": "move_right"
+        },
+        {
+          "bot": 3,
+          "action": "move_left"
+        },
+        {
+          "bot": 4,
+          "action": "move_left"
+        },
+        {
+          "bot": 5,
+          "action": "move_left"
+        },
+        {
+          "bot": 6,
+          "action": "move_right"
+        },
+        {
+          "bot": 7,
+          "action": "move_down"
+        },
+        {
+          "bot": 8,
+          "action": "move_down"
+        },
+        {
+          "bot": 9,
+          "action": "move_right"
+        }
+      ],
+      "expected_state": {
+        "score": 72,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              11,
+              16
+            ],
+            "inventory": [
+              "cereal"
+            ]
+          },
+          {
+            "id": 1,
+            "position": [
+              6,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              8,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              15,
+              16
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              20,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              13,
+              16
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 6,
+            "position": [
+              13,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              4,
+              10
+            ],
+            "inventory": [
+              "rice",
+              "bananas",
+              "apples"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              25,
+              15
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 238,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_left"
+        },
+        {
+          "bot": 1,
+          "action": "move_right"
+        },
+        {
+          "bot": 2,
+          "action": "move_right"
+        },
+        {
+          "bot": 3,
+          "action": "move_left"
+        },
+        {
+          "bot": 4,
+          "action": "move_left"
+        },
+        {
+          "bot": 5,
+          "action": "move_left"
+        },
+        {
+          "bot": 6,
+          "action": "move_right"
+        },
+        {
+          "bot": 7,
+          "action": "move_up"
+        },
+        {
+          "bot": 8,
+          "action": "move_down"
+        },
+        {
+          "bot": 9,
+          "action": "move_up"
+        }
+      ],
+      "expected_state": {
+        "score": 72,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              10,
+              16
+            ],
+            "inventory": [
+              "cereal"
+            ]
+          },
+          {
+            "id": 1,
+            "position": [
+              7,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              9,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              14,
+              16
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              19,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              12,
+              16
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 6,
+            "position": [
+              14,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              4,
+              11
+            ],
+            "inventory": [
+              "rice",
+              "bananas",
+              "apples"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 239,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_left"
+        },
+        {
+          "bot": 1,
+          "action": "move_up"
+        },
+        {
+          "bot": 2,
+          "action": "move_right"
+        },
+        {
+          "bot": 3,
+          "action": "move_left"
+        },
+        {
+          "bot": 4,
+          "action": "move_left"
+        },
+        {
+          "bot": 5,
+          "action": "move_left"
+        },
+        {
+          "bot": 6,
+          "action": "move_right"
+        },
+        {
+          "bot": 7,
+          "action": "move_up"
+        },
+        {
+          "bot": 8,
+          "action": "move_down"
+        },
+        {
+          "bot": 9,
+          "action": "move_up"
+        }
+      ],
+      "expected_state": {
+        "score": 72,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              9,
+              16
+            ],
+            "inventory": [
+              "cereal"
+            ]
+          },
+          {
+            "id": 1,
+            "position": [
+              8,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              10,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              13,
+              16
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              18,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              11,
+              16
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 6,
+            "position": [
+              15,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              4,
+              12
+            ],
+            "inventory": [
+              "rice",
+              "bananas",
+              "apples"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              14
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 240,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_left"
+        },
+        {
+          "bot": 1,
+          "action": "move_right"
+        },
+        {
+          "bot": 2,
+          "action": "move_right"
+        },
+        {
+          "bot": 3,
+          "action": "move_left"
+        },
+        {
+          "bot": 4,
+          "action": "move_left"
+        },
+        {
+          "bot": 5,
+          "action": "move_left"
+        },
+        {
+          "bot": 6,
+          "action": "move_right"
+        },
+        {
+          "bot": 7,
+          "action": "move_down"
+        },
+        {
+          "bot": 8,
+          "action": "move_down"
+        },
+        {
+          "bot": 9,
+          "action": "move_down"
+        }
+      ],
+      "expected_state": {
+        "score": 72,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              9,
+              16
+            ],
+            "inventory": [
+              "cereal"
+            ]
+          },
+          {
+            "id": 1,
+            "position": [
+              8,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              11,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              12,
+              16
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              17,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              10,
+              16
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 6,
+            "position": [
+              16,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              4,
+              13
+            ],
+            "inventory": [
+              "rice",
+              "bananas",
+              "apples"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              13
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 241,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_left"
+        },
+        {
+          "bot": 1,
+          "action": "move_right"
+        },
+        {
+          "bot": 2,
+          "action": "move_right"
+        },
+        {
+          "bot": 3,
+          "action": "move_left"
+        },
+        {
+          "bot": 4,
+          "action": "move_left"
+        },
+        {
+          "bot": 5,
+          "action": "move_left"
+        },
+        {
+          "bot": 6,
+          "action": "move_right"
+        },
+        {
+          "bot": 7,
+          "action": "move_up"
+        },
+        {
+          "bot": 8,
+          "action": "move_down"
+        },
+        {
+          "bot": 9,
+          "action": "move_up"
+        }
+      ],
+      "expected_state": {
+        "score": 72,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              8,
+              16
+            ],
+            "inventory": [
+              "cereal"
+            ]
+          },
+          {
+            "id": 1,
+            "position": [
+              9,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              12,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              11,
+              16
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              16,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              9,
+              16
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 6,
+            "position": [
+              17,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              4,
+              14
+            ],
+            "inventory": [
+              "rice",
+              "bananas",
+              "apples"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              14
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 242,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_left"
+        },
+        {
+          "bot": 1,
+          "action": "move_right"
+        },
+        {
+          "bot": 2,
+          "action": "move_right"
+        },
+        {
+          "bot": 3,
+          "action": "move_left"
+        },
+        {
+          "bot": 4,
+          "action": "move_left"
+        },
+        {
+          "bot": 5,
+          "action": "move_left"
+        },
+        {
+          "bot": 6,
+          "action": "move_right"
+        },
+        {
+          "bot": 7,
+          "action": "move_down"
+        },
+        {
+          "bot": 8,
+          "action": "move_down"
+        },
+        {
+          "bot": 9,
+          "action": "move_down"
+        }
+      ],
+      "expected_state": {
+        "score": 72,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              7,
+              16
+            ],
+            "inventory": [
+              "cereal"
+            ]
+          },
+          {
+            "id": 1,
+            "position": [
+              10,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              13,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              10,
+              16
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              15,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              8,
+              16
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 6,
+            "position": [
+              18,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              4,
+              15
+            ],
+            "inventory": [
+              "rice",
+              "bananas",
+              "apples"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              13
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 243,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_left"
+        },
+        {
+          "bot": 1,
+          "action": "move_right"
+        },
+        {
+          "bot": 2,
+          "action": "move_right"
+        },
+        {
+          "bot": 3,
+          "action": "move_left"
+        },
+        {
+          "bot": 4,
+          "action": "move_left"
+        },
+        {
+          "bot": 5,
+          "action": "move_left"
+        },
+        {
+          "bot": 6,
+          "action": "move_right"
+        },
+        {
+          "bot": 7,
+          "action": "move_up"
+        },
+        {
+          "bot": 8,
+          "action": "move_left"
+        },
+        {
+          "bot": 9,
+          "action": "move_up"
+        }
+      ],
+      "expected_state": {
+        "score": 72,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              6,
+              16
+            ],
+            "inventory": [
+              "cereal"
+            ]
+          },
+          {
+            "id": 1,
+            "position": [
+              11,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              14,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              9,
+              16
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              14,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              7,
+              16
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 6,
+            "position": [
+              19,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              4,
+              16
+            ],
+            "inventory": [
+              "rice",
+              "bananas",
+              "apples"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              14
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 244,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_left"
+        },
+        {
+          "bot": 1,
+          "action": "move_right"
+        },
+        {
+          "bot": 2,
+          "action": "move_right"
+        },
+        {
+          "bot": 3,
+          "action": "move_left"
+        },
+        {
+          "bot": 4,
+          "action": "move_left"
+        },
+        {
+          "bot": 5,
+          "action": "move_left"
+        },
+        {
+          "bot": 6,
+          "action": "move_right"
+        },
+        {
+          "bot": 7,
+          "action": "move_down"
+        },
+        {
+          "bot": 8,
+          "action": "move_left"
+        },
+        {
+          "bot": 9,
+          "action": "move_down"
+        }
+      ],
+      "expected_state": {
+        "score": 72,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              5,
+              16
+            ],
+            "inventory": [
+              "cereal"
+            ]
+          },
+          {
+            "id": 1,
+            "position": [
+              12,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              15,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              8,
+              16
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              13,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              6,
+              16
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 6,
+            "position": [
+              20,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              3,
+              16
+            ],
+            "inventory": [
+              "rice",
+              "bananas",
+              "apples"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              13
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 245,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_left"
+        },
+        {
+          "bot": 1,
+          "action": "move_right"
+        },
+        {
+          "bot": 2,
+          "action": "move_right"
+        },
+        {
+          "bot": 3,
+          "action": "move_left"
+        },
+        {
+          "bot": 4,
+          "action": "move_left"
+        },
+        {
+          "bot": 5,
+          "action": "move_left"
+        },
+        {
+          "bot": 6,
+          "action": "move_right"
+        },
+        {
+          "bot": 7,
+          "action": "move_up"
+        },
+        {
+          "bot": 8,
+          "action": "move_left"
+        },
+        {
+          "bot": 9,
+          "action": "move_up"
+        }
+      ],
+      "expected_state": {
+        "score": 72,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              4,
+              16
+            ],
+            "inventory": [
+              "cereal"
+            ]
+          },
+          {
+            "id": 1,
+            "position": [
+              13,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              16,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              7,
+              16
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              12,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              5,
+              16
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 6,
+            "position": [
+              21,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              2,
+              16
+            ],
+            "inventory": [
+              "rice",
+              "bananas",
+              "apples"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              14
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 246,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_left"
+        },
+        {
+          "bot": 1,
+          "action": "move_right"
+        },
+        {
+          "bot": 2,
+          "action": "move_right"
+        },
+        {
+          "bot": 3,
+          "action": "move_left"
+        },
+        {
+          "bot": 4,
+          "action": "move_left"
+        },
+        {
+          "bot": 5,
+          "action": "move_left"
+        },
+        {
+          "bot": 6,
+          "action": "move_right"
+        },
+        {
+          "bot": 7,
+          "action": "move_down"
+        },
+        {
+          "bot": 8,
+          "action": "drop_off"
+        },
+        {
+          "bot": 9,
+          "action": "move_down"
+        }
+      ],
+      "expected_state": {
+        "score": 72,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              3,
+              16
+            ],
+            "inventory": [
+              "cereal"
+            ]
+          },
+          {
+            "id": 1,
+            "position": [
+              14,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              17,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              6,
+              16
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              11,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              4,
+              16
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 6,
+            "position": [
+              22,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              1,
+              16
+            ],
+            "inventory": [
+              "rice",
+              "bananas",
+              "apples"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              13
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 247,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_left"
+        },
+        {
+          "bot": 1,
+          "action": "move_right"
+        },
+        {
+          "bot": 2,
+          "action": "move_right"
+        },
+        {
+          "bot": 3,
+          "action": "move_left"
+        },
+        {
+          "bot": 4,
+          "action": "move_left"
+        },
+        {
+          "bot": 5,
+          "action": "move_left"
+        },
+        {
+          "bot": 6,
+          "action": "move_right"
+        },
+        {
+          "bot": 7,
+          "action": "move_up"
+        },
+        {
+          "bot": 8,
+          "action": "move_up"
+        },
+        {
+          "bot": 9,
+          "action": "move_up"
+        }
+      ],
+      "expected_state": {
+        "score": 73,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              2,
+              16
+            ],
+            "inventory": [
+              "cereal"
+            ]
+          },
+          {
+            "id": 1,
+            "position": [
+              15,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              18,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              5,
+              16
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              10,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              3,
+              16
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 6,
+            "position": [
+              23,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              1,
+              16
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              14
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 248,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_left"
+        },
+        {
+          "bot": 1,
+          "action": "move_right"
+        },
+        {
+          "bot": 2,
+          "action": "move_right"
+        },
+        {
+          "bot": 3,
+          "action": "move_left"
+        },
+        {
+          "bot": 4,
+          "action": "move_left"
+        },
+        {
+          "bot": 5,
+          "action": "move_left"
+        },
+        {
+          "bot": 6,
+          "action": "move_right"
+        },
+        {
+          "bot": 7,
+          "action": "move_down"
+        },
+        {
+          "bot": 8,
+          "action": "move_right"
+        },
+        {
+          "bot": 9,
+          "action": "move_down"
+        }
+      ],
+      "expected_state": {
+        "score": 73,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              2,
+              16
+            ],
+            "inventory": [
+              "cereal"
+            ]
+          },
+          {
+            "id": 1,
+            "position": [
+              16,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              19,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              4,
+              16
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              9,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              3,
+              16
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 6,
+            "position": [
+              24,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              1,
+              15
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              13
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 249,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "drop_off"
+        },
+        {
+          "bot": 1,
+          "action": "move_right"
+        },
+        {
+          "bot": 2,
+          "action": "move_right"
+        },
+        {
+          "bot": 3,
+          "action": "move_left"
+        },
+        {
+          "bot": 4,
+          "action": "move_left"
+        },
+        {
+          "bot": 5,
+          "action": "wait"
+        },
+        {
+          "bot": 6,
+          "action": "move_right"
+        },
+        {
+          "bot": 7,
+          "action": "move_left"
+        },
+        {
+          "bot": 8,
+          "action": "move_right"
+        },
+        {
+          "bot": 9,
+          "action": "move_up"
+        }
+      ],
+      "expected_state": {
+        "score": 73,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              1,
+              16
+            ],
+            "inventory": [
+              "cereal"
+            ]
+          },
+          {
+            "id": 1,
+            "position": [
+              17,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              20,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              4,
+              16
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              8,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              2,
+              16
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 6,
+            "position": [
+              25,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              2,
+              15
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              14
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 250,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_right"
+        },
+        {
+          "bot": 1,
+          "action": "move_right"
+        },
+        {
+          "bot": 2,
+          "action": "move_right"
+        },
+        {
+          "bot": 3,
+          "action": "move_up"
+        },
+        {
+          "bot": 4,
+          "action": "move_left"
+        },
+        {
+          "bot": 5,
+          "action": "move_up"
+        },
+        {
+          "bot": 6,
+          "action": "move_down"
+        },
+        {
+          "bot": 7,
+          "action": "move_up"
+        },
+        {
+          "bot": 8,
+          "action": "move_right"
+        },
+        {
+          "bot": 9,
+          "action": "move_down"
+        }
+      ],
+      "expected_state": {
+        "score": 74,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              1,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              18,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              21,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              3,
+              16
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              7,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              2,
+              16
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 6,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              25,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              3,
+              15
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              13
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 251,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_right"
+        },
+        {
+          "bot": 1,
+          "action": "move_right"
+        },
+        {
+          "bot": 2,
+          "action": "move_right"
+        },
+        {
+          "bot": 3,
+          "action": "move_up"
+        },
+        {
+          "bot": 4,
+          "action": "move_left"
+        },
+        {
+          "bot": 5,
+          "action": "move_left"
+        },
+        {
+          "bot": 6,
+          "action": "move_up"
+        },
+        {
+          "bot": 7,
+          "action": "move_down"
+        },
+        {
+          "bot": 8,
+          "action": "move_right"
+        },
+        {
+          "bot": 9,
+          "action": "move_up"
+        }
+      ],
+      "expected_state": {
+        "score": 74,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              1,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              19,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              22,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              3,
+              16
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              6,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              2,
+              15
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 6,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              25,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              4,
+              15
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              14
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 252,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "wait"
+        },
+        {
+          "bot": 1,
+          "action": "move_right"
+        },
+        {
+          "bot": 2,
+          "action": "move_right"
+        },
+        {
+          "bot": 3,
+          "action": "move_left"
+        },
+        {
+          "bot": 4,
+          "action": "move_left"
+        },
+        {
+          "bot": 5,
+          "action": "move_down"
+        },
+        {
+          "bot": 6,
+          "action": "move_down"
+        },
+        {
+          "bot": 7,
+          "action": "move_up"
+        },
+        {
+          "bot": 8,
+          "action": "move_right"
+        },
+        {
+          "bot": 9,
+          "action": "move_down"
+        }
+      ],
+      "expected_state": {
+        "score": 74,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              2,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              20,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              23,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              3,
+              15
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              5,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              1,
+              15
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 6,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              25,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              5,
+              15
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              13
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 253,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "wait"
+        },
+        {
+          "bot": 1,
+          "action": "move_right"
+        },
+        {
+          "bot": 2,
+          "action": "move_right"
+        },
+        {
+          "bot": 3,
+          "action": "move_left"
+        },
+        {
+          "bot": 4,
+          "action": "move_left"
+        },
+        {
+          "bot": 5,
+          "action": "drop_off"
+        },
+        {
+          "bot": 6,
+          "action": "move_up"
+        },
+        {
+          "bot": 7,
+          "action": "move_down"
+        },
+        {
+          "bot": 8,
+          "action": "move_right"
+        },
+        {
+          "bot": 9,
+          "action": "move_up"
+        }
+      ],
+      "expected_state": {
+        "score": 74,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              2,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              21,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              24,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              2,
+              15
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              4,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              1,
+              16
+            ],
+            "inventory": [
+              "oats"
+            ]
+          },
+          {
+            "id": 6,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              25,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              6,
+              15
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              14
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 254,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_right"
+        },
+        {
+          "bot": 1,
+          "action": "move_right"
+        },
+        {
+          "bot": 2,
+          "action": "move_right"
+        },
+        {
+          "bot": 3,
+          "action": "move_down"
+        },
+        {
+          "bot": 4,
+          "action": "move_up"
+        },
+        {
+          "bot": 5,
+          "action": "move_right"
+        },
+        {
+          "bot": 6,
+          "action": "move_down"
+        },
+        {
+          "bot": 7,
+          "action": "move_left"
+        },
+        {
+          "bot": 8,
+          "action": "move_right"
+        },
+        {
+          "bot": 9,
+          "action": "move_down"
+        }
+      ],
+      "expected_state": {
+        "score": 75,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              2,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              22,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              24,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              1,
+              15
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              3,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              1,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              25,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              7,
+              15
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              13
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 255,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_right"
+        },
+        {
+          "bot": 1,
+          "action": "move_right"
+        },
+        {
+          "bot": 2,
+          "action": "move_right"
+        },
+        {
+          "bot": 3,
+          "action": "move_down"
+        },
+        {
+          "bot": 4,
+          "action": "move_left"
+        },
+        {
+          "bot": 5,
+          "action": "move_right"
+        },
+        {
+          "bot": 6,
+          "action": "move_left"
+        },
+        {
+          "bot": 7,
+          "action": "move_left"
+        },
+        {
+          "bot": 8,
+          "action": "move_right"
+        },
+        {
+          "bot": 9,
+          "action": "move_up"
+        }
+      ],
+      "expected_state": {
+        "score": 75,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              2,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              23,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              1,
+              15
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              3,
+              15
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              1,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              24,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              8,
+              15
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              14
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 256,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_right"
+        },
+        {
+          "bot": 1,
+          "action": "move_right"
+        },
+        {
+          "bot": 2,
+          "action": "move_down"
+        },
+        {
+          "bot": 3,
+          "action": "move_right"
+        },
+        {
+          "bot": 4,
+          "action": "move_right"
+        },
+        {
+          "bot": 5,
+          "action": "wait"
+        },
+        {
+          "bot": 6,
+          "action": "move_left"
+        },
+        {
+          "bot": 7,
+          "action": "move_up"
+        },
+        {
+          "bot": 8,
+          "action": "move_right"
+        },
+        {
+          "bot": 9,
+          "action": "move_down"
+        }
+      ],
+      "expected_state": {
+        "score": 75,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              3,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              24,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              1,
+              15
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              2,
+              15
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              2,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              25,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              23,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              9,
+              15
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              13
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 257,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_right"
+        },
+        {
+          "bot": 1,
+          "action": "move_right"
+        },
+        {
+          "bot": 2,
+          "action": "move_left"
+        },
+        {
+          "bot": 3,
+          "action": "wait"
+        },
+        {
+          "bot": 4,
+          "action": "move_down"
+        },
+        {
+          "bot": 5,
+          "action": "wait"
+        },
+        {
+          "bot": 6,
+          "action": "move_up"
+        },
+        {
+          "bot": 7,
+          "action": "move_down"
+        },
+        {
+          "bot": 8,
+          "action": "move_right"
+        },
+        {
+          "bot": 9,
+          "action": "move_up"
+        }
+      ],
+      "expected_state": {
+        "score": 75,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              4,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              25,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              1,
+              15
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              3,
+              15
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              2,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              24,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              23,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              10,
+              15
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              14
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 258,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_right"
+        },
+        {
+          "bot": 1,
+          "action": "move_down"
+        },
+        {
+          "bot": 2,
+          "action": "move_up"
+        },
+        {
+          "bot": 3,
+          "action": "wait"
+        },
+        {
+          "bot": 4,
+          "action": "move_left"
+        },
+        {
+          "bot": 5,
+          "action": "move_up"
+        },
+        {
+          "bot": 6,
+          "action": "move_down"
+        },
+        {
+          "bot": 7,
+          "action": "move_up"
+        },
+        {
+          "bot": 8,
+          "action": "move_right"
+        },
+        {
+          "bot": 9,
+          "action": "move_down"
+        }
+      ],
+      "expected_state": {
+        "score": 75,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              5,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              16
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              1,
+              15
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              3,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              2,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              24,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              23,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              11,
+              15
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              13
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 259,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_right"
+        },
+        {
+          "bot": 1,
+          "action": "move_up"
+        },
+        {
+          "bot": 2,
+          "action": "move_down"
+        },
+        {
+          "bot": 3,
+          "action": "move_right"
+        },
+        {
+          "bot": 4,
+          "action": "move_left"
+        },
+        {
+          "bot": 5,
+          "action": "move_right"
+        },
+        {
+          "bot": 6,
+          "action": "move_up"
+        },
+        {
+          "bot": 7,
+          "action": "move_down"
+        },
+        {
+          "bot": 8,
+          "action": "move_right"
+        },
+        {
+          "bot": 9,
+          "action": "move_up"
+        }
+      ],
+      "expected_state": {
+        "score": 75,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              6,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              1,
+              15
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              3,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              2,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              24,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              23,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              12,
+              15
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              14
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 260,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_right"
+        },
+        {
+          "bot": 1,
+          "action": "move_down"
+        },
+        {
+          "bot": 2,
+          "action": "move_up"
+        },
+        {
+          "bot": 3,
+          "action": "wait"
+        },
+        {
+          "bot": 4,
+          "action": "move_left"
+        },
+        {
+          "bot": 5,
+          "action": "move_right"
+        },
+        {
+          "bot": 6,
+          "action": "move_down"
+        },
+        {
+          "bot": 7,
+          "action": "move_up"
+        },
+        {
+          "bot": 8,
+          "action": "move_right"
+        },
+        {
+          "bot": 9,
+          "action": "move_down"
+        }
+      ],
+      "expected_state": {
+        "score": 75,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              7,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              16
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              1,
+              15
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              2,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              3,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              24,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              23,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              13,
+              15
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              13
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 261,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_right"
+        },
+        {
+          "bot": 1,
+          "action": "move_up"
+        },
+        {
+          "bot": 2,
+          "action": "move_down"
+        },
+        {
+          "bot": 3,
+          "action": "wait"
+        },
+        {
+          "bot": 4,
+          "action": "drop_off"
+        },
+        {
+          "bot": 5,
+          "action": "move_right"
+        },
+        {
+          "bot": 6,
+          "action": "move_up"
+        },
+        {
+          "bot": 7,
+          "action": "move_down"
+        },
+        {
+          "bot": 8,
+          "action": "move_right"
+        },
+        {
+          "bot": 9,
+          "action": "move_up"
+        }
+      ],
+      "expected_state": {
+        "score": 75,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              8,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              1,
+              15
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              1,
+              16
+            ],
+            "inventory": [
+              "apples",
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              4,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              24,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              23,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              14,
+              15
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              14
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 262,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_right"
+        },
+        {
+          "bot": 1,
+          "action": "move_down"
+        },
+        {
+          "bot": 2,
+          "action": "move_up"
+        },
+        {
+          "bot": 3,
+          "action": "move_right"
+        },
+        {
+          "bot": 4,
+          "action": "move_right"
+        },
+        {
+          "bot": 5,
+          "action": "move_right"
+        },
+        {
+          "bot": 6,
+          "action": "move_down"
+        },
+        {
+          "bot": 7,
+          "action": "move_up"
+        },
+        {
+          "bot": 8,
+          "action": "move_right"
+        },
+        {
+          "bot": 9,
+          "action": "move_down"
+        }
+      ],
+      "expected_state": {
+        "score": 76,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              9,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              16
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              1,
+              15
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              1,
+              16
+            ],
+            "inventory": [
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              5,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              24,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              23,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              15,
+              15
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              13
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 263,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_right"
+        },
+        {
+          "bot": 1,
+          "action": "move_up"
+        },
+        {
+          "bot": 2,
+          "action": "move_down"
+        },
+        {
+          "bot": 3,
+          "action": "wait"
+        },
+        {
+          "bot": 4,
+          "action": "move_right"
+        },
+        {
+          "bot": 5,
+          "action": "move_right"
+        },
+        {
+          "bot": 6,
+          "action": "move_up"
+        },
+        {
+          "bot": 7,
+          "action": "move_down"
+        },
+        {
+          "bot": 8,
+          "action": "move_right"
+        },
+        {
+          "bot": 9,
+          "action": "move_up"
+        }
+      ],
+      "expected_state": {
+        "score": 76,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              10,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              2,
+              15
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              2,
+              16
+            ],
+            "inventory": [
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              6,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              24,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              23,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              16,
+              15
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              14
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 264,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_right"
+        },
+        {
+          "bot": 1,
+          "action": "move_down"
+        },
+        {
+          "bot": 2,
+          "action": "move_up"
+        },
+        {
+          "bot": 3,
+          "action": "wait"
+        },
+        {
+          "bot": 4,
+          "action": "move_right"
+        },
+        {
+          "bot": 5,
+          "action": "move_right"
+        },
+        {
+          "bot": 6,
+          "action": "move_down"
+        },
+        {
+          "bot": 7,
+          "action": "move_up"
+        },
+        {
+          "bot": 8,
+          "action": "move_right"
+        },
+        {
+          "bot": 9,
+          "action": "move_down"
+        }
+      ],
+      "expected_state": {
+        "score": 76,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              11,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              16
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              2,
+              15
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              3,
+              16
+            ],
+            "inventory": [
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              7,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              24,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              23,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              17,
+              15
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              13
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 265,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_right"
+        },
+        {
+          "bot": 1,
+          "action": "move_up"
+        },
+        {
+          "bot": 2,
+          "action": "move_down"
+        },
+        {
+          "bot": 3,
+          "action": "move_down"
+        },
+        {
+          "bot": 4,
+          "action": "move_right"
+        },
+        {
+          "bot": 5,
+          "action": "move_right"
+        },
+        {
+          "bot": 6,
+          "action": "move_up"
+        },
+        {
+          "bot": 7,
+          "action": "move_down"
+        },
+        {
+          "bot": 8,
+          "action": "move_right"
+        },
+        {
+          "bot": 9,
+          "action": "move_up"
+        }
+      ],
+      "expected_state": {
+        "score": 76,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              12,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              2,
+              15
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              4,
+              16
+            ],
+            "inventory": [
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              8,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              24,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              23,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              18,
+              15
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              14
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 266,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_right"
+        },
+        {
+          "bot": 1,
+          "action": "move_down"
+        },
+        {
+          "bot": 2,
+          "action": "move_up"
+        },
+        {
+          "bot": 3,
+          "action": "move_left"
+        },
+        {
+          "bot": 4,
+          "action": "move_right"
+        },
+        {
+          "bot": 5,
+          "action": "move_right"
+        },
+        {
+          "bot": 6,
+          "action": "move_down"
+        },
+        {
+          "bot": 7,
+          "action": "move_up"
+        },
+        {
+          "bot": 8,
+          "action": "move_right"
+        },
+        {
+          "bot": 9,
+          "action": "move_down"
+        }
+      ],
+      "expected_state": {
+        "score": 76,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              13,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              16
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              2,
+              16
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              5,
+              16
+            ],
+            "inventory": [
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              9,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              24,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              23,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              19,
+              15
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              13
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 267,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_right"
+        },
+        {
+          "bot": 1,
+          "action": "move_up"
+        },
+        {
+          "bot": 2,
+          "action": "move_down"
+        },
+        {
+          "bot": 3,
+          "action": "drop_off"
+        },
+        {
+          "bot": 4,
+          "action": "move_right"
+        },
+        {
+          "bot": 5,
+          "action": "move_right"
+        },
+        {
+          "bot": 6,
+          "action": "move_up"
+        },
+        {
+          "bot": 7,
+          "action": "move_down"
+        },
+        {
+          "bot": 8,
+          "action": "move_right"
+        },
+        {
+          "bot": 9,
+          "action": "move_up"
+        }
+      ],
+      "expected_state": {
+        "score": 76,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              14,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              1,
+              16
+            ],
+            "inventory": [
+              "flour",
+              "butter"
+            ]
+          },
+          {
+            "id": 4,
+            "position": [
+              6,
+              16
+            ],
+            "inventory": [
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              10,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              24,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              23,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              20,
+              15
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              14
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 268,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_right"
+        },
+        {
+          "bot": 1,
+          "action": "move_down"
+        },
+        {
+          "bot": 2,
+          "action": "move_up"
+        },
+        {
+          "bot": 3,
+          "action": "move_right"
+        },
+        {
+          "bot": 4,
+          "action": "move_left"
+        },
+        {
+          "bot": 5,
+          "action": "move_right"
+        },
+        {
+          "bot": 6,
+          "action": "move_down"
+        },
+        {
+          "bot": 7,
+          "action": "move_up"
+        },
+        {
+          "bot": 8,
+          "action": "move_left"
+        },
+        {
+          "bot": 9,
+          "action": "move_down"
+        }
+      ],
+      "expected_state": {
+        "score": 83,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              15,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              16
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              1,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 4,
+            "position": [
+              7,
+              16
+            ],
+            "inventory": [
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              11,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              24,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              23,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              21,
+              15
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              13
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 269,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_right"
+        },
+        {
+          "bot": 1,
+          "action": "move_up"
+        },
+        {
+          "bot": 2,
+          "action": "move_down"
+        },
+        {
+          "bot": 3,
+          "action": "move_right"
+        },
+        {
+          "bot": 4,
+          "action": "move_left"
+        },
+        {
+          "bot": 5,
+          "action": "move_right"
+        },
+        {
+          "bot": 6,
+          "action": "move_up"
+        },
+        {
+          "bot": 7,
+          "action": "move_down"
+        },
+        {
+          "bot": 8,
+          "action": "move_left"
+        },
+        {
+          "bot": 9,
+          "action": "move_up"
+        }
+      ],
+      "expected_state": {
+        "score": 83,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              16,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              2,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 4,
+            "position": [
+              6,
+              16
+            ],
+            "inventory": [
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              12,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              24,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              23,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              20,
+              15
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              14
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 270,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_right"
+        },
+        {
+          "bot": 1,
+          "action": "move_down"
+        },
+        {
+          "bot": 2,
+          "action": "move_up"
+        },
+        {
+          "bot": 3,
+          "action": "move_right"
+        },
+        {
+          "bot": 4,
+          "action": "move_up"
+        },
+        {
+          "bot": 5,
+          "action": "move_right"
+        },
+        {
+          "bot": 6,
+          "action": "move_down"
+        },
+        {
+          "bot": 7,
+          "action": "move_up"
+        },
+        {
+          "bot": 8,
+          "action": "move_left"
+        },
+        {
+          "bot": 9,
+          "action": "move_down"
+        }
+      ],
+      "expected_state": {
+        "score": 83,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              17,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              16
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              3,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 4,
+            "position": [
+              5,
+              16
+            ],
+            "inventory": [
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              13,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              24,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              23,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              19,
+              15
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              13
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 271,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_right"
+        },
+        {
+          "bot": 1,
+          "action": "move_up"
+        },
+        {
+          "bot": 2,
+          "action": "move_down"
+        },
+        {
+          "bot": 3,
+          "action": "move_right"
+        },
+        {
+          "bot": 4,
+          "action": "move_left"
+        },
+        {
+          "bot": 5,
+          "action": "move_right"
+        },
+        {
+          "bot": 6,
+          "action": "move_up"
+        },
+        {
+          "bot": 7,
+          "action": "move_down"
+        },
+        {
+          "bot": 8,
+          "action": "move_down"
+        },
+        {
+          "bot": 9,
+          "action": "move_up"
+        }
+      ],
+      "expected_state": {
+        "score": 83,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              18,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              4,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 4,
+            "position": [
+              5,
+              15
+            ],
+            "inventory": [
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              14,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              24,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              23,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              18,
+              15
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              14
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 272,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_right"
+        },
+        {
+          "bot": 1,
+          "action": "move_down"
+        },
+        {
+          "bot": 2,
+          "action": "move_up"
+        },
+        {
+          "bot": 3,
+          "action": "move_right"
+        },
+        {
+          "bot": 4,
+          "action": "move_down"
+        },
+        {
+          "bot": 5,
+          "action": "move_right"
+        },
+        {
+          "bot": 6,
+          "action": "move_down"
+        },
+        {
+          "bot": 7,
+          "action": "move_up"
+        },
+        {
+          "bot": 8,
+          "action": "move_left"
+        },
+        {
+          "bot": 9,
+          "action": "move_down"
+        }
+      ],
+      "expected_state": {
+        "score": 83,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              19,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              16
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              5,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 4,
+            "position": [
+              4,
+              15
+            ],
+            "inventory": [
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              15,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              24,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              23,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              18,
+              16
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              13
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 273,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_right"
+        },
+        {
+          "bot": 1,
+          "action": "move_up"
+        },
+        {
+          "bot": 2,
+          "action": "move_down"
+        },
+        {
+          "bot": 3,
+          "action": "move_right"
+        },
+        {
+          "bot": 4,
+          "action": "move_left"
+        },
+        {
+          "bot": 5,
+          "action": "move_right"
+        },
+        {
+          "bot": 6,
+          "action": "move_up"
+        },
+        {
+          "bot": 7,
+          "action": "move_down"
+        },
+        {
+          "bot": 8,
+          "action": "move_left"
+        },
+        {
+          "bot": 9,
+          "action": "move_up"
+        }
+      ],
+      "expected_state": {
+        "score": 83,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              20,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              6,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 4,
+            "position": [
+              4,
+              16
+            ],
+            "inventory": [
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              16,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              24,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              23,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              17,
+              16
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              14
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 274,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_right"
+        },
+        {
+          "bot": 1,
+          "action": "move_down"
+        },
+        {
+          "bot": 2,
+          "action": "move_up"
+        },
+        {
+          "bot": 3,
+          "action": "move_right"
+        },
+        {
+          "bot": 4,
+          "action": "move_left"
+        },
+        {
+          "bot": 5,
+          "action": "move_right"
+        },
+        {
+          "bot": 6,
+          "action": "move_down"
+        },
+        {
+          "bot": 7,
+          "action": "move_up"
+        },
+        {
+          "bot": 8,
+          "action": "move_left"
+        },
+        {
+          "bot": 9,
+          "action": "move_down"
+        }
+      ],
+      "expected_state": {
+        "score": 83,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              21,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              16
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              7,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 4,
+            "position": [
+              3,
+              16
+            ],
+            "inventory": [
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              17,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              24,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              23,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              16,
+              16
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              13
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 275,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_right"
+        },
+        {
+          "bot": 1,
+          "action": "move_up"
+        },
+        {
+          "bot": 2,
+          "action": "move_down"
+        },
+        {
+          "bot": 3,
+          "action": "move_right"
+        },
+        {
+          "bot": 4,
+          "action": "move_left"
+        },
+        {
+          "bot": 5,
+          "action": "move_right"
+        },
+        {
+          "bot": 6,
+          "action": "move_up"
+        },
+        {
+          "bot": 7,
+          "action": "move_up"
+        },
+        {
+          "bot": 8,
+          "action": "move_left"
+        },
+        {
+          "bot": 9,
+          "action": "move_up"
+        }
+      ],
+      "expected_state": {
+        "score": 83,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              22,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              8,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 4,
+            "position": [
+              2,
+              16
+            ],
+            "inventory": [
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              18,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              24,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              23,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              15,
+              16
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              14
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 276,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_right"
+        },
+        {
+          "bot": 1,
+          "action": "move_down"
+        },
+        {
+          "bot": 2,
+          "action": "move_up"
+        },
+        {
+          "bot": 3,
+          "action": "move_right"
+        },
+        {
+          "bot": 4,
+          "action": "drop_off"
+        },
+        {
+          "bot": 5,
+          "action": "move_right"
+        },
+        {
+          "bot": 6,
+          "action": "move_up"
+        },
+        {
+          "bot": 7,
+          "action": "move_down"
+        },
+        {
+          "bot": 8,
+          "action": "move_left"
+        },
+        {
+          "bot": 9,
+          "action": "move_down"
+        }
+      ],
+      "expected_state": {
+        "score": 83,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              23,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              16
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              9,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 4,
+            "position": [
+              1,
+              16
+            ],
+            "inventory": [
+              "apples"
+            ]
+          },
+          {
+            "id": 5,
+            "position": [
+              19,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              24,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              23,
+              14
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              14,
+              16
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              13
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 277,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_right"
+        },
+        {
+          "bot": 1,
+          "action": "move_up"
+        },
+        {
+          "bot": 2,
+          "action": "move_up"
+        },
+        {
+          "bot": 3,
+          "action": "move_right"
+        },
+        {
+          "bot": 4,
+          "action": "move_right"
+        },
+        {
+          "bot": 5,
+          "action": "move_right"
+        },
+        {
+          "bot": 6,
+          "action": "move_down"
+        },
+        {
+          "bot": 7,
+          "action": "move_down"
+        },
+        {
+          "bot": 8,
+          "action": "move_left"
+        },
+        {
+          "bot": 9,
+          "action": "move_up"
+        }
+      ],
+      "expected_state": {
+        "score": 84,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              24,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              10,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 4,
+            "position": [
+              1,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 5,
+            "position": [
+              20,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              24,
+              14
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              23,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              13,
+              16
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              14
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 278,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_right"
+        },
+        {
+          "bot": 1,
+          "action": "move_up"
+        },
+        {
+          "bot": 2,
+          "action": "move_down"
+        },
+        {
+          "bot": 3,
+          "action": "move_right"
+        },
+        {
+          "bot": 4,
+          "action": "move_right"
+        },
+        {
+          "bot": 5,
+          "action": "move_right"
+        },
+        {
+          "bot": 6,
+          "action": "move_down"
+        },
+        {
+          "bot": 7,
+          "action": "move_up"
+        },
+        {
+          "bot": 8,
+          "action": "move_up"
+        },
+        {
+          "bot": 9,
+          "action": "move_up"
+        }
+      ],
+      "expected_state": {
+        "score": 84,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              25,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              14
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              11,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 4,
+            "position": [
+              2,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 5,
+            "position": [
+              21,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              24,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              23,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              12,
+              16
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              13
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 279,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_up"
+        },
+        {
+          "bot": 1,
+          "action": "move_up"
+        },
+        {
+          "bot": 2,
+          "action": "move_down"
+        },
+        {
+          "bot": 3,
+          "action": "move_right"
+        },
+        {
+          "bot": 4,
+          "action": "move_right"
+        },
+        {
+          "bot": 5,
+          "action": "move_right"
+        },
+        {
+          "bot": 6,
+          "action": "move_up"
+        },
+        {
+          "bot": 7,
+          "action": "move_down"
+        },
+        {
+          "bot": 8,
+          "action": "move_left"
+        },
+        {
+          "bot": 9,
+          "action": "move_up"
+        }
+      ],
+      "expected_state": {
+        "score": 84,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              14
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              11,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 4,
+            "position": [
+              3,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 5,
+            "position": [
+              22,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              24,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              23,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              12,
+              15
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              12
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 280,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_down"
+        },
+        {
+          "bot": 1,
+          "action": "move_down"
+        },
+        {
+          "bot": 2,
+          "action": "move_up"
+        },
+        {
+          "bot": 3,
+          "action": "move_right"
+        },
+        {
+          "bot": 4,
+          "action": "move_right"
+        },
+        {
+          "bot": 5,
+          "action": "move_right"
+        },
+        {
+          "bot": 6,
+          "action": "move_down"
+        },
+        {
+          "bot": 7,
+          "action": "move_left"
+        },
+        {
+          "bot": 8,
+          "action": "move_left"
+        },
+        {
+          "bot": 9,
+          "action": "move_down"
+        }
+      ],
+      "expected_state": {
+        "score": 84,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              13
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              16
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              12,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 4,
+            "position": [
+              4,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 5,
+            "position": [
+              22,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              24,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              23,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              11,
+              15
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              11
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 281,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_up"
+        },
+        {
+          "bot": 1,
+          "action": "move_up"
+        },
+        {
+          "bot": 2,
+          "action": "move_down"
+        },
+        {
+          "bot": 3,
+          "action": "move_right"
+        },
+        {
+          "bot": 4,
+          "action": "move_right"
+        },
+        {
+          "bot": 5,
+          "action": "move_right"
+        },
+        {
+          "bot": 6,
+          "action": "move_left"
+        },
+        {
+          "bot": 7,
+          "action": "move_up"
+        },
+        {
+          "bot": 8,
+          "action": "move_left"
+        },
+        {
+          "bot": 9,
+          "action": "move_up"
+        }
+      ],
+      "expected_state": {
+        "score": 84,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              14
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              13,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 4,
+            "position": [
+              5,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 5,
+            "position": [
+              23,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              24,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              22,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              10,
+              15
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              12
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 282,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_down"
+        },
+        {
+          "bot": 1,
+          "action": "move_down"
+        },
+        {
+          "bot": 2,
+          "action": "move_up"
+        },
+        {
+          "bot": 3,
+          "action": "move_right"
+        },
+        {
+          "bot": 4,
+          "action": "move_right"
+        },
+        {
+          "bot": 5,
+          "action": "move_down"
+        },
+        {
+          "bot": 6,
+          "action": "move_up"
+        },
+        {
+          "bot": 7,
+          "action": "move_down"
+        },
+        {
+          "bot": 8,
+          "action": "move_left"
+        },
+        {
+          "bot": 9,
+          "action": "move_down"
+        }
+      ],
+      "expected_state": {
+        "score": 84,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              13
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              16
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              14,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 4,
+            "position": [
+              6,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 5,
+            "position": [
+              24,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              23,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              22,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              9,
+              15
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              11
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 283,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_up"
+        },
+        {
+          "bot": 1,
+          "action": "move_up"
+        },
+        {
+          "bot": 2,
+          "action": "move_down"
+        },
+        {
+          "bot": 3,
+          "action": "move_right"
+        },
+        {
+          "bot": 4,
+          "action": "move_right"
+        },
+        {
+          "bot": 5,
+          "action": "move_up"
+        },
+        {
+          "bot": 6,
+          "action": "move_down"
+        },
+        {
+          "bot": 7,
+          "action": "move_up"
+        },
+        {
+          "bot": 8,
+          "action": "move_left"
+        },
+        {
+          "bot": 9,
+          "action": "move_up"
+        }
+      ],
+      "expected_state": {
+        "score": 84,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              14
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              15,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 4,
+            "position": [
+              7,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 5,
+            "position": [
+              24,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              23,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              22,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              8,
+              15
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              12
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 284,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_down"
+        },
+        {
+          "bot": 1,
+          "action": "move_down"
+        },
+        {
+          "bot": 2,
+          "action": "move_up"
+        },
+        {
+          "bot": 3,
+          "action": "move_right"
+        },
+        {
+          "bot": 4,
+          "action": "move_right"
+        },
+        {
+          "bot": 5,
+          "action": "move_down"
+        },
+        {
+          "bot": 6,
+          "action": "move_up"
+        },
+        {
+          "bot": 7,
+          "action": "move_down"
+        },
+        {
+          "bot": 8,
+          "action": "move_down"
+        },
+        {
+          "bot": 9,
+          "action": "move_down"
+        }
+      ],
+      "expected_state": {
+        "score": 84,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              13
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              16
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              16,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 4,
+            "position": [
+              8,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 5,
+            "position": [
+              24,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              23,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              22,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              7,
+              15
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              11
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 285,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_up"
+        },
+        {
+          "bot": 1,
+          "action": "move_up"
+        },
+        {
+          "bot": 2,
+          "action": "move_down"
+        },
+        {
+          "bot": 3,
+          "action": "move_right"
+        },
+        {
+          "bot": 4,
+          "action": "move_right"
+        },
+        {
+          "bot": 5,
+          "action": "move_up"
+        },
+        {
+          "bot": 6,
+          "action": "move_down"
+        },
+        {
+          "bot": 7,
+          "action": "move_up"
+        },
+        {
+          "bot": 8,
+          "action": "move_left"
+        },
+        {
+          "bot": 9,
+          "action": "move_up"
+        }
+      ],
+      "expected_state": {
+        "score": 84,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              14
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              17,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 4,
+            "position": [
+              9,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 5,
+            "position": [
+              24,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              23,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              22,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              7,
+              16
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              12
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 286,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_down"
+        },
+        {
+          "bot": 1,
+          "action": "move_down"
+        },
+        {
+          "bot": 2,
+          "action": "move_up"
+        },
+        {
+          "bot": 3,
+          "action": "move_right"
+        },
+        {
+          "bot": 4,
+          "action": "move_right"
+        },
+        {
+          "bot": 5,
+          "action": "move_down"
+        },
+        {
+          "bot": 6,
+          "action": "move_up"
+        },
+        {
+          "bot": 7,
+          "action": "move_down"
+        },
+        {
+          "bot": 8,
+          "action": "move_left"
+        },
+        {
+          "bot": 9,
+          "action": "move_down"
+        }
+      ],
+      "expected_state": {
+        "score": 84,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              13
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              16
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              18,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 4,
+            "position": [
+              10,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 5,
+            "position": [
+              24,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              23,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              22,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              6,
+              16
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              11
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 287,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_up"
+        },
+        {
+          "bot": 1,
+          "action": "move_up"
+        },
+        {
+          "bot": 2,
+          "action": "move_down"
+        },
+        {
+          "bot": 3,
+          "action": "move_right"
+        },
+        {
+          "bot": 4,
+          "action": "move_right"
+        },
+        {
+          "bot": 5,
+          "action": "move_up"
+        },
+        {
+          "bot": 6,
+          "action": "move_down"
+        },
+        {
+          "bot": 7,
+          "action": "move_up"
+        },
+        {
+          "bot": 8,
+          "action": "move_left"
+        },
+        {
+          "bot": 9,
+          "action": "move_up"
+        }
+      ],
+      "expected_state": {
+        "score": 84,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              14
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              19,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 4,
+            "position": [
+              11,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 5,
+            "position": [
+              24,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              23,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              22,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              5,
+              16
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              12
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 288,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_down"
+        },
+        {
+          "bot": 1,
+          "action": "move_down"
+        },
+        {
+          "bot": 2,
+          "action": "move_up"
+        },
+        {
+          "bot": 3,
+          "action": "move_right"
+        },
+        {
+          "bot": 4,
+          "action": "move_right"
+        },
+        {
+          "bot": 5,
+          "action": "move_down"
+        },
+        {
+          "bot": 6,
+          "action": "move_up"
+        },
+        {
+          "bot": 7,
+          "action": "move_down"
+        },
+        {
+          "bot": 8,
+          "action": "move_left"
+        },
+        {
+          "bot": 9,
+          "action": "move_down"
+        }
+      ],
+      "expected_state": {
+        "score": 84,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              13
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              16
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              20,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 4,
+            "position": [
+              12,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 5,
+            "position": [
+              24,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              23,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              22,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              4,
+              16
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              11
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 289,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_up"
+        },
+        {
+          "bot": 1,
+          "action": "move_up"
+        },
+        {
+          "bot": 2,
+          "action": "move_down"
+        },
+        {
+          "bot": 3,
+          "action": "move_right"
+        },
+        {
+          "bot": 4,
+          "action": "move_right"
+        },
+        {
+          "bot": 5,
+          "action": "move_up"
+        },
+        {
+          "bot": 6,
+          "action": "move_down"
+        },
+        {
+          "bot": 7,
+          "action": "move_up"
+        },
+        {
+          "bot": 8,
+          "action": "move_left"
+        },
+        {
+          "bot": 9,
+          "action": "move_up"
+        }
+      ],
+      "expected_state": {
+        "score": 84,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              14
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              21,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 4,
+            "position": [
+              13,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 5,
+            "position": [
+              24,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              23,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              22,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              3,
+              16
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              12
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 290,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_down"
+        },
+        {
+          "bot": 1,
+          "action": "move_down"
+        },
+        {
+          "bot": 2,
+          "action": "move_up"
+        },
+        {
+          "bot": 3,
+          "action": "move_right"
+        },
+        {
+          "bot": 4,
+          "action": "move_right"
+        },
+        {
+          "bot": 5,
+          "action": "move_down"
+        },
+        {
+          "bot": 6,
+          "action": "move_up"
+        },
+        {
+          "bot": 7,
+          "action": "move_left"
+        },
+        {
+          "bot": 8,
+          "action": "move_left"
+        },
+        {
+          "bot": 9,
+          "action": "move_down"
+        }
+      ],
+      "expected_state": {
+        "score": 84,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              13
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              16
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              21,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 4,
+            "position": [
+              14,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 5,
+            "position": [
+              24,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              23,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              22,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              2,
+              16
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              11
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 291,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_up"
+        },
+        {
+          "bot": 1,
+          "action": "move_up"
+        },
+        {
+          "bot": 2,
+          "action": "move_down"
+        },
+        {
+          "bot": 3,
+          "action": "move_right"
+        },
+        {
+          "bot": 4,
+          "action": "move_right"
+        },
+        {
+          "bot": 5,
+          "action": "move_up"
+        },
+        {
+          "bot": 6,
+          "action": "move_up"
+        },
+        {
+          "bot": 7,
+          "action": "move_right"
+        },
+        {
+          "bot": 8,
+          "action": "drop_off"
+        },
+        {
+          "bot": 9,
+          "action": "move_up"
+        }
+      ],
+      "expected_state": {
+        "score": 84,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              26,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              14
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              15
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              22,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 4,
+            "position": [
+              15,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 5,
+            "position": [
+              24,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              23,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              21,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              1,
+              16
+            ],
+            "inventory": [
+              "rice",
+              "bananas"
+            ]
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              12
+            ],
+            "inventory": []
+          }
+        ]
+      }
+    },
+    {
+      "tick": 292,
+      "actions": [
+        {
+          "bot": 0,
+          "action": "move_left"
+        },
+        {
+          "bot": 1,
+          "action": "wait"
+        },
+        {
+          "bot": 2,
+          "action": "move_left"
+        },
+        {
+          "bot": 3,
+          "action": "move_up"
+        },
+        {
+          "bot": 4,
+          "action": "move_up"
+        },
+        {
+          "bot": 5,
+          "action": "move_up"
+        },
+        {
+          "bot": 6,
+          "action": "move_up"
+        },
+        {
+          "bot": 7,
+          "action": "move_left"
+        },
+        {
+          "bot": 8,
+          "action": "move_right"
+        },
+        {
+          "bot": 9,
+          "action": "move_left"
+        }
+      ],
+      "expected_state": {
+        "score": 91,
+        "bots": [
+          {
+            "id": 0,
+            "position": [
+              26,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 1,
+            "position": [
+              26,
+              13
+            ],
+            "inventory": []
+          },
+          {
+            "id": 2,
+            "position": [
+              25,
+              16
+            ],
+            "inventory": [
+              "cream"
+            ]
+          },
+          {
+            "id": 3,
+            "position": [
+              23,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 4,
+            "position": [
+              16,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 5,
+            "position": [
+              24,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 6,
+            "position": [
+              23,
+              14
+            ],
+            "inventory": []
+          },
+          {
+            "id": 7,
+            "position": [
+              22,
+              15
+            ],
+            "inventory": []
+          },
+          {
+            "id": 8,
+            "position": [
+              1,
+              16
+            ],
+            "inventory": []
+          },
+          {
+            "id": 9,
+            "position": [
+              26,
+              11
             ],
             "inventory": []
           }

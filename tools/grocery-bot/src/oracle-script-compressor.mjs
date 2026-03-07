@@ -81,6 +81,7 @@ export function compressOracleReplayScript({
   stopTick = null,
   targetOrdersCovered = null,
   targetScore = null,
+  mode = 'preserve_score',
 }) {
   const tickRows = buildTickRows(replayPath);
   const { scoreTimeline, finalScore } = summarizeReplayProgress(tickRows);
@@ -90,20 +91,24 @@ export function compressOracleReplayScript({
     baselineLastTick,
     earliestTickMeetingScore(scoreTimeline, requiredScore),
   );
-  const targetTick = Math.max(0, scoreSeenTick - 1);
+  const targetTick = mode === 'handoff_early'
+    ? Math.max(0, scoreSeenTick - 1)
+    : scoreSeenTick;
   const scoreAtScriptEnd = scoreAtOrBeforeTick(scoreTimeline, targetTick);
 
   const extracted = extractScriptFromReplay(replayPath, targetTick);
 
   return {
     description: `Compressed replay-derived script for ${oracle?.difficulty || 'unknown'}`,
-    strategy: 'replay_rewind_v1',
+    strategy: mode === 'handoff_early' ? 'replay_rewind_handoff_v1' : 'replay_rewind_preserve_v1',
     generated_at: new Date().toISOString(),
     oracle_source: null,
     orders_covered: targetOrdersCovered,
     estimated_score: scoreAtScriptEnd,
     last_scripted_tick: extracted.last_scripted_tick,
-    cutoff_reason: 'handoff_before_replay_target_score_tick',
+    cutoff_reason: mode === 'handoff_early'
+      ? 'handoff_before_replay_target_score_tick'
+      : 'preserve_replay_target_score_tick',
     per_order_estimates: [],
     aggregate_efficiency: {
       total_waits: extracted.ticks.flatMap((tick) => tick.actions).filter((action) => action.action === 'wait').length,
@@ -115,6 +120,7 @@ export function compressOracleReplayScript({
       source_replay: replayPath,
       baseline_score: finalScore,
       baseline_last_tick: baselineLastTick,
+      compression_mode: mode,
       target_score: requiredScore,
       target_tick: scoreSeenTick,
       score_at_script_end: scoreAtScriptEnd,

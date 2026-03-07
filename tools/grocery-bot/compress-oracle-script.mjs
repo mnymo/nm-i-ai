@@ -14,6 +14,7 @@ function parseArgs(argv) {
     stopTick: null,
     scoreToBeat: null,
     ordersToBeat: null,
+    mode: 'preserve_score',
   };
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -40,6 +41,9 @@ function parseArgs(argv) {
     } else if (key === '--orders-to-beat') {
       args.ordersToBeat = Number.parseInt(value, 10);
       index += 1;
+    } else if (key === '--mode') {
+      args.mode = value;
+      index += 1;
     }
   }
 
@@ -56,6 +60,7 @@ function parseArgs(argv) {
     stopTick: Number.isFinite(args.stopTick) ? args.stopTick : null,
     scoreToBeat: Number.isFinite(args.scoreToBeat) ? args.scoreToBeat : null,
     ordersToBeat: Number.isFinite(args.ordersToBeat) ? args.ordersToBeat : null,
+    mode: args.mode === 'handoff_early' ? 'handoff_early' : 'preserve_score',
   };
 }
 
@@ -68,6 +73,7 @@ function main() {
     stopTick: args.stopTick,
     targetOrdersCovered: args.ordersToBeat,
     targetScore: args.scoreToBeat,
+    mode: args.mode,
   });
 
   script.oracle_source = args.oracle;
@@ -77,6 +83,7 @@ function main() {
     replay: args.replay,
     oracle_source: args.oracle,
     strategy: script.strategy,
+    compression_mode: args.mode,
     baseline_score: script.replay_target_meta.baseline_score,
     baseline_last_tick: script.replay_target_meta.baseline_last_tick,
     final_score: script.estimated_score,
@@ -91,6 +98,7 @@ function main() {
   fs.writeFileSync(args.outReport, `${JSON.stringify(report, null, 2)}\n`);
 
   console.error(`Baseline: ${report.baseline_score} score / tick ${report.baseline_last_tick}`);
+  console.error(`Compression mode: ${report.compression_mode}`);
   console.error(`Compressed prefix: ${report.final_score} score / tick ${report.final_last_tick}`);
   console.error(`Replay target score/tick after handoff: ${report.target_score} / ${report.target_tick}`);
   console.error(`Tick delta: ${report.final_tick_delta}`);

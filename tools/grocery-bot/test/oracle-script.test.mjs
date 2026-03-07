@@ -340,12 +340,14 @@ test('replay compression preserves expected state and reports actual script-end 
     oracle,
     replayPath,
     targetScore: 5,
+    mode: 'handoff_early',
   });
 
   assert.equal(script.last_scripted_tick, 0);
   assert.equal(script.estimated_score, 0);
   assert.equal(script.replay_target_meta.target_score, 5);
   assert.equal(script.replay_target_meta.score_at_script_end, 0);
+  assert.equal(script.replay_target_meta.compression_mode, 'handoff_early');
   assert.deepEqual(script.ticks[0].expected_state, {
     score: 0,
     bots: [{ id: 0, position: [9, 8], inventory: [] }],
@@ -626,11 +628,12 @@ test('replay compressor rewinds to earliest tick that reaches the target score',
     replayPath,
   });
 
-  assert.equal(compressed.estimated_score, 0);
+  assert.equal(compressed.estimated_score, 6);
   assert.equal(compressed.replay_target_meta.target_score, 6);
-  assert.equal(compressed.replay_target_meta.score_at_script_end, 0);
-  assert.equal(compressed.last_scripted_tick, 9);
-  assert.equal(compressed.replay_target_meta.final_tick_delta, 1);
+  assert.equal(compressed.replay_target_meta.score_at_script_end, 6);
+  assert.equal(compressed.replay_target_meta.compression_mode, 'preserve_score');
+  assert.equal(compressed.last_scripted_tick, 10);
+  assert.equal(compressed.replay_target_meta.final_tick_delta, 0);
   assert.deepEqual(compressed.ticks[0].expected_state, {
     score: 0,
     bots: [
@@ -639,4 +642,34 @@ test('replay compressor rewinds to earliest tick that reaches the target score',
       { id: 2, position: [7, 8], inventory: [] },
     ],
   });
+});
+
+test('replay compressor supports explicit handoff_early mode', () => {
+  const oracle = buildFixtureOracle();
+  const replayPath = writeReplayWithActions(oracle, [
+    {
+      type: 'tick',
+      tick: 0,
+      state_snapshot: { bots: [{ id: 0, position: [1, 1], inventory: [] }], score: 0 },
+      actions_sent: [{ bot: 0, action: 'wait' }],
+    },
+    {
+      type: 'tick',
+      tick: 1,
+      state_snapshot: { bots: [{ id: 0, position: [1, 1], inventory: [] }], score: 5 },
+      actions_sent: [{ bot: 0, action: 'wait' }],
+    },
+  ]);
+
+  const compressed = compressOracleReplayScript({
+    oracle,
+    replayPath,
+    targetScore: 5,
+    mode: 'handoff_early',
+  });
+
+  assert.equal(compressed.strategy, 'replay_rewind_handoff_v1');
+  assert.equal(compressed.estimated_score, 0);
+  assert.equal(compressed.last_scripted_tick, 0);
+  assert.equal(compressed.replay_target_meta.final_tick_delta, 1);
 });
