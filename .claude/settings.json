@@ -31,7 +31,8 @@
       "Bash(done)",
       "Bash(node tools/grocery-bot/generate-script.mjs --replay tools/grocery-bot/out/2026-03-07T20-37-02-748Z-expert-expert/replay.jsonl --out tools/grocery-bot/config/script-expert.json)",
       "Bash(node -e \"const d=JSON.parse\\(require\\(''fs''\\).readFileSync\\(''tools/grocery-bot/config/script-expert.json'',''utf8''\\)\\); console.log\\(''total_ticks:'', d.total_ticks\\); console.log\\(''last_scripted_tick:'', d.last_scripted_tick\\); console.log\\(''final_score:'', d.final_score_at_cutoff\\); console.log\\(''sample tick 0:'', JSON.stringify\\(d.ticks[0]\\)\\); console.log\\(''sample tick 5:'', JSON.stringify\\(d.ticks[5]\\)\\);\")",
-      "Bash(node tools/grocery-bot/tmp-analyze-orders.mjs)"
+      "Bash(node tools/grocery-bot/tmp-analyze-orders.mjs)",
+      "Bash(node tools/grocery-bot/generate-script.mjs --oracle tools/grocery-bot/config/oracle-expert.json --replay tools/grocery-bot/out/2026-03-07T20-37-02-748Z-expert-expert/replay.jsonl --out tools/grocery-bot/config/script-expert.json)"
     ]
   },
   "hooks": {
