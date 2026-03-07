@@ -144,6 +144,31 @@ test('warehouse control disables preview in late game once active demand is alre
   assert.equal(control.previewAllowed, false);
 });
 
+test('warehouse control raises active runner cap during close mode when configured', () => {
+  const profile = JSON.parse(JSON.stringify(defaultProfiles.expert));
+  const state = baseState({
+    bots: Array.from({ length: 10 }, (_, id) => ({ id, position: [1 + id, 1], inventory: [] })),
+    items: [
+      { id: 'milk_0', type: 'milk', position: [3, 3] },
+      { id: 'milk_1', type: 'milk', position: [5, 3] },
+      { id: 'milk_2', type: 'milk', position: [7, 3] },
+      { id: 'milk_3', type: 'milk', position: [9, 3] },
+    ],
+    orders: [
+      { id: 'o0', items_required: ['milk', 'milk'], items_delivered: [], status: 'active', complete: false },
+    ],
+  });
+
+  const control = buildWarehouseControlContext({
+    state,
+    world: buildWorldContext(state),
+    profile,
+  });
+
+  assert.equal(control.mode, 'close_active_order');
+  assert.equal(control.activeRunnerCap, 5);
+});
+
 test('warehouse assignments reserve active demand so only one bot targets a single missing unit', () => {
   const state = baseState({
     items: [
@@ -322,6 +347,38 @@ test('warehouse assignments do not keep reposition missions sticky once real wor
   assert.equal(plan.missionsByBot.get(0).missionType, 'pickup_active');
 });
 
+test('warehouse assignments choose an alternate active item instead of queueing a blocked shelf in close mode', () => {
+  const profile = JSON.parse(JSON.stringify(defaultProfiles.expert));
+  const state = baseState({
+    grid: { width: 14, height: 10, walls: [[3, 2], [3, 4], [4, 3]] },
+    bots: [
+      { id: 0, position: [2, 3], inventory: ['a', 'b', 'c'] },
+      { id: 1, position: [5, 1], inventory: [] },
+      { id: 2, position: [9, 1], inventory: [] },
+    ],
+    items: [
+      { id: 'milk_0', type: 'milk', position: [3, 3] },
+      { id: 'milk_1', type: 'milk', position: [9, 3] },
+    ],
+    orders: [
+      { id: 'o0', items_required: ['milk'], items_delivered: [], status: 'active', complete: false },
+    ],
+  });
+
+  const plan = buildWarehouseAssignments({
+    state,
+    world: buildWorldContext(state),
+    graph: buildGraph(state),
+    profile,
+    phase: 'early',
+    round: 0,
+  });
+
+  const botOneMission = plan.missionsByBot.get(1);
+  assert.equal(botOneMission.missionType, 'pickup_active');
+  assert.equal(botOneMission.targetItemId, 'milk_1');
+});
+
 test('warehouse assignments prefer in-zone active supply and borrow cross-zone only when needed', () => {
   const localState = baseState({
     items: [
@@ -358,6 +415,7 @@ test('warehouse assignments prefer in-zone active supply and borrow cross-zone o
 test('warehouse control caps simultaneous active runners for high-bot release control', () => {
   const profile = structuredClone(defaultProfiles.expert);
   profile.runtime.active_runner_cap = 2;
+  profile.runtime.close_mode_active_runner_cap = 2;
   const state = baseState({
     bots: [
       { id: 0, position: [1, 1], inventory: [] },

@@ -207,9 +207,11 @@ export const defaultProfiles = {
       preview_runner_cap: 1,
       active_mission_buffer: 2,
       active_runner_cap: 3,
+      close_mode_active_runner_cap: 5,
       close_active_eta_threshold: 16,
       close_active_remaining_threshold: 3,
       service_bay_queue_depth: 2,
+      allow_pickup_queue_in_close_mode: false,
     },
   },
 };
@@ -220,9 +222,11 @@ defaultProfiles.nightmare.runtime.endgame_disable_preview_rounds = 80;
 defaultProfiles.nightmare.runtime.preview_wip_cap_items = 3;
 defaultProfiles.nightmare.runtime.active_mission_buffer = 2;
 defaultProfiles.nightmare.runtime.active_runner_cap = 4;
+defaultProfiles.nightmare.runtime.close_mode_active_runner_cap = 6;
 defaultProfiles.nightmare.runtime.close_active_eta_threshold = 20;
 defaultProfiles.nightmare.runtime.close_active_remaining_threshold = 3;
 defaultProfiles.nightmare.runtime.service_bay_queue_depth = 3;
+defaultProfiles.nightmare.runtime.allow_pickup_queue_in_close_mode = false;
 defaultProfiles.medium_warehouse_v1 = JSON.parse(JSON.stringify(defaultProfiles.medium));
 defaultProfiles.medium_warehouse_v1.runtime.multi_bot_strategy = 'warehouse_v1';
 defaultProfiles.hard_warehouse_v1 = JSON.parse(JSON.stringify(defaultProfiles.hard));

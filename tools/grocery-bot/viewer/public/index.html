@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Grocery Bot Replay Viewer</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <h1>Replay Viewer</h1>
+        <div class="filters">
+          <label>
+            Difficulty
+            <select id="difficulty-filter">
+              <option value="">All</option>
+              <option value="easy">easy</option>
+              <option value="medium">medium</option>
+              <option value="hard">hard</option>
+              <option value="expert">expert</option>
+              <option value="nightmare">nightmare</option>
+            </select>
+          </label>
+          <label>
+            Profile
+            <input id="profile-filter" type="text" placeholder="profile name">
+          </label>
+          <button id="refresh-runs">Refresh runs</button>
+        </div>
+        <div id="run-list" class="run-list"></div>
+      </aside>
+
+      <main class="main-panel">
+        <section class="toolbar">
+          <div id="run-header" class="run-header">Select a run</div>
+          <div class="controls">
+            <button id="play-toggle" disabled>Play</button>
+            <button id="prev-tick" disabled>Prev</button>
+            <button id="next-tick" disabled>Next</button>
+            <label>
+              Tick
+              <input id="tick-slider" type="range" min="0" max="0" value="0" disabled>
+            </label>
+            <span id="tick-label">0 / 0</span>
+          </div>
+          <div class="jump-controls">
+            <button data-jump="score">Next score</button>
+            <button data-jump="pickup">Next failed pickup</button>
+            <button data-jump="override">Next override</button>
+            <button data-jump="mode">Next mode change</button>
+            <button data-jump="stagnation">Next stagnation</button>
+          </div>
+        </section>
+
+        <section class="content">
+          <div class="board-panel">
+            <div id="board" class="board"></div>
+          </div>
+          <div class="details-panel">
+            <section class="summary-box">
+              <h2>Run</h2>
+              <pre id="summary-view"></pre>
+            </section>
+            <section class="summary-box">
+              <h2>Tick</h2>
+              <pre id="tick-view"></pre>
+            </section>
+            <section class="summary-box">
+              <h2>Planner</h2>
+              <pre id="planner-view"></pre>
+            </section>
+            <section class="summary-box">
+              <h2>Orders</h2>
+              <pre id="orders-view"></pre>
+            </section>
+            <section class="summary-box">
+              <h2>Bots</h2>
+              <pre id="bots-view"></pre>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

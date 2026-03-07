@@ -18,6 +18,11 @@
   - `tools/grocery-bot/out/2026-03-07T16-14-57-783Z-medium-medium` -> score `109`, `11` orders, `54` items
   - `tools/grocery-bot/out/2026-03-07T18-48-23-889Z-medium-medium` -> score `115`, `12` orders, `55` items
   - The latest jump came from restoring the simpler `82ee32e`-style multi-bot assignment/runtime path while keeping client legality fixes.
+- Hard progression:
+  - `tools/grocery-bot/out/2026-03-07T19-54-02-292Z-hard-hard` -> score `28`, `3` orders, `13` items
+- Expert references:
+  - `tools/grocery-bot/out/2026-03-07T16-52-29-717Z-expert-expert` -> score `33`, `3` orders, `18` items
+  - `tools/grocery-bot/out/2026-03-07T19-21-18-326Z-expert-expert` -> score `11`, `1` order, `6` items
 
 ## What Changed To Reach 118
 
@@ -29,6 +34,7 @@
 
 - Easy is no longer the active bottleneck.
 - Medium is now the active bottleneck.
+- Expert is now the main upside target after the replay viewer lands, because the current expert reference (`33`) is still far below the likely score ceiling.
 - The current target is no longer just `>116`; it is to turn the stable `115` branch into an architecture that can climb toward the high `200`s on medium.
 - Detailed experiment history now lives in [`EXPERIMENT_LOG.md`](./EXPERIMENT_LOG.md).
 - Structural refactor backlog now lives in [`STRUCTURE_REVIEW.md`](./STRUCTURE_REVIEW.md).
@@ -39,6 +45,9 @@
 - Offline corpus benchmarking is now part of the workflow:
   - `node tools/grocery-bot/index.mjs --mode benchmark --difficulty medium --replay tools/grocery-bot/out`
   - `node tools/grocery-bot/index.mjs --mode estimate-max --replay tools/grocery-bot/out/<run-id>/replay.jsonl`
+- A minimal local replay viewer is now part of the workflow:
+  - `npm run grocery-bot:viewer`
+  - use it to inspect queue-service-bay pileups, held deliverable inventory, and warehouse control-mode oscillation before spending more expert tokens
 
 ## Current Strategy (As Implemented)
 

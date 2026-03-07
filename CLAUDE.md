@@ -12,8 +12,8 @@ Docs/MCP: configured in `mcp.json` → `https://mcp-docs.ainm.no/mcp`
 |------------|------|-----------|--------|--------|
 | easy       | 1    | 118       | 14     | repeatable |
 | medium     | 3    | 115       | 12     | current benchmark |
-| hard       | ?    | ?         | ?      | not yet run |
-| expert     | ?    | ?         | ?      | not yet run |
+| hard       | 5    | 28        | 3      | provisional |
+| expert     | 10   | 33        | 3      | provisional |
 
 Update this table after every significant run.
 
@@ -26,6 +26,13 @@ Latest medium runs:
 - `2026-03-07T16-03-36-053Z-medium-medium` -> score `52`, orders `5`, items `27` (first medium baseline)
 - `2026-03-07T16-14-57-783Z-medium-medium` -> score `109`, orders `11`, items `54`
 - `2026-03-07T18-48-23-889Z-medium-medium` -> score `115`, orders `12`, items `55` (current benchmark)
+
+Latest hard run:
+- `2026-03-07T19-54-02-292Z-hard-hard` -> score `28`, orders `3`, items `13` (first valid hard baseline, still throughput-limited)
+
+Latest expert runs:
+- `2026-03-07T16-52-29-717Z-expert-expert` -> score `33`, orders `3`, items `18` (best current expert reference)
+- `2026-03-07T19-21-18-326Z-expert-expert` -> score `11`, orders `1`, items `6`
 
 ## Quick Commands
 
@@ -61,6 +68,9 @@ node tools/grocery-bot/index.mjs --mode benchmark --difficulty medium --profile 
 
 # Run tests
 node --test tools/grocery-bot/test/*.test.mjs
+
+# Start the local replay viewer
+npm run grocery-bot:viewer
 ```
 
 ## Key File Map
@@ -85,6 +95,7 @@ tools/grocery-bot/
 │   ├── optimizer.mjs            Profile parameter search (random mutation over replay)
 │   ├── replay.mjs               Logging, summarize, simulate, analysis generation
 │   ├── replay-io.mjs            Shared replay parsing/layout reconstruction helpers
+│   ├── replay-viewer.mjs        Shared run listing/loading for the local replay viewer
 │   ├── world-model.mjs          Demand/inventory helpers
 │   ├── coords.mjs               Grid geometry, move encoding
 │   ├── grid-graph.mjs           Graph for pathfinding
@@ -101,6 +112,17 @@ tools/grocery-bot/
 │   │   └── analysis.json        Compact run analysis — READ THIS first before touching code
 │   └── tuned-<diff>.json        Output of tune mode (merge back into profiles.json when good)
 └── test/                        Node --test unit tests
+```
+
+Viewer app:
+
+```
+tools/grocery-bot/viewer/
+├── server.mjs                   Tiny local API + static server
+└── public/
+    ├── index.html
+    ├── app.js
+    └── styles.css
 ```
 
 ## Architecture
@@ -184,6 +206,7 @@ Full analysis in `tools/grocery-bot/STRATEGY_REVIEW.md`. Priority order:
 2. **Push medium into the 200s** — current benchmark is `115`, which is a stable baseline but not the architectural ceiling
 3. **Prove or reject `warehouse_v1` offline first** — use benchmark mode, replay metrics, and specs before live tokens
 4. **Reduce multi-bot stall cascades** — focus on released-work control, service-bay queueing, and order-close cadence
+5. **Tune expert on warehouse_v1** — use the replay viewer plus corpus benchmark before spending more expert tokens
 
 ## Conventions
 

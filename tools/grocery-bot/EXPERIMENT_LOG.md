@@ -185,6 +185,33 @@ Purpose: keep an operational record of strategy experiments so we can avoid repe
 - Verdict: `implemented, pending live validation`
 - Notes: this is a control-layer correctness fix, not a tuning change. The old hard `score 0` replay should no longer be treated as representative of the current warehouse branch because its failure depended on the now-fixed close/preview mode bug.
 
+### Minimal replay viewer
+
+- Hypothesis: replay analysis is now bottlenecked by raw JSON inspection; a tiny local viewer will shorten diagnosis loops for warehouse coordination failures, especially on `expert` and `nightmare`.
+- Change:
+  - added a Node-served replay viewer that browses existing runs from `tools/grocery-bot/out`
+  - added a shared read-only replay-run adapter for listing/loading `summary.json`, `analysis.json`, layout, and rebuilt ticks
+  - added UI support for tick scrubbing plus jumps to score events, failed pickups, overrides, mode changes, and stagnation starts
+- Validation:
+  - `node --test tools/grocery-bot/test/replay-viewer.test.mjs` -> pass
+  - `node --test tools/grocery-bot/test/*.test.mjs` -> pass
+- Verdict: `keep`
+- Notes: this is a debugging tool, not a product surface. It is intended to speed up expert/high-bot tuning loops.
+
+### Expert warehouse throughput pass 1
+
+- Hypothesis: expert is being limited by over-queueing and under-release in `close_active_order`; too many bots commit to blocked pickup bays or low-value parking instead of finding alternate active work and converting held value into drop throughput.
+- Change:
+  - added `close_mode_active_runner_cap` so expert/nightmare can release more active runners during close mode
+  - added `allow_pickup_queue_in_close_mode` so expert/nightmare can avoid sticky pickup-bay queues in close mode
+  - warehouse pickup assignment now evaluates multiple candidate items in score order and takes the first feasible shelf plan instead of giving up after one blocked choice
+- Validation:
+  - `node --test tools/grocery-bot/test/planner-warehouse.test.mjs` -> pass
+  - `node --test tools/grocery-bot/test/*.test.mjs` -> pass
+  - expert corpus benchmark to be rerun after landing the viewer-based inspection loop
+- Verdict: `implemented, pending offline benchmark and live expert validation`
+- Notes: this is the first explicit expert-focused warehouse throughput pass. The target is lower wait/stall density without reopening pickup or legality failures.
+
 ## Guidance
 
 - Prefer experiments that are soft cost-shaping changes over hard role locks.

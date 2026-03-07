@@ -70,6 +70,10 @@ function countPreviewWipItems(surplusInventory, previewDemand) {
   return used;
 }
 
+function isCloseControlMode(mode) {
+  return mode === 'close_active_order' || mode === 'close_if_feasible';
+}
+
 function countAssignedDemand(existingMissionsByBot, activeOrderId) {
   const assigned = new Map();
   for (const mission of existingMissionsByBot.values()) {
@@ -219,6 +223,13 @@ export function buildWarehouseControlContext({
       runtime.active_runner_cap ?? (activeRemainingCount + activeMissionBuffer),
     ),
   );
+  const closeModeActiveRunnerCap = Math.max(
+    activeRunnerCap,
+    Math.min(
+      state.bots.length,
+      runtime.close_mode_active_runner_cap ?? activeRunnerCap,
+    ),
+  );
 
   return {
     mode,
@@ -236,7 +247,7 @@ export function buildWarehouseControlContext({
     previewWipItems,
     previewWipCapItems,
     previewRunnerCap,
-    activeRunnerCap,
+    activeRunnerCap: isCloseControlMode(mode) ? closeModeActiveRunnerCap : activeRunnerCap,
     previewAllowed,
     projectedActiveCloseEta,
   };
@@ -313,6 +324,7 @@ function allocateShelfPlan({
   reservedQueueCells,
   queueDepth,
   allowCrossZone,
+  allowQueue = true,
 }) {
   const blockedKeys = new Set([encodeCoord(item.position), ...reservedServiceCells, ...reservedQueueCells]);
   const candidates = serviceCandidatesForItem({ bot, item, state, graph, allowCrossZone });
@@ -329,26 +341,28 @@ function allocateShelfPlan({
       };
     }
 
-    const queueCells = enumerateQueueCells({
-      graph,
-      serviceCell: candidate.cell,
-      blockedKeys: new Set([...blockedKeys, serviceKey]),
-      queueDepth,
-    });
-    for (const queueCell of queueCells) {
-      const queueKey = encodeCoord(queueCell);
-      if (!isCellAvailable(queueCell, bot.id, occupiedByCell, reservedQueueCells)) {
-        continue;
-      }
-
-      reservedServiceCells.add(serviceKey);
-      reservedQueueCells.add(queueKey);
-      return {
-        status: 'queue',
+    if (allowQueue) {
+      const queueCells = enumerateQueueCells({
+        graph,
         serviceCell: candidate.cell,
-        targetCell: queueCell,
-        queueCell,
-      };
+        blockedKeys: new Set([...blockedKeys, serviceKey]),
+        queueDepth,
+      });
+      for (const queueCell of queueCells) {
+        const queueKey = encodeCoord(queueCell);
+        if (!isCellAvailable(queueCell, bot.id, occupiedByCell, reservedQueueCells)) {
+          continue;
+        }
+
+        reservedServiceCells.add(serviceKey);
+        reservedQueueCells.add(queueKey);
+        return {
+          status: 'queue',
+          serviceCell: candidate.cell,
+          targetCell: queueCell,
+          queueCell,
+        };
+      }
     }
   }
 
@@ -402,7 +416,7 @@ function allocateDropPlan({
   return null;
 }
 
-function pickWarehouseItem({
+function listWarehouseItems({
   bot,
   state,
   demand,
@@ -428,7 +442,7 @@ function pickWarehouseItem({
     && !(blockedItems?.has(item.id))
   ));
   if (candidates.length === 0) {
-    return null;
+    return [];
   }
 
   const local = candidates.filter((item) => (
@@ -438,16 +452,14 @@ function pickWarehouseItem({
     ? (local.length > 0 ? local : (allowCrossZone ? candidates : []))
     : (allowCrossZone || local.length === 0 ? candidates : local);
 
-  let best = null;
-  for (const item of pool) {
-    const score = Math.max(0, manhattanDistance(bot.position, item.position) - 1)
-      + estimateDistanceToDropoff(item, state.drop_offs || state.drop_off) * 0.2;
-    if (!best || score < best.score) {
-      best = { item, score };
-    }
-  }
-
-  return best?.item || null;
+  return pool
+    .map((item) => ({
+      item,
+      score: Math.max(0, manhattanDistance(bot.position, item.position) - 1)
+        + estimateDistanceToDropoff(item, state.drop_offs || state.drop_off) * 0.2,
+    }))
+    .sort((left, right) => left.score - right.score)
+    .map((entry) => entry.item);
 }
 
 function findZoneRepositionCell(bot, state, graph, reservedQueueCells) {
@@ -676,6 +688,10 @@ export function buildWarehouseAssignments({
     const allowCrossZoneActive = control.mode === 'close_active_order'
       || control.mode === 'partial_cashout'
       || control.projectedActiveCloseEta > (profile.runtime.close_active_eta_threshold ?? 9);
+    const allowPickupQueue = !(
+      isCloseControlMode(control.mode)
+      && profile.runtime.allow_pickup_queue_in_close_mode === false
+    );
 
     if (hasDeliverableInventory(bot, world.activeDemand)) {
       const dropPlan = allocateDropPlan({
@@ -728,7 +744,7 @@ export function buildWarehouseAssignments({
       && activeRunnerCount < control.activeRunnerCap
       && (bot.inventory || []).length < 3
     ) {
-      const item = pickWarehouseItem({
+      const items = listWarehouseItems({
         bot,
         state,
         demand: reservedActive,
@@ -738,8 +754,7 @@ export function buildWarehouseAssignments({
         control,
         allowCrossZone: allowCrossZoneActive,
       });
-
-      if (item) {
+      for (const item of items) {
         const plan = allocateShelfPlan({
           bot,
           item,
@@ -750,6 +765,7 @@ export function buildWarehouseAssignments({
           reservedQueueCells,
           queueDepth,
           allowCrossZone: allowCrossZoneActive,
+          allowQueue: allowPickupQueue,
         });
 
         if (plan) {
@@ -787,6 +803,7 @@ export function buildWarehouseAssignments({
               ttl: profile.runtime.mission_ttl_rounds ?? 6,
               noPathRounds: 0,
             };
+          break;
         }
       }
     }
@@ -799,7 +816,7 @@ export function buildWarehouseAssignments({
       && sumCounts(reservedPreview) > 0
       && (bot.inventory || []).length < 3
     ) {
-      const item = pickWarehouseItem({
+      const items = listWarehouseItems({
         bot,
         state,
         demand: reservedPreview,
@@ -809,8 +826,7 @@ export function buildWarehouseAssignments({
         control,
         allowCrossZone: false,
       });
-
-      if (item) {
+      for (const item of items) {
         const plan = allocateShelfPlan({
           bot,
           item,
@@ -858,6 +874,7 @@ export function buildWarehouseAssignments({
               ttl: profile.runtime.mission_ttl_rounds ?? 6,
               noPathRounds: 0,
             };
+          break;
         }
       }
     }

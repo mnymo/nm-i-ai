@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "grocery-bot": "node tools/grocery-bot/index.mjs",
+    "grocery-bot:test": "node --test tools/grocery-bot/test/*.test.mjs",
+    "grocery-bot:viewer": "node tools/grocery-bot/viewer/server.mjs",
+    "test": "npm run grocery-bot:test"
   },
   "keywords": [],
   "author": "",
