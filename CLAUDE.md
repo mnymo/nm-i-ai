@@ -10,12 +10,17 @@ Docs/MCP: configured in `mcp.json` → `https://mcp-docs.ainm.no/mcp`
 
 | Difficulty | Bots | Best score | Orders | Status |
 |------------|------|-----------|--------|--------|
-| easy       | 1    | 117       | 14     | active |
+| easy       | 1    | 118       | 14     | repeatable |
 | medium     | ?    | ?         | ?      | not yet run |
 | hard       | ?    | ?         | ?      | not yet run |
 | expert     | ?    | ?         | ?      | not yet run |
 
 Update this table after every significant run.
+
+Latest verified easy runs:
+- `2026-03-07T15-56-13-035Z-easy-easy` -> score `118`, orders `14`, items `48`
+- `2026-03-07T16-00-36-191Z-easy-easy` -> score `118`, orders `14`, items `48`
+- Both runs had `0` failed pickups, `0` non-scoring dropoffs, and `0` wasted inventory at game over.
 
 ## Quick Commands
 
@@ -113,10 +118,10 @@ For each improvement iteration:
 
 Full analysis in `tools/grocery-bot/STRATEGY_REVIEW.md`. Priority order:
 
-1. **Run easy, get analysis.json** — establish fresh baseline with new infrastructure
-2. **Shelf reliability model v2** — track per-`item_id` reliability score globally; penalize and avoid shelves with repeated failed pickups; prefer alternate shelf IDs of same type
-3. **Completion lock with explicit subgoals** — instead of re-deciding every tick, commit to a `pickup_needed → go_dropoff → drop` chain; force-unlock only on impossibility or score mismatch
-4. **Lag-aware action stabilization** — maintain 1–2 round intent memory; do not replan direction if bot position hasn't reflected last action yet
+1. **Freeze easy winner** — treat the current `118` build as the baseline until medium work proves a better shared change
+2. **Run medium, get first analysis.json** — establish the real multi-bot baseline before changing medium logic
+3. **Multi-bot coordination review** — inspect assignment conflicts, deadlock recovery, and idle bots from the first medium replay
+4. **Only then resume structural improvements** — shelf reliability, explicit completion lock, and additional lag guards if medium analysis justifies them
 
 ## Conventions
 

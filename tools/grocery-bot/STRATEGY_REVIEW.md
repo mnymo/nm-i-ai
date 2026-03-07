@@ -1,5 +1,29 @@
 # Grocery Bot Strategy Review (Easy)
 
+## Current Baseline
+
+- Best repeatable easy score: `118`
+- Verified runs:
+  - `tools/grocery-bot/out/2026-03-07T15-56-13-035Z-easy-easy`
+  - `tools/grocery-bot/out/2026-03-07T16-00-36-191Z-easy-easy`
+- Both runs completed `14` orders, delivered `48` items, and had:
+  - `0` failed pickups
+  - `0` non-scoring dropoffs
+  - `0` wasted inventory at game over
+  - `1` wait action
+- Client timing in those runs stayed well below danger levels, and the 20 ms send cap never had to delay a send.
+
+## What Changed To Reach 118
+
+- Added a hard `1 send per round` client guard.
+- Added a minimum `20 ms` send interval plus replay timing telemetry.
+- Added a pending-pickup intent lock so unresolved `pick_up` attempts stay committed through the verification window.
+
+## Current Position
+
+- Easy is no longer the active bottleneck.
+- The next useful frontier is the first `medium` baseline run and replay analysis.
+
 ## Current Strategy (As Implemented)
 
 ### 1) Single-bot optimizer (`easy`)
@@ -32,7 +56,7 @@
 - Uses cost-matrix assignment + reservation-based routing + deadlock handling.
 - Not used for `easy`, but remains active for higher difficulties.
 
-## Latest Run Bump Analysis (Easy, Score 45)
+## Historical Bump Analysis (Easy, Score 45)
 
 Source replay: `tools/grocery-bot/out/2026-03-05T09-25-02-067Z-easy-easy/replay.jsonl`
 
@@ -116,7 +140,7 @@ Observed behavior in those windows:
   - then force replan without another immediate drop
 - Goal: prevent wasting rounds stuck on drop-off retries.
 
-## 3 Concrete Streamlining Improvements (Next)
+## 3 Concrete Streamlining Improvements (If Easy Needs Reopening)
 
 ### Improvement 1: Shelf availability model v2 (global reliability score)
 Problem it targets:
@@ -159,10 +183,6 @@ Expected impact:
 - smoother progress inside long stagnation windows
 
 ## Suggested Next Iteration Order
-1. Implement shelf availability model + adaptive cooldown.
-2. Implement active-order completion commit mode.
-3. Add lag-aware action stabilization guard.
-4. Re-run `easy` and compare:
-   - orders completed
-   - failed pickup count
-   - rounds spent in 20+ no-score streaks
+1. Run `medium` and generate `analysis.json`.
+2. Diagnose multi-bot coordination before changing any shared planner behavior.
+3. Only reopen easy-specific logic if a shared change regresses the `118` baseline.
