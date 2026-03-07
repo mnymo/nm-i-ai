@@ -5,8 +5,10 @@ import {
   actionFromTask,
   buildCostMatrix,
   buildTasks,
+  chooseFallbackAction,
   estimateZonePenalty,
 } from '../src/planner-multibot.mjs';
+import { executeAssignedTaskStrategy } from '../src/planner-multibot-runtime.mjs';
 import { buildMediumMissionAssignments } from '../src/planner-missions.mjs';
 import { GridGraph } from '../src/grid-graph.mjs';
 import { defaultProfiles } from '../src/profile.mjs';
@@ -340,6 +342,80 @@ test('actionFromTask waits when the only pickup service bay is occupied', () => 
   });
 
   assert.equal(resolved.action, 'wait');
+});
+
+test('chooseFallbackAction heads toward a zone staging cell instead of waiting', () => {
+  const state = baseState({
+    bots: [
+      { id: 0, position: [0, 0], inventory: [] },
+      { id: 1, position: [4, 0], inventory: [] },
+      { id: 2, position: [8, 0], inventory: [] },
+    ],
+  });
+  const graph = buildGraph(state);
+
+  const fallback = chooseFallbackAction(
+    state.bots[0],
+    graph,
+    state,
+    new Map(),
+    new Map(),
+    defaultProfiles.medium.routing.horizon,
+  );
+
+  assert.notEqual(fallback.action, 'wait');
+});
+
+test('executeAssignedTaskStrategy repositions blocked picker instead of waiting', () => {
+  const state = baseState({
+    bots: [
+      { id: 0, position: [0, 1], inventory: [] },
+      { id: 1, position: [1, 1], inventory: ['bread', 'bread', 'bread'] },
+    ],
+    grid: {
+      width: 5,
+      height: 5,
+      walls: [
+        [2, 0],
+        [2, 2],
+        [3, 1],
+      ],
+    },
+    items: [
+      { id: 'milk_0', type: 'milk', position: [2, 1] },
+    ],
+    orders: [
+      { id: 'o0', items_required: ['milk'], items_delivered: [], status: 'active', complete: false },
+    ],
+    drop_off: [0, 4],
+  });
+  const graph = buildGraph(state);
+  const planner = {
+    profile: defaultProfiles.medium,
+    forcedWait: new Map(),
+    previousPositions: new Map(),
+    stalls: new Map(),
+    lastActionByBot: new Map(),
+    pendingPickups: new Map(),
+    noProgressRounds: 0,
+    loopDetectionsThisTick: 0,
+    lastMetrics: null,
+  };
+
+  const actions = executeAssignedTaskStrategy({
+    planner,
+    state,
+    world: buildWorldContext(state),
+    graph,
+    phase: 'early',
+    recoveryMode: false,
+    recoveryThreshold: 0,
+    blockedItemsByBot: new Map(),
+  });
+
+  const bot0 = actions.find((action) => action.bot === 0);
+  assert.ok(bot0);
+  assert.notEqual(bot0.action, 'wait');
 });
 
 test('buildMediumMissionAssignments disables preview missions in endgame cutoff window', () => {

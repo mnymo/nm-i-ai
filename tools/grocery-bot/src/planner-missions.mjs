@@ -12,14 +12,8 @@ import {
   reserveInventoryForDemand,
   zoneIndexForX,
   zoneIdForBot,
+  findZoneStagingCell,
 } from './planner-multibot-common.mjs';
-
-function zoneBounds(state, zoneId) {
-  const zoneCount = Math.max(1, state.bots.length);
-  const startX = Math.floor((zoneId * state.grid.width) / zoneCount);
-  const nextStartX = Math.floor(((zoneId + 1) * state.grid.width) / zoneCount);
-  return [startX, Math.max(startX, nextStartX - 1)];
-}
 
 function cloneMission(mission) {
   if (!mission) {
@@ -139,30 +133,6 @@ function pickMissionItem({
   }
 
   return best?.item || null;
-}
-
-function findIdleRepositionCell(bot, state, graph) {
-  const zoneId = zoneIdForBot(state, bot.id);
-  const [startX, endX] = zoneBounds(state, zoneId);
-  const preferredY = Math.max(1, Math.min(state.grid.height - 2, state.drop_off[1]));
-  const centerX = Math.max(startX, Math.min(endX, Math.floor((startX + endX) / 2)));
-
-  let best = null;
-  for (let y = 1; y < state.grid.height - 1; y += 1) {
-    for (let x = startX; x <= endX; x += 1) {
-      const candidate = [x, y];
-      if (!graph.isWalkable(candidate)) {
-        continue;
-      }
-
-      const score = manhattanDistance(candidate, [centerX, preferredY]) * 2 + manhattanDistance(bot.position, candidate);
-      if (!best || score < best.score) {
-        best = { cell: candidate, score };
-      }
-    }
-  }
-
-  return best?.cell || [...bot.position];
 }
 
 function shouldCommitDropMission({
@@ -527,7 +497,7 @@ export function buildMediumMissionAssignments({
         targetItemId: null,
         targetType: null,
         zoneId: zoneIdForBot(state, bot.id),
-        targetCell: findIdleRepositionCell(bot, state, graph),
+        targetCell: findZoneStagingCell(bot, state, graph),
         assignedAtRound: round,
         lastProgressRound: round,
         ttl: missionTtl,

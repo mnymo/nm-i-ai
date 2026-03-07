@@ -90,6 +90,16 @@ Purpose: keep an operational record of strategy experiments so we can avoid repe
 - Verdict: `keep for stability, not benchmark`
 - Notes: this is a warehouse-queueing fix, not a scoring-weight change. It eliminated the recent legality and pickup collapse (`0` sanitizer overrides, `0` failed pickups, `0` wasted inventory), but score remained below the `109` benchmark because wait/stall volume is still too high.
 
+### Staging-lane fallback for blocked pickers
+
+- Hypothesis: after removing collision collapse, medium is still losing score because blocked bots accept `wait` too easily instead of being actively re-staged into useful zone lanes.
+- Change: multi-bot fallback now prefers a zone staging cell before random neighbor moves, blocked non-dropoff tasks can reroute into fallback reposition instead of waiting, and anti-deadlock only applies forced wait when no move is available.
+- Validation:
+  - `node --test tools/grocery-bot/test/planner-multibot.test.mjs` -> pass
+  - `node --test tools/grocery-bot/test/*.test.mjs` -> pass
+- Verdict: `pending live validation`
+- Notes: this is a throughput/release-control experiment. Promote only if the next medium run cuts wait actions and total stalls without reintroducing sanitizer overrides or failed pickups.
+
 ## Guidance
 
 - Prefer experiments that are soft cost-shaping changes over hard role locks.

@@ -29,9 +29,46 @@ export function zoneIndexForX(x, width, zoneCount) {
   return Math.min(zoneCount - 1, Math.floor((normalized * zoneCount) / width));
 }
 
+export function zoneBounds(state, zoneId) {
+  const zoneCount = Math.max(1, state.bots.length);
+  const startX = Math.floor((zoneId * state.grid.width) / zoneCount);
+  const nextStartX = Math.floor(((zoneId + 1) * state.grid.width) / zoneCount);
+  return [startX, Math.max(startX, nextStartX - 1)];
+}
+
 export function zoneIdForBot(state, botId) {
   const botOrder = [...state.bots].sort((a, b) => a.id - b.id);
   return Math.max(0, botOrder.findIndex((candidate) => candidate.id === botId));
+}
+
+export function findZoneStagingCell(bot, state, graph, blockedCoords = null) {
+  const zoneId = zoneIdForBot(state, bot.id);
+  const [startX, endX] = zoneBounds(state, zoneId);
+  const preferredY = Math.max(1, Math.min(state.grid.height - 2, state.drop_off[1]));
+  const centerX = Math.max(startX, Math.min(endX, Math.floor((startX + endX) / 2)));
+
+  let best = null;
+  for (let y = 1; y < state.grid.height - 1; y += 1) {
+    for (let x = startX; x <= endX; x += 1) {
+      const candidate = [x, y];
+      if (!graph.isWalkable(candidate)) {
+        continue;
+      }
+
+      if (blockedCoords?.has(`${candidate[0]},${candidate[1]}`)) {
+        continue;
+      }
+
+      const score = Math.abs(y - preferredY) * 2 + Math.abs(x - centerX) * 2;
+      const travel = Math.abs(bot.position[0] - x) + Math.abs(bot.position[1] - y);
+      const totalScore = score + travel;
+      if (!best || totalScore < best.score) {
+        best = { cell: candidate, score: totalScore };
+      }
+    }
+  }
+
+  return best?.cell || [...bot.position];
 }
 
 export function estimateZonePenalty({ bot, task, state, profile }) {

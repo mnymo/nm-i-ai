@@ -43,6 +43,30 @@ function updateOccupiedNextStep(occupiedNextStep, bot, resolved) {
   occupiedNextStep.add(currentKey);
 }
 
+function shouldAttemptRepositionFromMission(mission, resolved) {
+  if (!mission || !resolved) {
+    return false;
+  }
+
+  if (mission.missionType === 'drop_active') {
+    return false;
+  }
+
+  return resolved.action === 'wait' && resolved.noPath === true;
+}
+
+function shouldAttemptRepositionFromTask(task, resolved) {
+  if (!task || !resolved) {
+    return false;
+  }
+
+  if (task.kind === 'drop_off') {
+    return false;
+  }
+
+  return resolved.action === 'wait';
+}
+
 export function executeMissionStrategy({
   planner,
   state,
@@ -119,13 +143,31 @@ export function executeMissionStrategy({
       const fallback = chooseFallbackAction(
         bot,
         graph,
+        state,
         reservations,
         edgeReservations,
         planner.profile.routing.horizon,
         blockedNextStepCoords,
       );
       resolved = { action: fallback.action, nextPath: fallback.path, targetType: 'anti_deadlock', noPath: false };
-      planner.forcedWait.set(stallKey, planner.profile.anti_deadlock.forced_wait_rounds);
+      if (fallback.action === 'wait') {
+        planner.forcedWait.set(stallKey, planner.profile.anti_deadlock.forced_wait_rounds);
+      }
+    }
+
+    if (shouldAttemptRepositionFromMission(mission, resolved)) {
+      const fallback = chooseFallbackAction(
+        bot,
+        graph,
+        state,
+        reservations,
+        edgeReservations,
+        planner.profile.routing.horizon,
+        blockedNextStepCoords,
+      );
+      if (fallback.action !== 'wait') {
+        resolved = { action: fallback.action, nextPath: fallback.path, targetType: 'fallback_reposition', noPath: false };
+      }
     }
 
     planner.previousPositions.set(stallKey, currentCoord);
@@ -243,6 +285,7 @@ export function executeAssignedTaskStrategy({
       const fallback = chooseFallbackAction(
         bot,
         graph,
+        state,
         reservations,
         edgeReservations,
         planner.profile.routing.horizon,
@@ -262,6 +305,21 @@ export function executeAssignedTaskStrategy({
       }
     }
 
+    if (shouldAttemptRepositionFromTask(task, resolved)) {
+      const fallback = chooseFallbackAction(
+        bot,
+        graph,
+        state,
+        reservations,
+        edgeReservations,
+        planner.profile.routing.horizon,
+        blockedNextStepCoords,
+      );
+      if (fallback.action !== 'wait') {
+        resolved = { action: fallback.action, nextPath: fallback.path, targetType: 'fallback_reposition' };
+      }
+    }
+
     const previous = planner.previousPositions.get(stallKey);
     const currentCoord = encodeCoord(bot.position);
     const stalled = previous === currentCoord;
@@ -272,13 +330,16 @@ export function executeAssignedTaskStrategy({
       const fallback = chooseFallbackAction(
         bot,
         graph,
+        state,
         reservations,
         edgeReservations,
         planner.profile.routing.horizon,
         blockedNextStepCoords,
       );
       resolved = { action: fallback.action, nextPath: fallback.path, targetType: 'anti_deadlock' };
-      planner.forcedWait.set(stallKey, planner.profile.anti_deadlock.forced_wait_rounds);
+      if (fallback.action === 'wait') {
+        planner.forcedWait.set(stallKey, planner.profile.anti_deadlock.forced_wait_rounds);
+      }
     }
 
     planner.previousPositions.set(stallKey, currentCoord);

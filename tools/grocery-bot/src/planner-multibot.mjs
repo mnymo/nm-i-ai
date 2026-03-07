@@ -13,6 +13,7 @@ import {
   sumCounts,
   reserveInventoryForDemand,
   estimateZonePenalty,
+  findZoneStagingCell,
 } from './planner-multibot-common.mjs';
 
 export { estimateZonePenalty } from './planner-multibot-common.mjs';
@@ -249,11 +250,30 @@ export function actionFromTask({
 export function chooseFallbackAction(
   bot,
   graph,
+  state,
   reservations,
   edgeReservations,
   horizon,
   blockedNextStepCoords = null,
 ) {
+  const stagingCell = findZoneStagingCell(bot, state, graph, blockedNextStepCoords);
+  if (stagingCell[0] !== bot.position[0] || stagingCell[1] !== bot.position[1]) {
+    const path = findTimeAwarePath({
+      graph,
+      start: bot.position,
+      goal: stagingCell,
+      reservations,
+      edgeReservations,
+      startTime: 0,
+      horizon,
+      blockedNextStepCoords,
+    });
+
+    if (path && path.length >= 2) {
+      return { action: moveToAction(path[0], path[1]), path };
+    }
+  }
+
   for (const neighbor of graph.neighbors(bot.position)) {
     const moveKey = encodeCoord(neighbor);
     if (blockedNextStepCoords?.has(moveKey)) {
