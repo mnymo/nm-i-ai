@@ -11,7 +11,7 @@ Docs/MCP: configured in `mcp.json` → `https://mcp-docs.ainm.no/mcp`
 | Difficulty | Bots | Best score | Orders | Status |
 |------------|------|-----------|--------|--------|
 | easy       | 1    | 118       | 14     | repeatable |
-| medium     | 3    | 109       | 11     | baseline established |
+| medium     | 3    | 115       | 12     | current benchmark |
 | hard       | ?    | ?         | ?      | not yet run |
 | expert     | ?    | ?         | ?      | not yet run |
 
@@ -24,7 +24,8 @@ Latest verified easy runs:
 
 Latest medium runs:
 - `2026-03-07T16-03-36-053Z-medium-medium` -> score `52`, orders `5`, items `27` (first medium baseline)
-- `2026-03-07T16-14-57-783Z-medium-medium` -> score `109`, orders `11`, items `54` (current benchmark)
+- `2026-03-07T16-14-57-783Z-medium-medium` -> score `109`, orders `11`, items `54`
+- `2026-03-07T18-48-23-889Z-medium-medium` -> score `115`, orders `12`, items `55` (current benchmark)
 
 ## Quick Commands
 
@@ -156,7 +157,7 @@ Current structure map and file-size exceptions live in `tools/grocery-bot/STRUCT
 Full analysis in `tools/grocery-bot/STRATEGY_REVIEW.md`. Priority order:
 
 1. **Freeze easy winner** — treat the current `118` build as the baseline until medium work proves a better shared change
-2. **Beat medium 116** — current benchmark is `109`, team target to clear is `116`
+2. **Beat medium 116** — current benchmark is `115`, team target to clear is `116`
 3. **Reduce multi-bot stall cascades** — focus on routing reservations, deadlock recovery, and corridor conflicts
 4. **Only then resume structural improvements** — shelf reliability, explicit completion lock, and additional lag guards if new medium analysis justifies them
 

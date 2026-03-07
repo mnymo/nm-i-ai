@@ -1,0 +1,177 @@
+{
+  "finalScore": 115,
+  "ordersCompleted": 12,
+  "itemsDelivered": 55,
+  "totalTicks": 300,
+  "scoreByWindow": [
+    {
+      "start": 0,
+      "end": 24,
+      "delta": 1
+    },
+    {
+      "start": 25,
+      "end": 49,
+      "delta": 10
+    },
+    {
+      "start": 50,
+      "end": 74,
+      "delta": 11
+    },
+    {
+      "start": 75,
+      "end": 99,
+      "delta": 17
+    },
+    {
+      "start": 100,
+      "end": 124,
+      "delta": 3
+    },
+    {
+      "start": 125,
+      "end": 149,
+      "delta": 9
+    },
+    {
+      "start": 150,
+      "end": 174,
+      "delta": 10
+    },
+    {
+      "start": 175,
+      "end": 199,
+      "delta": 10
+    },
+    {
+      "start": 200,
+      "end": 224,
+      "delta": 18
+    },
+    {
+      "start": 225,
+      "end": 249,
+      "delta": 8
+    },
+    {
+      "start": 250,
+      "end": 274,
+      "delta": 9
+    },
+    {
+      "start": 275,
+      "end": 299,
+      "delta": 7
+    }
+  ],
+  "stagnationWindows": [
+    {
+      "startTick": 0,
+      "endTick": 23,
+      "length": 24
+    },
+    {
+      "startTick": 24,
+      "endTick": 36,
+      "length": 13
+    },
+    {
+      "startTick": 43,
+      "endTick": 52,
+      "length": 10
+    },
+    {
+      "startTick": 63,
+      "endTick": 86,
+      "length": 24
+    },
+    {
+      "startTick": 106,
+      "endTick": 122,
+      "length": 17
+    },
+    {
+      "startTick": 139,
+      "endTick": 154,
+      "length": 16
+    },
+    {
+      "startTick": 169,
+      "endTick": 180,
+      "length": 12
+    },
+    {
+      "startTick": 189,
+      "endTick": 200,
+      "length": 12
+    },
+    {
+      "startTick": 223,
+      "endTick": 237,
+      "length": 15
+    },
+    {
+      "startTick": 257,
+      "endTick": 271,
+      "length": 15
+    },
+    {
+      "startTick": 272,
+      "endTick": 293,
+      "length": 22
+    }
+  ],
+  "failedPickups": {
+    "total": 0,
+    "byItemId": {},
+    "byItemType": {}
+  },
+  "actionEfficiency": {
+    "sanitizerOverrides": {
+      "total": 4,
+      "byReason": {
+        "conflict_stationary_occupant": 4
+      }
+    },
+    "waitActions": 18,
+    "nonScoringDropoffs": 0
+  },
+  "multiBotCoordination": {
+    "botCount": 3,
+    "totalStalls": 113,
+    "maxStalledBots": 2,
+    "peakTaskCount": 13,
+    "forcedWaitActions": 11,
+    "missionTypeByBot": {},
+    "missionReassignments": 0,
+    "activeMissionsAssigned": 0,
+    "previewMissionsAssigned": 0,
+    "previewSuppressed": 0,
+    "dropMissionsAssigned": 0,
+    "missionTimeouts": 0,
+    "endInventoryByBot": [
+      {
+        "bot": 0,
+        "inventoryCount": 0,
+        "deliverableActiveItems": 0,
+        "nonDeliverableItems": 0
+      },
+      {
+        "bot": 1,
+        "inventoryCount": 1,
+        "deliverableActiveItems": 1,
+        "nonDeliverableItems": 0
+      },
+      {
+        "bot": 2,
+        "inventoryCount": 0,
+        "deliverableActiveItems": 0,
+        "nonDeliverableItems": 0
+      }
+    ]
+  },
+  "wastedInventoryAtEnd": [
+    "cheese"
+  ]
+}

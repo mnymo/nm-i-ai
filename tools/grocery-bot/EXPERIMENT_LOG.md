@@ -123,8 +123,9 @@ Purpose: keep an operational record of strategy experiments so we can avoid repe
   - `node --test tools/grocery-bot/test/*.test.mjs` -> pass
   - replay simulate against `2026-03-07T16-14-57-783Z-medium-medium` -> `0.8956` match ratio, `0.02` wait ratio
   - replay simulate against `2026-03-07T18-22-15-796Z-medium-medium` -> `0.8133` match ratio, `0.1756` wait ratio
-- Verdict: `pending live validation`
-- Notes: this is a baseline-recovery experiment, not a new scoring idea. Promote only if a fresh medium token confirms we are back near or above the `109` run without reintroducing the old legality-collapse pattern.
+  - live medium run `2026-03-07T18-48-23-889Z-medium-medium` -> `115`
+- Verdict: `keep`
+- Notes: the simpler `82ee32e`-style assignment/runtime recovered medium throughput and established a new benchmark. Result profile stayed healthy enough to promote: `0` failed pickups, `0` non-scoring dropoffs, `18` wait actions, `113` stalls, only `4` sanitizer overrides, and just `1` wasted end item.
 
 ## Guidance
 
