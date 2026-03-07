@@ -4,6 +4,7 @@ import { countInventoryByType } from './world-model.mjs';
 import {
   cloneDemand,
   hasDeliverableInventory,
+  countDeliverableInventory,
   shouldScheduleDropOff,
   getNeededTypes,
   estimateCongestion,
@@ -264,4 +265,43 @@ export function chooseFallbackAction(bot, graph, reservations, edgeReservations,
   }
 
   return { action: 'wait', path: [bot.position] };
+}
+
+function taskPriority(task, activeDemand) {
+  if (task?.kind === 'drop_off') {
+    return 0;
+  }
+
+  if (task?.kind === 'pick_up' && task.sourceOrder === 'active') {
+    return 1;
+  }
+
+  if (task?.kind === 'pick_up') {
+    return 2;
+  }
+
+  return sumCounts(activeDemand) > 0 ? 3 : 4;
+}
+
+export function prioritizeBotsForPlanning(state, taskByBot, activeDemand) {
+  return [...state.bots].sort((a, b) => {
+    const taskA = taskByBot.get(a.id) || null;
+    const taskB = taskByBot.get(b.id) || null;
+    const priorityDelta = taskPriority(taskA, activeDemand) - taskPriority(taskB, activeDemand);
+    if (priorityDelta !== 0) {
+      return priorityDelta;
+    }
+
+    const deliverableDelta = countDeliverableInventory(b, activeDemand) - countDeliverableInventory(a, activeDemand);
+    if (deliverableDelta !== 0) {
+      return deliverableDelta;
+    }
+
+    const inventoryDelta = (b.inventory || []).length - (a.inventory || []).length;
+    if (inventoryDelta !== 0) {
+      return inventoryDelta;
+    }
+
+    return a.id - b.id;
+  });
 }

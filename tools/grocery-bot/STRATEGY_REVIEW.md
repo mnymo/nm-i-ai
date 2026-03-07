@@ -1,8 +1,9 @@
-# Grocery Bot Strategy Review (Easy)
+# Grocery Bot Strategy Review
 
 ## Current Baseline
 
 - Best repeatable easy score: `118`
+- Current medium benchmark: `109`
 - Verified runs:
   - `tools/grocery-bot/out/2026-03-07T15-56-13-035Z-easy-easy`
   - `tools/grocery-bot/out/2026-03-07T16-00-36-191Z-easy-easy`
@@ -12,6 +13,10 @@
   - `0` wasted inventory at game over
   - `1` wait action
 - Client timing in those runs stayed well below danger levels, and the 20 ms send cap never had to delay a send.
+- Medium progression:
+  - `tools/grocery-bot/out/2026-03-07T16-03-36-053Z-medium-medium` -> score `52`, `5` orders, `27` items
+  - `tools/grocery-bot/out/2026-03-07T16-14-57-783Z-medium-medium` -> score `109`, `11` orders, `54` items
+  - The jump came from count-aware preview pruning in multi-bot task generation; the remaining bottleneck is stall-heavy routing/coordination.
 
 ## What Changed To Reach 118
 
@@ -22,7 +27,8 @@
 ## Current Position
 
 - Easy is no longer the active bottleneck.
-- The next useful frontier is the first `medium` baseline run and replay analysis.
+- Medium is now the active bottleneck.
+- The current target is to push the medium benchmark from `109` to `>116`.
 
 ## Current Strategy (As Implemented)
 
@@ -183,6 +189,6 @@ Expected impact:
 - smoother progress inside long stagnation windows
 
 ## Suggested Next Iteration Order
-1. Run `medium` and generate `analysis.json`.
-2. Diagnose multi-bot coordination before changing any shared planner behavior.
+1. Push medium above `116` by reducing multi-bot stall cascades.
+2. Validate each medium change with tests plus replay simulation before spending a live token.
 3. Only reopen easy-specific logic if a shared change regresses the `118` baseline.

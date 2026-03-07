@@ -11,7 +11,7 @@ Docs/MCP: configured in `mcp.json` → `https://mcp-docs.ainm.no/mcp`
 | Difficulty | Bots | Best score | Orders | Status |
 |------------|------|-----------|--------|--------|
 | easy       | 1    | 118       | 14     | repeatable |
-| medium     | ?    | ?         | ?      | not yet run |
+| medium     | 3    | 109       | 11     | baseline established |
 | hard       | ?    | ?         | ?      | not yet run |
 | expert     | ?    | ?         | ?      | not yet run |
 
@@ -21,6 +21,10 @@ Latest verified easy runs:
 - `2026-03-07T15-56-13-035Z-easy-easy` -> score `118`, orders `14`, items `48`
 - `2026-03-07T16-00-36-191Z-easy-easy` -> score `118`, orders `14`, items `48`
 - Both runs had `0` failed pickups, `0` non-scoring dropoffs, and `0` wasted inventory at game over.
+
+Latest medium runs:
+- `2026-03-07T16-03-36-053Z-medium-medium` -> score `52`, orders `5`, items `27` (first medium baseline)
+- `2026-03-07T16-14-57-783Z-medium-medium` -> score `109`, orders `11`, items `54` (current benchmark)
 
 ## Quick Commands
 
@@ -119,9 +123,9 @@ For each improvement iteration:
 Full analysis in `tools/grocery-bot/STRATEGY_REVIEW.md`. Priority order:
 
 1. **Freeze easy winner** — treat the current `118` build as the baseline until medium work proves a better shared change
-2. **Run medium, get first analysis.json** — establish the real multi-bot baseline before changing medium logic
-3. **Multi-bot coordination review** — inspect assignment conflicts, deadlock recovery, and idle bots from the first medium replay
-4. **Only then resume structural improvements** — shelf reliability, explicit completion lock, and additional lag guards if medium analysis justifies them
+2. **Beat medium 116** — current benchmark is `109`, team target to clear is `116`
+3. **Reduce multi-bot stall cascades** — focus on routing reservations, deadlock recovery, and corridor conflicts
+4. **Only then resume structural improvements** — shelf reliability, explicit completion lock, and additional lag guards if new medium analysis justifies them
 
 ## Conventions
 
