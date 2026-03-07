@@ -172,6 +172,19 @@ Purpose: keep an operational record of strategy experiments so we can avoid repe
 - Verdict: `keep and validate live`
 - Notes: this is the first architecture change aimed directly at `5-20` bots. It is necessary because the prior defaults were already non-competitive on `hard+`. Live baselines still need to be re-established on the new branch.
 
+### High-bot warehouse close-mode correction
+
+- Hypothesis: the first `warehouse_v1` hard rollout froze because control mode was allowing preview/idle behavior once active demand was merely assigned or held in inventory, instead of forcing the team to finish the active order; sticky reposition missions also kept overflow bots out of real work for too long.
+- Change:
+  - control mode now treats `active demand covered by held inventory` as `close_active_order`, not `limited_preview_prefetch`
+  - preview release stays blocked until active demand is truly closed, not just "held"
+  - `reposition_zone` missions now expire after one tick so overflow bots re-enter assignment quickly
+- Validation:
+  - `node --test tools/grocery-bot/test/*.test.mjs` -> pass
+  - `node tools/grocery-bot/index.mjs --mode benchmark --difficulty hard --replay tools/grocery-bot/out` -> pass
+- Verdict: `implemented, pending live validation`
+- Notes: this is a control-layer correctness fix, not a tuning change. The old hard `score 0` replay should no longer be treated as representative of the current warehouse branch because its failure depended on the now-fixed close/preview mode bug.
+
 ## Guidance
 
 - Prefer experiments that are soft cost-shaping changes over hard role locks.

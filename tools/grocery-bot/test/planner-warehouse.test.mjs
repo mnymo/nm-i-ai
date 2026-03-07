@@ -57,6 +57,31 @@ test('warehouse control blocks preview release while active demand is uncovered'
   assert.equal(control.activeDemandRemaining, 1);
 });
 
+test('warehouse control keeps closing the active order when demand is fully covered by held inventory', () => {
+  const state = baseState({
+    bots: [
+      { id: 0, position: [1, 1], inventory: ['milk'] },
+      { id: 1, position: [5, 1], inventory: [] },
+      { id: 2, position: [9, 1], inventory: [] },
+    ],
+    items: [
+      { id: 'pasta_0', type: 'pasta', position: [5, 3] },
+    ],
+  });
+
+  const control = buildWarehouseControlContext({
+    state,
+    world: buildWorldContext(state),
+    profile: defaultProfiles.medium,
+  });
+
+  assert.equal(control.activeDemandTotal, 1);
+  assert.equal(control.activeDemandHeldRemaining, 0);
+  assert.equal(control.deliverableHeldCount, 1);
+  assert.equal(control.mode, 'close_active_order');
+  assert.equal(control.previewAllowed, false);
+});
+
 test('warehouse control enters close_if_feasible in late game and partial_cashout when close is infeasible', () => {
   const feasibleState = baseState({
     round: 296,
@@ -141,6 +166,48 @@ test('warehouse assignments reserve active demand so only one bot targets a sing
   assert.equal(plan.metrics.activeMissionsAssigned, 1);
 });
 
+test('warehouse control does not allow preview mode when active demand is only covered by assigned missions', () => {
+  const state = baseState({
+    orders: [
+      { id: 'o0', items_required: ['milk'], items_delivered: [], status: 'active', complete: false },
+      { id: 'o1', items_required: ['pasta'], items_delivered: [], status: 'preview', complete: false },
+    ],
+    items: [
+      { id: 'milk_0', type: 'milk', position: [3, 3] },
+      { id: 'pasta_0', type: 'pasta', position: [5, 3] },
+    ],
+  });
+
+  const existingMissionsByBot = new Map([
+    [0, {
+      missionType: 'pickup_active',
+      orderId: 'o0',
+      targetItemId: 'milk_0',
+      targetType: 'milk',
+      targetCell: [2, 3],
+      serviceCell: [2, 3],
+      queueCell: null,
+      queueFor: null,
+      zoneId: 0,
+      assignedAtRound: 0,
+      lastProgressRound: 0,
+      ttl: 6,
+      noPathRounds: 0,
+    }],
+  ]);
+
+  const control = buildWarehouseControlContext({
+    state,
+    world: buildWorldContext(state),
+    profile: defaultProfiles.medium,
+    existingMissionsByBot,
+  });
+
+  assert.equal(control.activeDemandHeldRemaining, 1);
+  assert.equal(control.previewAllowed, false);
+  assert.notEqual(control.mode, 'limited_preview_prefetch');
+});
+
 test('warehouse assignments cap preview to one runner in medium', () => {
   const state = baseState({
     orders: [
@@ -214,6 +281,45 @@ test('warehouse assignments create a queue mission behind an occupied drop bay a
     existingMissionsByBot: queuedPlan.missionsByBot,
   });
   assert.equal(promotedPlan.missionsByBot.get(1).missionType, 'drop_active');
+});
+
+test('warehouse assignments do not keep reposition missions sticky once real work should be reconsidered', () => {
+  const state = baseState({
+    round: 2,
+    items: [
+      { id: 'milk_0', type: 'milk', position: [2, 3] },
+    ],
+  });
+
+  const existingMissionsByBot = new Map([
+    [0, {
+      missionType: 'reposition_zone',
+      orderId: 'o0',
+      targetItemId: null,
+      targetType: null,
+      targetCell: [1, 4],
+      serviceCell: null,
+      queueCell: null,
+      queueFor: null,
+      zoneId: 0,
+      assignedAtRound: 0,
+      lastProgressRound: 1,
+      ttl: 6,
+      noPathRounds: 0,
+    }],
+  ]);
+
+  const plan = buildWarehouseAssignments({
+    state,
+    world: buildWorldContext(state),
+    graph: buildGraph(state),
+    profile: defaultProfiles.medium,
+    phase: 'early',
+    round: 2,
+    existingMissionsByBot,
+  });
+
+  assert.equal(plan.missionsByBot.get(0).missionType, 'pickup_active');
 });
 
 test('warehouse assignments prefer in-zone active supply and borrow cross-zone only when needed', () => {

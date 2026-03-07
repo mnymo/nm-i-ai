@@ -164,9 +164,15 @@ export function buildWarehouseControlContext({
   } = reserveInventoryForDemand(surplusInventory, world.previewDemand);
   const assignedActiveCounts = countAssignedDemand(existingMissionsByBot, world.activeOrder?.id ?? null);
   const activeDemandAfterAssigned = applyReservedDemand(activeDemandAfterHeld, assignedActiveCounts);
+  const activeDemandTotal = sumCounts(world.activeDemand);
+  const activeHeldRemainingCount = sumCounts(activeDemandAfterHeld);
   const activeRemainingCount = sumCounts(activeDemandAfterAssigned);
   const previewRemainingCount = sumCounts(previewDemandAfterHeld);
   const previewWipItems = countPreviewWipItems(surplusInventory, world.previewDemand);
+  const deliverableHeldCount = (state.bots || []).reduce(
+    (sum, bot) => sum + countDeliverableInventory(bot, world.activeDemand),
+    0,
+  );
   const previewWipCapItems = runtime.preview_wip_cap_items ?? 2;
   const previewRunnerCap = runtime.preview_runner_cap ?? 1;
   const activeMissionBuffer = runtime.active_mission_buffer ?? 1;
@@ -175,24 +181,26 @@ export function buildWarehouseControlContext({
   const endgameDisablePreviewRounds = runtime.endgame_disable_preview_rounds ?? 40;
   const projectedActiveCloseEta = estimateActiveCloseEta({
     state,
-    remainingActiveDemand: activeDemandAfterAssigned,
+    remainingActiveDemand: activeDemandAfterHeld,
   });
 
   let mode = 'build_active_inventory';
   if (roundsLeft <= endgameDisablePreviewRounds) {
-    if (activeRemainingCount > 0) {
+    if (activeHeldRemainingCount > 0) {
       mode = projectedActiveCloseEta <= roundsLeft ? 'close_if_feasible' : 'partial_cashout';
     } else {
       mode = 'stop_preview';
     }
-  } else if (activeRemainingCount === 0) {
+  } else if (activeDemandTotal > 0 && activeHeldRemainingCount === 0) {
+    mode = 'close_active_order';
+  } else if (activeHeldRemainingCount === 0) {
     if (previewRemainingCount > 0 && previewWipItems < previewWipCapItems) {
       mode = 'limited_preview_prefetch';
     } else {
       mode = 'stop_preview';
     }
   } else if (
-    activeRemainingCount <= closeActiveRemainingThreshold
+    activeHeldRemainingCount <= closeActiveRemainingThreshold
     || projectedActiveCloseEta <= closeActiveEtaThreshold
   ) {
     mode = 'close_active_order';
@@ -200,6 +208,7 @@ export function buildWarehouseControlContext({
 
   const previewAllowed = (
     mode === 'limited_preview_prefetch'
+    && activeHeldRemainingCount === 0
     && previewRemainingCount > 0
     && previewWipItems < previewWipCapItems
   );
@@ -216,9 +225,12 @@ export function buildWarehouseControlContext({
     roundsLeft,
     activeDemandAfterHeld,
     activeDemandAfterAssigned,
+    activeDemandTotal,
+    activeDemandHeldRemaining: activeHeldRemainingCount,
     activeDemandRemaining: activeRemainingCount,
     activeDemandCoveredByHeld: sumCounts(world.activeDemand) - sumCounts(activeDemandAfterHeld),
     activeDemandCoveredByAssigned: sumCounts(activeDemandAfterHeld) - activeRemainingCount,
+    deliverableHeldCount,
     previewDemandAfterHeld,
     previewDemandRemaining: previewRemainingCount,
     previewWipItems,
@@ -534,7 +546,9 @@ function shouldKeepWarehouseMission({
   }
 
   if (mission.missionType === 'reposition_zone') {
-    return Boolean(mission.targetCell);
+    return Boolean(mission.targetCell)
+      && round - mission.assignedAtRound <= 1
+      && !hasDeliverableInventory(bot, world.activeDemand);
   }
 
   return false;
@@ -904,6 +918,7 @@ export function buildWarehouseAssignments({
       previewSuppressed: !control.previewAllowed && control.previewDemandRemaining > 0,
       previewWipItems: control.previewWipItems,
       activeRunnerCap: control.activeRunnerCap,
+      activeDemandHeldRemaining: control.activeDemandHeldRemaining,
       activeDemandRemaining: control.activeDemandRemaining,
       activeDemandCoveredByHeld: control.activeDemandCoveredByHeld,
       activeDemandCoveredByAssigned: control.activeDemandCoveredByAssigned,
@@ -931,7 +946,7 @@ export function resolveWarehouseMissionAction({
       return { action: 'drop_off', nextPath: [bot.position], targetType: 'drop_off', noPath: false };
     }
 
-    const path = findTimeAwarePath({
+    let path = findTimeAwarePath({
       graph,
       start: bot.position,
       goal: mission.serviceCell || mission.targetCell || nearestDropOff(bot.position, state),
@@ -941,6 +956,17 @@ export function resolveWarehouseMissionAction({
       horizon: profile.routing.horizon,
       blockedNextStepCoords,
     });
+    if ((!path || path.length < 2) && blockedNextStepCoords?.size) {
+      path = findTimeAwarePath({
+        graph,
+        start: bot.position,
+        goal: mission.serviceCell || mission.targetCell || nearestDropOff(bot.position, state),
+        reservations,
+        edgeReservations,
+        startTime: 0,
+        horizon: profile.routing.horizon,
+      });
+    }
     if (!path || path.length < 2) {
       return { action: 'wait', nextPath: [bot.position], targetType: 'drop_off', noPath: true };
     }

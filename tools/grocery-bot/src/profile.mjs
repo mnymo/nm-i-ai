@@ -151,6 +151,7 @@ export const defaultProfiles = {
       preview_wip_cap_items: 2,
       preview_runner_cap: 1,
       active_mission_buffer: 1,
+      active_runner_cap: 2,
       close_active_eta_threshold: 12,
       close_active_remaining_threshold: 2,
       service_bay_queue_depth: 2,
@@ -205,6 +206,7 @@ export const defaultProfiles = {
       preview_wip_cap_items: 2,
       preview_runner_cap: 1,
       active_mission_buffer: 2,
+      active_runner_cap: 3,
       close_active_eta_threshold: 16,
       close_active_remaining_threshold: 3,
       service_bay_queue_depth: 2,
@@ -217,6 +219,7 @@ defaultProfiles.nightmare.runtime.multi_bot_strategy = 'warehouse_v1';
 defaultProfiles.nightmare.runtime.endgame_disable_preview_rounds = 80;
 defaultProfiles.nightmare.runtime.preview_wip_cap_items = 3;
 defaultProfiles.nightmare.runtime.active_mission_buffer = 2;
+defaultProfiles.nightmare.runtime.active_runner_cap = 4;
 defaultProfiles.nightmare.runtime.close_active_eta_threshold = 20;
 defaultProfiles.nightmare.runtime.close_active_remaining_threshold = 3;
 defaultProfiles.nightmare.runtime.service_bay_queue_depth = 3;
