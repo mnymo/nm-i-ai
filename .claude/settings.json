@@ -4,7 +4,11 @@
       "Bash(node -e \":*)",
       "Bash(grep -n \"force-flushes non-deliverable\" tools/grocery-bot/test/*.test.mjs)",
       "Bash(node tools/grocery-bot/index.mjs --mode simulate --difficulty easy --profile easy --replay tools/grocery-bot/out/2026-03-07T14-48-05-791Z-easy-easy/replay.jsonl)",
-      "Bash(node tools/grocery-bot/index.mjs --mode estimate-max --replay tools/grocery-bot/out/2026-03-07T14-48-05-791Z-easy-easy/replay.jsonl)"
+      "Bash(node tools/grocery-bot/index.mjs --mode estimate-max --replay tools/grocery-bot/out/2026-03-07T14-48-05-791Z-easy-easy/replay.jsonl)",
+      "Bash(node tools/grocery-bot/index.mjs --token \"wss://game.ainm.no/ws?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJkYjgyODQ4NS0zYTBiLTQ2ZjYtOWFlZi0xY2MwNzA0ZmQzZWIiLCJ0ZWFtX2lkIjoiOTY3NGMxOGMtYWUxMy00ZWQ2LWFiYjEtM2Q0YTM1YjNjNGY0IiwibWFwX2lkIjoiYzg5ZGEyZWMtM2NhNy00MGM5LWEzYjEtODAzNmZjYTNkMGI3IiwibWFwX3NlZWQiOjcwMDEsImRpZmZpY3VsdHkiOiJlYXN5IiwiZXhwIjoxNzcyODk3MjU4fQ.hsVD5gpuezmi82ADJDmUw9gY8D34Ir9VVFA7Yo3W4xk\" --difficulty easy --profile easy)",
+      "Bash(node tools/grocery-bot/index.mjs --token \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJkYjgyODQ4NS0zYTBiLTQ2ZjYtOWFlZi0xY2MwNzA0ZmQzZWIiLCJ0ZWFtX2lkIjoiOTY3NGMxOGMtYWUxMy00ZWQ2LWFiYjEtM2Q0YTM1YjNjNGY0IiwibWFwX2lkIjoiYzg5ZGEyZWMtM2NhNy00MGM5LWEzYjEtODAzNmZjYTNkMGI3IiwibWFwX3NlZWQiOjcwMDEsImRpZmZpY3VsdHkiOiJlYXN5IiwiZXhwIjoxNzcyODk3MjU4fQ.hsVD5gpuezmi82ADJDmUw9gY8D34Ir9VVFA7Yo3W4xk\" --difficulty easy --profile easy)",
+      "Bash(node tools/grocery-bot/index.mjs --mode summarize --difficulty easy --replay tools/grocery-bot/out/2026-03-07T15-23-10-732Z-easy-easy/replay.jsonl)",
+      "Bash(python3 -c \":*)"
     ]
   },
   "hooks": {
