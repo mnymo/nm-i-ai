@@ -57,7 +57,7 @@ export function buildComparableActionList(actions = []) {
   return actions.map((action) => ({ ...action }));
 }
 
-function diffValues(left, right, path = '$', diffs = []) {
+export function diffComparableReplayValues(left, right, path = '$', diffs = []) {
   if (Object.is(left, right)) {
     return diffs;
   }
@@ -78,7 +78,7 @@ function diffValues(left, right, path = '$', diffs = []) {
         diffs.push({ path: `${path}[${index}]`, left: left[index], right: right[index] });
         continue;
       }
-      diffValues(left[index], right[index], `${path}[${index}]`, diffs);
+      diffComparableReplayValues(left[index], right[index], `${path}[${index}]`, diffs);
       if (diffs.length >= 25) {
         return diffs;
       }
@@ -99,7 +99,7 @@ function diffValues(left, right, path = '$', diffs = []) {
         diffs.push({ path: `${path}.${key}`, left: left[key], right: right[key] });
         continue;
       }
-      diffValues(left[key], right[key], `${path}.${key}`, diffs);
+      diffComparableReplayValues(left[key], right[key], `${path}.${key}`, diffs);
       if (diffs.length >= 25) {
         return diffs;
       }
@@ -140,9 +140,9 @@ export function compareReplayTransitionAtTick({ sourceReplayPath, validationRepl
   const sourceNextState = buildComparableReplayState(sourceNextRow?.state_snapshot);
   const validationNextState = buildComparableReplayState(validationNextRow?.state_snapshot);
 
-  const preStateDiffs = diffValues(sourceState, validationState);
-  const actionDiffs = diffValues(sourceActions, validationActions);
-  const nextStateDiffs = diffValues(sourceNextState, validationNextState);
+  const preStateDiffs = diffComparableReplayValues(sourceState, validationState);
+  const actionDiffs = diffComparableReplayValues(sourceActions, validationActions);
+  const nextStateDiffs = diffComparableReplayValues(sourceNextState, validationNextState);
 
   const preStateEqual = preStateDiffs.length === 0;
   const actionsEqual = actionDiffs.length === 0;

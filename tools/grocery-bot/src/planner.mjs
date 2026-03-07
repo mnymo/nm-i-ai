@@ -16,7 +16,7 @@ import {
   addAdaptiveCooldown,
   updateApproachStats,
 } from './planner-singlebot.mjs';
-import { buildComparableReplayState } from './replay-transition-diff.mjs';
+import { buildComparableReplayState, diffComparableReplayValues } from './replay-transition-diff.mjs';
 
 export class GroceryPlanner {
   constructor(profile, options = {}) {
@@ -73,10 +73,19 @@ export class GroceryPlanner {
 
   matchesExpectedScriptState(state, expectedState) {
     if (!expectedState) {
-      return true;
+      return {
+        matched: true,
+        comparableLiveState: null,
+        diffs: [],
+      };
     }
     const comparableLiveState = buildComparableReplayState(state);
-    return JSON.stringify(expectedState) === JSON.stringify(comparableLiveState);
+    const diffs = diffComparableReplayValues(expectedState, comparableLiveState);
+    return {
+      matched: diffs.length === 0,
+      comparableLiveState,
+      diffs,
+    };
   }
 
   validateOracleAndScriptAssumptions(state) {
@@ -139,8 +148,8 @@ export class GroceryPlanner {
         tick: state.round,
         actions: this.script.tickMap.get(state.round),
       };
-      const expectedStateMatched = this.matchesExpectedScriptState(state, scriptEntry.expected_state);
-      if (expectedStateMatched) {
+      const scriptStateCheck = this.matchesExpectedScriptState(state, scriptEntry.expected_state);
+      if (scriptStateCheck.matched) {
         const scriptedActions = this.script.tickMap.get(state.round);
         this.lastScore = state.score;
         this.lastMetrics = {
@@ -164,6 +173,8 @@ export class GroceryPlanner {
         scriptDiverged: true,
         scriptDivergedAtRound: state.round,
         scriptExpectedStateMatched: false,
+        scriptExpectedStateDiffPath: scriptStateCheck.diffs[0]?.path ?? null,
+        scriptExpectedStateDiffSample: scriptStateCheck.diffs.slice(0, 3),
       };
     }
 
