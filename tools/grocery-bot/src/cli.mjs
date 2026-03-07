@@ -90,7 +90,7 @@ export function parseCliArguments(argv) {
     throw new Error(`Invalid difficulty: ${args.difficulty}`);
   }
 
-  const validModes = new Set(['play', 'summarize', 'simulate', 'tune']);
+  const validModes = new Set(['play', 'summarize', 'simulate', 'tune', 'benchmark']);
   validModes.add('estimate-max');
   if (!validModes.has(args.mode)) {
     throw new Error(`Invalid mode: ${args.mode}`);
@@ -100,7 +100,7 @@ export function parseCliArguments(argv) {
     throw new Error('Missing required --token for play mode');
   }
 
-  if (['summarize', 'simulate', 'tune', 'estimate-max'].includes(args.mode) && !args.replay) {
+  if (['summarize', 'simulate', 'tune', 'estimate-max', 'benchmark'].includes(args.mode) && !args.replay) {
     throw new Error(`--replay is required for mode=${args.mode}`);
   }
 

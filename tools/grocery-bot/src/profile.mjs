@@ -93,7 +93,13 @@ export const defaultProfiles = {
       mission_stall_rounds: 4,
       no_path_reassign_rounds: 2,
       endgame_preview_disable_rounds: 40,
+      endgame_disable_preview_rounds: 40,
       drop_commit_min_deliverable: 2,
+      preview_wip_cap_items: 2,
+      preview_runner_cap: 1,
+      close_active_eta_threshold: 9,
+      close_active_remaining_threshold: 2,
+      service_bay_queue_depth: 1,
     },
   },
   hard: {
@@ -183,6 +189,9 @@ export const defaultProfiles = {
     },
   },
 };
+
+defaultProfiles.medium_warehouse_v1 = JSON.parse(JSON.stringify(defaultProfiles.medium));
+defaultProfiles.medium_warehouse_v1.runtime.multi_bot_strategy = 'warehouse_v1';
 
 function deepMerge(base, patch) {
   if (!patch || typeof patch !== 'object') {

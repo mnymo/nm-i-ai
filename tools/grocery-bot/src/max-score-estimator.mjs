@@ -1,16 +1,7 @@
-import fs from 'node:fs';
-
 import { encodeCoord } from './coords.mjs';
 import { GridGraph } from './grid-graph.mjs';
+import { extractLayout, parseJsonl, rebuildSnapshot } from './replay-io.mjs';
 import { findTimeAwarePath } from './routing.mjs';
-
-function parseJsonl(filePath) {
-  const content = fs.readFileSync(filePath, 'utf8');
-  return content
-    .split('\n')
-    .filter((line) => line.trim().length > 0)
-    .map((line) => JSON.parse(line));
-}
 
 function typeCounts(items) {
   const counts = new Map();
@@ -43,7 +34,13 @@ function parseOrderIndex(orderId) {
 }
 
 function buildObservedReplayModel(rows) {
-  const ticks = rows.filter((row) => row.type === 'tick' && row.state_snapshot);
+  const layout = extractLayout(rows);
+  const ticks = rows
+    .filter((row) => row.type === 'tick' && row.state_snapshot)
+    .map((row) => ({
+      ...row,
+      state_snapshot: rebuildSnapshot(row.state_snapshot, layout),
+    }));
   if (ticks.length === 0) {
     throw new Error('Replay has no tick rows with state snapshots');
   }

@@ -16,6 +16,8 @@ Use this file together with [CLAUDE.md](/home/magnus/prog/nm-i-ai/CLAUDE.md) whe
 3. Make the smallest planner change that matches replay evidence.
 4. Run `node --test tools/grocery-bot/test/*.test.mjs`.
 5. Prefer simulate -> analyze -> change cycles over blind live runs.
+6. For multi-bot strategy work, run `--mode benchmark --difficulty medium --replay tools/grocery-bot/out` before spending more live tokens.
+7. Use `--profile medium_warehouse_v1` when benchmarking the experimental warehouse-control branch.
 
 ## Structural Policy
 
@@ -49,10 +51,12 @@ Use this file together with [CLAUDE.md](/home/magnus/prog/nm-i-ai/CLAUDE.md) whe
 - Single-bot runtime orchestration: `tools/grocery-bot/src/planner-singlebot-runtime.mjs`
 - Multi-bot task generation and reservations: `tools/grocery-bot/src/planner-multibot.mjs`
 - Medium mission policy: `tools/grocery-bot/src/planner-missions.mjs`
+- Warehouse-control policy: `tools/grocery-bot/src/planner-warehouse.mjs`
 - Multi-bot runtime execution: `tools/grocery-bot/src/planner-multibot-runtime.mjs`
 - Client legality sanitizer: `tools/grocery-bot/src/game-client-sanitizer.mjs`
 - Shared helpers: `tools/grocery-bot/src/planner-utils.mjs`
 - Replay and summaries: `tools/grocery-bot/src/replay.mjs`
+- Replay parsing/layout helpers: `tools/grocery-bot/src/replay-io.mjs`
 - Structure map and split backlog: `tools/grocery-bot/STRUCTURE_REVIEW.md`
 
 ## MCP

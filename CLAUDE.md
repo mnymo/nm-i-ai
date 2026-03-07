@@ -51,6 +51,14 @@ node tools/grocery-bot/index.mjs --mode tune --difficulty easy --profile easy \
 node tools/grocery-bot/index.mjs --mode estimate-max \
   --replay tools/grocery-bot/out/<run-id>/replay.jsonl
 
+# Benchmark a replay corpus offline (directory or single replay)
+node tools/grocery-bot/index.mjs --mode benchmark --difficulty medium \
+  --replay tools/grocery-bot/out
+
+# Benchmark the experimental warehouse controller offline
+node tools/grocery-bot/index.mjs --mode benchmark --difficulty medium --profile medium_warehouse_v1 \
+  --replay tools/grocery-bot/out
+
 # Run tests
 node --test tools/grocery-bot/test/*.test.mjs
 ```
@@ -67,6 +75,7 @@ tools/grocery-bot/
 │   ├── planner-multibot.mjs     Multi-bot task generation, costs, reservations, action helpers
 │   ├── planner-multibot-common.mjs Shared multi-bot demand/zone helpers
 │   ├── planner-missions.mjs     Medium mission assignment and mission action resolution
+│   ├── planner-warehouse.mjs    Warehouse-control strategy: modes, missions, service bays, queue cells
 │   ├── planner-multibot-runtime.mjs Multi-bot runtime execution for mission/task strategies
 │   ├── planner-utils.mjs        Shared helpers (demand, phase, congestion, path utils)
 │   ├── game-client.mjs          WebSocket loop, replay logging, send guard
@@ -75,6 +84,7 @@ tools/grocery-bot/
 │   ├── assignment.mjs           Min-cost bot-to-item matching
 │   ├── optimizer.mjs            Profile parameter search (random mutation over replay)
 │   ├── replay.mjs               Logging, summarize, simulate, analysis generation
+│   ├── replay-io.mjs            Shared replay parsing/layout reconstruction helpers
 │   ├── world-model.mjs          Demand/inventory helpers
 │   ├── coords.mjs               Grid geometry, move encoding
 │   ├── grid-graph.mjs           Graph for pathfinding
@@ -103,6 +113,11 @@ Enumerate candidate pickup-type sequences → score each by (projected delivery 
 **Multi-bot (medium/hard/expert):**
 Each tick: build world context → cost-matrix assignment (each bot → item or drop-off) → time-aware A* with path reservations → deadlock detection (stall counter + forced wait/reroute) → send all actions.
 
+Experimental branch available but not promoted:
+- `warehouse_v1` (medium-only for now): warehouse-control modes, stable missions, service-bay reservation, queue cells, preview WIP cap, and endgame cashout rules.
+- Convenience profile: `medium_warehouse_v1`
+- Keep `assignment_v1` as the live default until `warehouse_v1` beats `115` on real medium runs.
+
 **Key parameters** (`config/profiles.json` + `out/tuned-<diff>.json`):
 - `assignment.congestion_penalty` / `contention_penalty` / `urgency_bonus` — shape bot-to-item assignment costs
 - `routing.horizon` — lookahead depth for time-aware A*
@@ -121,8 +136,9 @@ For each improvement iteration:
 4. Make the targeted change
 5. Run tests: `node --test tools/grocery-bot/test/*.test.mjs`
 6. Simulate offline: `--mode simulate` against the latest replay (measures action agreement, not score)
-7. If change looks good → play live to confirm actual score
-8. If score improves → run `--mode tune` against the new replay and merge params
+7. Benchmark replay corpus when changing multi-bot control flow: `--mode benchmark --difficulty medium --replay tools/grocery-bot/out`
+8. If change looks good → play live to confirm actual score
+9. If score improves → run `--mode tune` against the new replay and merge params
 
 ## Structural Policy
 
@@ -157,9 +173,9 @@ Current structure map and file-size exceptions live in `tools/grocery-bot/STRUCT
 Full analysis in `tools/grocery-bot/STRATEGY_REVIEW.md`. Priority order:
 
 1. **Freeze easy winner** — treat the current `118` build as the baseline until medium work proves a better shared change
-2. **Beat medium 116** — current benchmark is `115`, team target to clear is `116`
-3. **Reduce multi-bot stall cascades** — focus on routing reservations, deadlock recovery, and corridor conflicts
-4. **Only then resume structural improvements** — shelf reliability, explicit completion lock, and additional lag guards if new medium analysis justifies them
+2. **Push medium into the 200s** — current benchmark is `115`, which is a stable baseline but not the architectural ceiling
+3. **Prove or reject `warehouse_v1` offline first** — use benchmark mode, replay metrics, and specs before live tokens
+4. **Reduce multi-bot stall cascades** — focus on released-work control, service-bay queueing, and order-close cadence
 
 ## Conventions
 

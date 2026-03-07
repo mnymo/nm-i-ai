@@ -1,6 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+import { collectReplayPaths, extractLayout, parseJsonl, rebuildSnapshot } from './replay-io.mjs';
+
 export class ReplayLogger {
   constructor(filePath) {
     this.filePath = filePath;
@@ -20,38 +22,6 @@ export class ReplayLogger {
   close() {
     // Synchronous append writes are already flushed.
   }
-}
-
-function parseJsonl(filePath) {
-  const content = fs.readFileSync(filePath, 'utf8');
-  return content
-    .split('\n')
-    .filter((line) => line.trim().length > 0)
-    .map((line) => JSON.parse(line));
-}
-
-function extractLayout(rows) {
-  const layoutRow = rows.find((r) => r.type === 'layout');
-  if (layoutRow) {
-    return { grid: layoutRow.grid, drop_off: layoutRow.drop_off, max_rounds: layoutRow.max_rounds };
-  }
-  // Backward-compatible: old replays have full state_snapshot on every tick
-  const firstTick = rows.find((r) => r.type === 'tick' && r.state_snapshot?.grid);
-  if (firstTick) {
-    const s = firstTick.state_snapshot;
-    return { grid: s.grid, drop_off: s.drop_off, max_rounds: s.max_rounds };
-  }
-  return null;
-}
-
-function rebuildSnapshot(snapshot, layout) {
-  if (!layout || snapshot.grid) return snapshot;
-  return {
-    ...snapshot,
-    grid: layout.grid,
-    drop_off: layout.drop_off,
-    max_rounds: layout.max_rounds,
-  };
 }
 
 function activeOrderId(snapshot) {
@@ -152,6 +122,9 @@ export function summarizeReplay(filePath) {
 export function generateAnalysis(filePath) {
   const rows = parseJsonl(filePath);
   const tickRows = rows.filter((r) => r.type === 'tick');
+  const controlModeTimeline = [];
+  const previewWipTimeline = [];
+  const activeCloseEtaTimeline = [];
 
   // Score progression by 25-tick windows
   const scoreByWindow = [];
@@ -249,10 +222,37 @@ export function generateAnalysis(filePath) {
   const maxStalledBots = tickRows.reduce((max, row) => Math.max(max, row.planner_metrics?.stalledBots || 0), 0);
   const peakTaskCount = tickRows.reduce((max, row) => Math.max(max, row.planner_metrics?.taskCount || 0), 0);
   const forcedWaitActions = tickRows.reduce((sum, row) => sum + (row.planner_metrics?.forcedWaits || 0), 0);
+  let queueAssignmentsPeak = 0;
+  let serviceBayAssignmentsPeak = 0;
+  let previewWipPeak = 0;
   const missionMetrics = tickRows.reduce((aggregate, row) => {
     const metrics = row.planner_metrics || {};
     if (metrics.missionTypeByBot && Object.keys(metrics.missionTypeByBot).length > 0) {
       aggregate.missionTypeByBot = metrics.missionTypeByBot;
+    }
+    if (metrics.controlMode && metrics.controlMode !== aggregate.lastControlMode) {
+      if (aggregate.lastControlMode !== null) {
+        controlModeTimeline.push({
+          mode: aggregate.lastControlMode,
+          startTick: aggregate.controlStartTick,
+          endTick: row.tick - 1,
+        });
+      }
+      aggregate.lastControlMode = metrics.controlMode;
+      aggregate.controlStartTick = row.tick;
+    }
+    if (typeof metrics.previewWipItems === 'number') {
+      previewWipPeak = Math.max(previewWipPeak, metrics.previewWipItems);
+      const lastPreviewWip = previewWipTimeline.at(-1);
+      if (!lastPreviewWip || lastPreviewWip.value !== metrics.previewWipItems) {
+        previewWipTimeline.push({ tick: row.tick, value: metrics.previewWipItems });
+      }
+    }
+    if (metrics.orderEtaAtDecision !== undefined && metrics.orderEtaAtDecision !== null) {
+      const lastEta = activeCloseEtaTimeline.at(-1);
+      if (!lastEta || lastEta.value !== metrics.orderEtaAtDecision) {
+        activeCloseEtaTimeline.push({ tick: row.tick, value: metrics.orderEtaAtDecision });
+      }
     }
     aggregate.missionReassignments += metrics.missionReassignments || 0;
     aggregate.activeMissionsAssigned = Math.max(
@@ -269,6 +269,8 @@ export function generateAnalysis(filePath) {
       metrics.dropMissionsAssigned || 0,
     );
     aggregate.missionTimeouts += metrics.missionTimeouts || 0;
+    queueAssignmentsPeak = Math.max(queueAssignmentsPeak, metrics.queueAssignments || 0);
+    serviceBayAssignmentsPeak = Math.max(serviceBayAssignmentsPeak, metrics.serviceBayAssignments || 0);
     return aggregate;
   }, {
     missionTypeByBot: {},
@@ -278,7 +280,18 @@ export function generateAnalysis(filePath) {
     previewSuppressed: 0,
     dropMissionsAssigned: 0,
     missionTimeouts: 0,
+    lastControlMode: null,
+    controlStartTick: null,
   });
+  if (missionMetrics.lastControlMode !== null) {
+    controlModeTimeline.push({
+      mode: missionMetrics.lastControlMode,
+      startTick: missionMetrics.controlStartTick,
+      endTick: tickRows.at(-1)?.tick ?? missionMetrics.controlStartTick,
+    });
+  }
+  delete missionMetrics.lastControlMode;
+  delete missionMetrics.controlStartTick;
   let endInventoryByBot = null;
   if (botCount > 1 && lastTick?.state_snapshot?.bots) {
     const activeOrder = (lastTick.state_snapshot.orders || []).find((order) => order.status === 'active' && !order.complete) || null;
@@ -331,6 +344,12 @@ export function generateAnalysis(filePath) {
       peakTaskCount,
       forcedWaitActions,
       ...missionMetrics,
+      controlModeTimeline,
+      previewWipPeak,
+      previewWipTimeline,
+      activeCloseEtaTimeline,
+      queueAssignmentsPeak,
+      serviceBayAssignmentsPeak,
       endInventoryByBot,
     } : null,
     wastedInventoryAtEnd: wastedInventory,
@@ -388,5 +407,47 @@ export function simulateReplayAgainstObserved(filePath, planner) {
     // NOTE: matchRatio measures action agreement with past run, not score.
     // A change in strategy will lower matchRatio even if it improves score.
     // Use live play or estimate-max to evaluate actual score impact.
+  };
+}
+
+export function benchmarkReplayCorpus({
+  targetPath,
+  difficulty = null,
+  plannerFactory,
+}) {
+  const replayPaths = collectReplayPaths(targetPath, difficulty);
+  const results = replayPaths.map((replayPath) => {
+    const summary = summarizeReplay(replayPath);
+    const analysis = generateAnalysis(replayPath);
+    const simulation = plannerFactory
+      ? simulateReplayAgainstObserved(replayPath, plannerFactory())
+      : null;
+
+    return {
+      replay: replayPath,
+      finalScore: summary.finalScore,
+      ordersCompleted: summary.ordersCompleted,
+      itemsDelivered: summary.itemsDelivered,
+      simulation,
+      missionStats: analysis.multiBotCoordination ? {
+        missionReassignments: analysis.multiBotCoordination.missionReassignments,
+        activeMissionsAssigned: analysis.multiBotCoordination.activeMissionsAssigned,
+        previewMissionsAssigned: analysis.multiBotCoordination.previewMissionsAssigned,
+        dropMissionsAssigned: analysis.multiBotCoordination.dropMissionsAssigned,
+        missionTimeouts: analysis.multiBotCoordination.missionTimeouts,
+      } : null,
+      controlModeTimeline: analysis.multiBotCoordination?.controlModeTimeline || [],
+      previewWipTimeline: analysis.multiBotCoordination?.previewWipTimeline || [],
+      previewWipPeak: analysis.multiBotCoordination?.previewWipPeak || 0,
+      activeCloseEtaTimeline: analysis.multiBotCoordination?.activeCloseEtaTimeline || [],
+      queueAssignmentsPeak: analysis.multiBotCoordination?.queueAssignmentsPeak || 0,
+      serviceBayAssignmentsPeak: analysis.multiBotCoordination?.serviceBayAssignmentsPeak || 0,
+      deliveryCadenceByWindow: analysis.scoreByWindow,
+    };
+  });
+
+  return {
+    replayCount: results.length,
+    replays: results,
   };
 }

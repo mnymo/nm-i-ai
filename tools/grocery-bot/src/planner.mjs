@@ -5,6 +5,7 @@ import { getRoundPhase } from './planner-utils.mjs';
 import {
   executeMissionStrategy,
   executeAssignedTaskStrategy,
+  executeWarehouseStrategy,
 } from './planner-multibot-runtime.mjs';
 import { executeSingleBotTurn } from './planner-singlebot-runtime.mjs';
 import {
@@ -245,6 +246,21 @@ export class GroceryPlanner {
     );
     if (runtime.multi_bot_strategy === 'mission_v1') {
       return executeMissionStrategy({
+        planner: this,
+        state,
+        world,
+        graph,
+        phase,
+        recoveryMode,
+        recoveryThreshold,
+        blockedItemsByBot,
+        previousPositionByBot,
+        previousInventoryKeyByBot,
+      });
+    }
+
+    if (runtime.multi_bot_strategy === 'warehouse_v1') {
+      return executeWarehouseStrategy({
         planner: this,
         state,
         world,

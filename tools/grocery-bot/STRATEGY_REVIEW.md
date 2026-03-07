@@ -29,10 +29,14 @@
 
 - Easy is no longer the active bottleneck.
 - Medium is now the active bottleneck.
-- The current target is to push the medium benchmark from `115` to `>116`.
+- The current target is no longer just `>116`; it is to turn the stable `115` branch into an architecture that can climb toward the high `200`s on medium.
 - Detailed experiment history now lives in [`EXPERIMENT_LOG.md`](./EXPERIMENT_LOG.md).
 - Structural refactor backlog now lives in [`STRUCTURE_REVIEW.md`](./STRUCTURE_REVIEW.md).
 - `mission_v1` is not the medium default after a live collapse to score `2`; the stable assignment path remains the baseline.
+- `warehouse_v1` now exists behind a non-default strategy flag and is intended as the next real medium architecture, but it must clear offline benchmark gates before any promotion.
+- Offline corpus benchmarking is now part of the workflow:
+  - `node tools/grocery-bot/index.mjs --mode benchmark --difficulty medium --replay tools/grocery-bot/out`
+  - `node tools/grocery-bot/index.mjs --mode estimate-max --replay tools/grocery-bot/out/<run-id>/replay.jsonl`
 
 ## Current Strategy (As Implemented)
 
@@ -193,6 +197,7 @@ Expected impact:
 - smoother progress inside long stagnation windows
 
 ## Suggested Next Iteration Order
-1. Push medium above `116` by building on the recovered `115` baseline without destabilizing throughput.
-2. Validate each medium change with tests plus replay simulation before spending a live token.
-3. Only reopen easy-specific logic if a shared change regresses the `118` baseline.
+1. Keep `assignment_v1` as the live medium baseline until a new control architecture beats `115`.
+2. Build and benchmark `warehouse_v1` offline against the medium corpus before spending live tokens.
+3. Promote only if the new branch clears staged gates: `>116`, then `>150`, then `>180`, then `>220`.
+4. Only reopen easy-specific logic if a shared change regresses the `118` baseline.

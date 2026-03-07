@@ -8,7 +8,13 @@ import { estimateMaxScoreFromReplay } from './src/max-score-estimator.mjs';
 import { tuneProfileFromReplay } from './src/optimizer.mjs';
 import { GroceryPlanner } from './src/planner.mjs';
 import { loadProfiles, resolveProfile } from './src/profile.mjs';
-import { ReplayLogger, summarizeReplay, simulateReplayAgainstObserved, generateAnalysis } from './src/replay.mjs';
+import {
+  ReplayLogger,
+  summarizeReplay,
+  simulateReplayAgainstObserved,
+  generateAnalysis,
+  benchmarkReplayCorpus,
+} from './src/replay.mjs';
 
 function nowStamp() {
   return new Date().toISOString().replace(/[:.]/g, '-');
@@ -108,6 +114,18 @@ function runEstimateMaxMode(args) {
   console.log(JSON.stringify(estimate, null, 2));
 }
 
+function runBenchmarkMode(args) {
+  const profiles = loadProfiles(args.configPath);
+  const selectedProfile = resolveProfile(profiles, args.difficulty, args.profile);
+  const benchmark = benchmarkReplayCorpus({
+    targetPath: args.replay,
+    difficulty: args.difficulty,
+    plannerFactory: () => new GroceryPlanner(selectedProfile),
+  });
+
+  console.log(JSON.stringify(benchmark, null, 2));
+}
+
 async function main() {
   const args = parseCliArguments(process.argv.slice(2));
 
@@ -133,6 +151,11 @@ async function main() {
 
   if (args.mode === 'estimate-max') {
     runEstimateMaxMode(args);
+    return;
+  }
+
+  if (args.mode === 'benchmark') {
+    runBenchmarkMode(args);
   }
 }
 

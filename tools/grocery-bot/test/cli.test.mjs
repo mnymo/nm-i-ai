@@ -22,3 +22,15 @@ test('parseCliArguments accepts full websocket URL for --token', () => {
   assert.equal(args.token, 'header.payload.signature');
   assert.equal(args.difficulty, 'medium');
 });
+
+test('parseCliArguments accepts benchmark mode with replay path', () => {
+  const args = parseCliArguments([
+    '--mode', 'benchmark',
+    '--difficulty', 'medium',
+    '--replay', 'tools/grocery-bot/out',
+  ]);
+
+  assert.equal(args.mode, 'benchmark');
+  assert.equal(args.difficulty, 'medium');
+  assert.match(args.replay, /tools\/grocery-bot\/out$/);
+});

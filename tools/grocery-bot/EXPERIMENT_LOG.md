@@ -5,7 +5,7 @@ Purpose: keep an operational record of strategy experiments so we can avoid repe
 ## Current Benchmarks
 
 - Easy: `118`
-- Medium: `109`
+- Medium: `115`
 
 ## Experiments
 
@@ -126,6 +126,32 @@ Purpose: keep an operational record of strategy experiments so we can avoid repe
   - live medium run `2026-03-07T18-48-23-889Z-medium-medium` -> `115`
 - Verdict: `keep`
 - Notes: the simpler `82ee32e`-style assignment/runtime recovered medium throughput and established a new benchmark. Result profile stayed healthy enough to promote: `0` failed pickups, `0` non-scoring dropoffs, `18` wait actions, `113` stalls, only `4` sanitizer overrides, and just `1` wasted end item.
+
+### Warehouse-control planner v1 (`warehouse_v1`)
+
+- Hypothesis: medium will not reach the high `200`s through more local assignment tuning; it needs a warehouse-style control layer with explicit work release, stable missions, service-bay queueing, preview WIP caps, and endgame cashout modes.
+- Change:
+  - added a new non-default `runtime.multi_bot_strategy = "warehouse_v1"` branch
+  - implemented:
+    - control modes (`close_active_order`, `build_active_inventory`, `limited_preview_prefetch`, `close_if_feasible`, `partial_cashout`, `stop_preview`)
+    - mission types (`pickup_active`, `drop_active`, `pickup_preview`, `queue_service_bay`, `reposition_zone`)
+    - service-bay and queue-cell reservation
+    - queue promotion when a bay clears
+    - zone ownership with dynamic borrowing
+  - added replay/benchmark support:
+    - `benchmark` CLI mode
+    - control mode timeline
+    - preview WIP timeline
+    - queue/service-bay occupancy peaks
+    - active close ETA timeline
+  - fixed `estimate-max` so it works with current compact replay files
+- Validation:
+  - `node --test tools/grocery-bot/test/*.test.mjs` -> pass
+  - `node tools/grocery-bot/index.mjs --mode benchmark --difficulty medium --replay tools/grocery-bot/out` -> pass
+  - `node tools/grocery-bot/index.mjs --mode benchmark --difficulty medium --profile medium_warehouse_v1 --replay tools/grocery-bot/out` -> pass
+  - `node tools/grocery-bot/index.mjs --mode estimate-max --replay tools/grocery-bot/out/2026-03-07T18-48-23-889Z-medium-medium/replay.jsonl` -> pass
+- Verdict: `implemented behind flag, not promoted`
+- Notes: this is now a real development branch with specs and offline tooling, but it is intentionally not the live default until it beats the `115` assignment baseline on fresh medium runs.
 
 ## Guidance
 
