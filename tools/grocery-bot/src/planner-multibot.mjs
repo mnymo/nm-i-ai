@@ -11,24 +11,54 @@ import {
   closestAdjacentCell,
 } from './planner-utils.mjs';
 
+function sumCounts(map) {
+  return Array.from(map.values()).reduce((sum, count) => sum + Math.max(0, count), 0);
+}
+
+function reserveInventoryForDemand(inventoryCounts, demand) {
+  const remainingDemand = cloneDemand(demand);
+  const surplusInventory = new Map(inventoryCounts);
+
+  for (const [type, count] of inventoryCounts.entries()) {
+    const required = remainingDemand.get(type) || 0;
+    if (required <= 0 || count <= 0) {
+      continue;
+    }
+
+    const used = Math.min(count, required);
+    remainingDemand.set(type, required - used);
+    surplusInventory.set(type, count - used);
+  }
+
+  return { remainingDemand, surplusInventory };
+}
+
 export function buildTasks(state, world, profile, phase) {
   const tasks = [];
   const inventoryCounts = countInventoryByType(state.bots);
-  const activeDemand = cloneDemand(world.activeDemand);
+  const {
+    remainingDemand: activeDemand,
+    surplusInventory,
+  } = reserveInventoryForDemand(inventoryCounts, world.activeDemand);
+  const {
+    remainingDemand: previewDemand,
+    surplusInventory: remainingPreviewSurplus,
+  } = reserveInventoryForDemand(surplusInventory, world.previewDemand);
 
-  for (const [type, count] of inventoryCounts.entries()) {
-    if (activeDemand.has(type)) {
-      activeDemand.set(type, Math.max(0, activeDemand.get(type) - count));
-    }
-  }
-
-  const totalActiveMissing = Array.from(activeDemand.values()).reduce((sum, count) => sum + count, 0);
+  const totalActiveMissing = sumCounts(activeDemand);
   const totalFreeSlots = state.bots.reduce((sum, bot) => sum + Math.max(0, 3 - (bot.inventory || []).length), 0);
-  const allowPreviewPrefetch = phase !== 'cutoff' && totalFreeSlots > totalActiveMissing;
+  const previewReserveSlots = profile.assignment.preview_reserve_slots ?? Math.max(2, Math.ceil(state.bots.length / 3));
+  const previewCarrySoftCap = profile.assignment.preview_carry_soft_cap ?? Math.max(3, Math.ceil(state.bots.length / 2));
+  const allowPreviewPrefetch = (
+    phase !== 'cutoff'
+    && sumCounts(previewDemand) > 0
+    && totalFreeSlots > totalActiveMissing + previewReserveSlots
+    && sumCounts(remainingPreviewSurplus) <= previewCarrySoftCap
+  );
 
   const neededTypes = getNeededTypes(
     activeDemand,
-    world.previewDemand,
+    previewDemand,
     profile.assignment.preview_item_weight,
     allowPreviewPrefetch,
   );
@@ -55,6 +85,7 @@ export function buildTasks(state, world, profile, phase) {
     }
   }
 
+  const itemsByType = new Map();
   for (const item of state.items) {
     if (!neededTypes.has(item.type)) {
       continue;
@@ -64,14 +95,41 @@ export function buildTasks(state, world, profile, phase) {
       continue;
     }
 
-    tasks.push({
-      key: `item:${item.id}`,
-      kind: 'pick_up',
-      target: item.position,
-      item,
-      botScoped: false,
-      demandScore: neededTypes.get(item.type),
-    });
+    const list = itemsByType.get(item.type) || [];
+    list.push(item);
+    itemsByType.set(item.type, list);
+  }
+
+  const activeTaskBuffer = profile.assignment.active_task_buffer ?? Math.max(1, Math.ceil(state.bots.length / 4));
+  const previewTaskBuffer = profile.assignment.preview_task_buffer ?? 1;
+
+  for (const [type, score] of neededTypes.entries()) {
+    const activeCount = activeDemand.get(type) || 0;
+    const previewCount = allowPreviewPrefetch ? (previewDemand.get(type) || 0) : 0;
+    const budget = activeCount > 0
+      ? activeCount + activeTaskBuffer
+      : previewCount > 0
+        ? previewCount + previewTaskBuffer
+        : 0;
+    if (budget <= 0) {
+      continue;
+    }
+
+    const items = [...(itemsByType.get(type) || [])]
+      .sort((a, b) => estimateDistanceToDropoff(a, state.drop_off) - estimateDistanceToDropoff(b, state.drop_off))
+      .slice(0, budget);
+
+    for (const item of items) {
+      tasks.push({
+        key: `item:${item.id}`,
+        kind: 'pick_up',
+        target: item.position,
+        item,
+        botScoped: false,
+        demandScore: score,
+        sourceOrder: activeCount > 0 ? 'active' : 'preview',
+      });
+    }
   }
 
   return tasks;

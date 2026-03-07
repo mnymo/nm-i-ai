@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-import { ReplayLogger, summarizeReplay } from '../src/replay.mjs';
+import { ReplayLogger, generateAnalysis, summarizeReplay } from '../src/replay.mjs';
 
 test('ReplayLogger writes JSONL and summarizeReplay returns key metrics', () => {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'grocery-bot-test-'));
@@ -70,4 +70,59 @@ test('summarizeReplay derives delivered items and completed orders from tick del
   assert.equal(summary.finalScore, 9);
   assert.equal(summary.itemsDelivered, 4);
   assert.equal(summary.ordersCompleted, 1);
+});
+
+test('generateAnalysis includes compact multi-bot coordination metrics', () => {
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'grocery-bot-test-'));
+  const replayPath = path.join(tmpDir, 'multibot.jsonl');
+
+  const logger = new ReplayLogger(replayPath);
+  logger.log({
+    type: 'tick',
+    tick: 0,
+    state_snapshot: {
+      score: 0,
+      bots: [
+        { id: 0, inventory: ['milk'], position: [1, 1] },
+        { id: 1, inventory: ['bread', 'bread'], position: [2, 1] },
+      ],
+      orders: [
+        { id: 'order_0', items_required: ['milk', 'yogurt'], items_delivered: [], status: 'active', complete: false },
+        { id: 'order_1', items_required: ['bread'], items_delivered: [], status: 'preview', complete: false },
+      ],
+    },
+    actions_sent: [{ bot: 0, action: 'wait' }, { bot: 1, action: 'wait' }],
+    planner_metrics: { stalls: 1, stalledBots: 1, taskCount: 6, forcedWaits: 1 },
+  });
+  logger.log({
+    type: 'tick',
+    tick: 1,
+    state_snapshot: {
+      score: 0,
+      bots: [
+        { id: 0, inventory: ['milk'], position: [1, 1] },
+        { id: 1, inventory: ['bread', 'bread'], position: [2, 1] },
+      ],
+      orders: [
+        { id: 'order_0', items_required: ['milk', 'yogurt'], items_delivered: [], status: 'active', complete: false },
+        { id: 'order_1', items_required: ['bread'], items_delivered: [], status: 'preview', complete: false },
+      ],
+    },
+    actions_sent: [{ bot: 0, action: 'wait' }, { bot: 1, action: 'wait' }],
+    planner_metrics: { stalls: 2, stalledBots: 2, taskCount: 8, forcedWaits: 0 },
+  });
+  logger.log({ type: 'game_over', final_score: 0, items_delivered: 0, orders_completed: 0 });
+  logger.close();
+
+  const analysis = generateAnalysis(replayPath);
+
+  assert.equal(analysis.multiBotCoordination.botCount, 2);
+  assert.equal(analysis.multiBotCoordination.totalStalls, 3);
+  assert.equal(analysis.multiBotCoordination.maxStalledBots, 2);
+  assert.equal(analysis.multiBotCoordination.peakTaskCount, 8);
+  assert.equal(analysis.multiBotCoordination.forcedWaitActions, 1);
+  assert.deepEqual(analysis.multiBotCoordination.endInventoryByBot, [
+    { bot: 0, inventoryCount: 1, deliverableActiveItems: 1, nonDeliverableItems: 0 },
+    { bot: 1, inventoryCount: 2, deliverableActiveItems: 0, nonDeliverableItems: 2 },
+  ]);
 });

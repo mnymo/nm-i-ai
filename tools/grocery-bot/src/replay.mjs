@@ -63,6 +63,26 @@ function activeOrderId(snapshot) {
   return active?.id ?? null;
 }
 
+function buildDemand(order) {
+  const demand = new Map();
+  if (!order) {
+    return demand;
+  }
+
+  for (const type of order.items_required || []) {
+    demand.set(type, (demand.get(type) || 0) + 1);
+  }
+
+  for (const type of order.items_delivered || []) {
+    const current = demand.get(type) || 0;
+    if (current > 0) {
+      demand.set(type, current - 1);
+    }
+  }
+
+  return demand;
+}
+
 export function summarizeReplay(filePath) {
   const rows = parseJsonl(filePath);
   const ticksRows = rows.filter((row) => row.type === 'tick');
@@ -225,6 +245,37 @@ export function generateAnalysis(filePath) {
   // Final result from game_over row
   const gameOver = rows.find((r) => r.type === 'game_over');
   const summary = summarizeReplay(filePath);
+  const botCount = lastTick?.state_snapshot?.bots?.length || 0;
+  const maxStalledBots = tickRows.reduce((max, row) => Math.max(max, row.planner_metrics?.stalledBots || 0), 0);
+  const peakTaskCount = tickRows.reduce((max, row) => Math.max(max, row.planner_metrics?.taskCount || 0), 0);
+  const forcedWaitActions = tickRows.reduce((sum, row) => sum + (row.planner_metrics?.forcedWaits || 0), 0);
+  let endInventoryByBot = null;
+  if (botCount > 1 && lastTick?.state_snapshot?.bots) {
+    const activeOrder = (lastTick.state_snapshot.orders || []).find((order) => order.status === 'active' && !order.complete) || null;
+    const activeDemand = buildDemand(activeOrder);
+    endInventoryByBot = lastTick.state_snapshot.bots.map((bot) => {
+      const localDemand = new Map(activeDemand);
+      let deliverable = 0;
+      let nondeliverable = 0;
+
+      for (const type of bot.inventory || []) {
+        const remaining = localDemand.get(type) || 0;
+        if (remaining > 0) {
+          deliverable += 1;
+          localDemand.set(type, remaining - 1);
+        } else {
+          nondeliverable += 1;
+        }
+      }
+
+      return {
+        bot: bot.id,
+        inventoryCount: (bot.inventory || []).length,
+        deliverableActiveItems: deliverable,
+        nonDeliverableItems: nondeliverable,
+      };
+    });
+  }
 
   return {
     finalScore: gameOver?.final_score ?? summary.finalScore,
@@ -243,6 +294,14 @@ export function generateAnalysis(filePath) {
       waitActions,
       nonScoringDropoffs,
     },
+    multiBotCoordination: botCount > 1 ? {
+      botCount,
+      totalStalls: summary.totalStalls,
+      maxStalledBots,
+      peakTaskCount,
+      forcedWaitActions,
+      endInventoryByBot,
+    } : null,
     wastedInventoryAtEnd: wastedInventory,
   };
 }
