@@ -62,6 +62,7 @@ tools/grocery-bot/
 ├── src/
 │   ├── planner.mjs              planSingleBot + GroceryPlanner class — read for strategy changes
 │   ├── planner-singlebot.mjs    Single-bot evaluation, recovery, cooldowns, oscillation detection
+│   ├── planner-singlebot-runtime.mjs Single-bot runtime orchestration and metric/lock handling
 │   ├── planner-multibot.mjs     Multi-bot task generation, costs, reservations, action helpers
 │   ├── planner-multibot-common.mjs Shared multi-bot demand/zone helpers
 │   ├── planner-missions.mjs     Medium mission assignment and mission action resolution

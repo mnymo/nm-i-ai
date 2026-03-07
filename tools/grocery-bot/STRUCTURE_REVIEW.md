@@ -25,6 +25,7 @@ Implemented in this pass:
 - extracted multi-bot shared helpers into `src/planner-multibot-common.mjs`
 - extracted medium mission logic into `src/planner-missions.mjs`
 - extracted multi-bot runtime execution into `src/planner-multibot-runtime.mjs`
+- extracted single-bot runtime orchestration into `src/planner-singlebot-runtime.mjs`
 - extracted client legality sanitizer into `src/game-client-sanitizer.mjs`
 - split planner tests into:
   - `test/planner.test.mjs`
@@ -34,12 +35,10 @@ Implemented in this pass:
 
 ### `src/planner.mjs`
 
-- Status: still oversized by policy
-- Reason: it still owns `GroceryPlanner` state, phase handling, and the full single-bot orchestration path
-- Next split:
+- Status: within policy after first and second decomposition passes
+- Role: `GroceryPlanner` shell for state tracking, phase handling, and strategy dispatch
+- Next cleanup if it grows again:
   - extract planner state/metrics update helpers from the class body
-  - move single-bot orchestration out of the planner shell
-  - keep `GroceryPlanner` as the orchestration shell only
 
 ### `src/planner-missions.mjs`
 
@@ -57,6 +56,14 @@ Implemented in this pass:
   - move cooldown/approach/oscillation state helpers into a dedicated recovery-state module
   - move recovery planner behavior into a dedicated recovery module
   - keep route scoring and evaluation separate from recovery/state tracking
+
+### `src/planner-singlebot-runtime.mjs`
+
+- Status: near hard limit
+- Reason: single-bot execution flow was extracted as one piece to shrink `planner.mjs` first
+- Next split:
+  - separate single-bot action selection from single-bot metric/lock bookkeeping
+  - keep runtime orchestration thinner than the current extracted version
 
 ### `test/planner-singlebot.test.mjs`
 
