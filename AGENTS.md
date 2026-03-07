@@ -62,7 +62,8 @@ Use this file together with [CLAUDE.md](/home/magnus/prog/nm-i-ai/CLAUDE.md) whe
 - Structure map and split backlog: `tools/grocery-bot/STRUCTURE_REVIEW.md`
 - Oracle/script optimizer: `tools/grocery-bot/generate-script.mjs`
 - Heavy oracle optimizer: `tools/grocery-bot/optimize-oracle-script.mjs`
-- Oracle/script modules: `tools/grocery-bot/src/oracle-script-optimizer.mjs`, `tools/grocery-bot/src/oracle-script-evaluator.mjs`, `tools/grocery-bot/src/oracle-script-io.mjs`, `tools/grocery-bot/src/oracle-script-search.mjs`, `tools/grocery-bot/src/oracle-script-legacy.mjs`
+- Replay compression optimizer: `tools/grocery-bot/compress-oracle-script.mjs`
+- Oracle/script modules: `tools/grocery-bot/src/oracle-script-optimizer.mjs`, `tools/grocery-bot/src/oracle-script-evaluator.mjs`, `tools/grocery-bot/src/oracle-script-io.mjs`, `tools/grocery-bot/src/oracle-script-search.mjs`, `tools/grocery-bot/src/oracle-script-legacy.mjs`, `tools/grocery-bot/src/oracle-script-compressor.mjs`
 
 ## MCP
 

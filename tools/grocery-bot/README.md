@@ -134,6 +134,24 @@ This is the intended offline brute-force entrypoint. It:
 
 Use `--objective handoff_first` when the main goal is to finish known oracle work early and let the live planner score after handoff. Use `score_first` only when you explicitly want to maximize scripted score first.
 
+### 10) Compress a proven replay backward
+
+```bash
+node tools/grocery-bot/compress-oracle-script.mjs \
+  --oracle tools/grocery-bot/config/oracle-expert.json \
+  --replay tools/grocery-bot/out/2026-03-07T20-37-02-748Z-expert-expert/replay.jsonl \
+  --out-script tools/grocery-bot/config/script-expert.json \
+  --out-report tools/grocery-bot/out/oracle-script-compression-report.json
+```
+
+This is the backward optimizer:
+- starts from a proven replay trajectory
+- extracts the replayed actions as a script prefix
+- walks backward removing redundant all-wait ticks
+- keeps only compressions that preserve oracle-known legality and achieved oracle outcome
+
+Use this when the live/player model has already proven a good known-order prefix and you want to free ticks for a better handoff.
+
 ## Replay Viewer
 
 Start the local replay viewer:
@@ -178,6 +196,7 @@ node tools/grocery-bot/tmp-extract-oracle.mjs
 node tools/grocery-bot/generate-script.mjs --oracle tools/grocery-bot/config/oracle-expert.json --replay tools/grocery-bot/out/2026-03-07T20-37-02-748Z-expert-expert/replay.jsonl --out tools/grocery-bot/config/script-expert.json
 node tools/grocery-bot/tune-oracle-script.mjs --oracle tools/grocery-bot/config/oracle-expert.json --replay tools/grocery-bot/out/2026-03-07T20-37-02-748Z-expert-expert/replay.jsonl --out tools/grocery-bot/out/oracle-script-sweep.json
 node tools/grocery-bot/optimize-oracle-script.mjs --oracle tools/grocery-bot/config/oracle-expert.json --replay tools/grocery-bot/out/2026-03-07T20-37-02-748Z-expert-expert/replay.jsonl --out-script tools/grocery-bot/config/script-expert.json --out-report tools/grocery-bot/out/oracle-script-optimizer-report.json --objective handoff_first --iterations 1000 --score-to-beat 91 --ticks-to-beat 292
+node tools/grocery-bot/compress-oracle-script.mjs --oracle tools/grocery-bot/config/oracle-expert.json --replay tools/grocery-bot/out/2026-03-07T20-37-02-748Z-expert-expert/replay.jsonl --out-script tools/grocery-bot/config/script-expert.json --out-report tools/grocery-bot/out/oracle-script-compression-report.json
 node -e "const d=require('fs').readFileSync('tools/grocery-bot/config/script-expert.json','utf8'); console.log(d)"
 node tools/grocery-bot/index.mjs --mode benchmark --difficulty expert --replay tools/grocery-bot/out
 node tools/grocery-bot/index.mjs --mode simulate --difficulty expert --profile expert --replay tools/grocery-bot/out/<run-id>/replay.jsonl

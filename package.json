@@ -9,6 +9,7 @@
     "grocery-bot:generate-script": "node tools/grocery-bot/generate-script.mjs",
     "grocery-bot:tune-script": "node tools/grocery-bot/tune-oracle-script.mjs",
     "grocery-bot:optimize-script": "node tools/grocery-bot/optimize-oracle-script.mjs",
+    "grocery-bot:compress-script": "node tools/grocery-bot/compress-oracle-script.mjs",
     "test": "npm run grocery-bot:test"
   },
   "keywords": [],

@@ -52,6 +52,7 @@
   - `tmp-extract-oracle.mjs` updates `config/oracle-expert.json`
   - `generate-script.mjs` is the quick oracle pass
   - `optimize-oracle-script.mjs` is the preferred heavy offline pass
+  - `compress-oracle-script.mjs` is the replay-tightening pass for proven prefixes
   - `src/oracle-script-evaluator.mjs` validates the generated script deterministically before it is written
   - current preferred objective is `handoff_first`: finish known oracle work earlier and let live planner take over sooner
 

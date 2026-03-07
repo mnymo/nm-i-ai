@@ -5,6 +5,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import { evaluateOracleScript } from '../src/oracle-script-evaluator.mjs';
+import { compressOracleReplayScript, extractScriptFromReplay } from '../src/oracle-script-compressor.mjs';
 import { loadOracleFile, loadScriptFile } from '../src/oracle-script-io.mjs';
 import { buildLegacyOracleScript } from '../src/oracle-script-legacy.mjs';
 import {
@@ -59,6 +60,22 @@ function writeFixtureReplay(oracle) {
         orders: [],
       },
     },
+  ];
+  fs.writeFileSync(replayPath, rows.map((row) => JSON.stringify(row)).join('\n'));
+  return replayPath;
+}
+
+function writeReplayWithActions(oracle, tickRows) {
+  const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'oracle-replay-actions-'));
+  const replayPath = path.join(tempRoot, 'replay.jsonl');
+  const rows = [
+    {
+      type: 'layout',
+      grid: { width: oracle.grid.width, height: oracle.grid.height, walls: [] },
+      drop_off: oracle.drop_off,
+      max_rounds: 300,
+    },
+    ...tickRows,
   ];
   fs.writeFileSync(replayPath, rows.map((row) => JSON.stringify(row)).join('\n'));
   return replayPath;
@@ -312,4 +329,264 @@ test('oracle evaluator allows stacked starting bots to wait on the same cell', (
 
   const evaluation = evaluateOracleScript({ oracle, script, maxTripItems: 2 });
   assert.equal(evaluation.valid, true);
+});
+
+test('extractScriptFromReplay preserves tick actions up to stop tick', () => {
+  const oracle = buildFixtureOracle();
+  const replayPath = writeReplayWithActions(oracle, [
+    {
+      type: 'tick',
+      tick: 0,
+      state_snapshot: {
+        bots: [
+          { id: 0, position: [9, 8], inventory: [] },
+          { id: 1, position: [8, 8], inventory: [] },
+          { id: 2, position: [7, 8], inventory: [] },
+        ],
+        items: oracle.items,
+        orders: [],
+      },
+      actions_sent: [
+        { bot: 0, action: 'move_left' },
+        { bot: 1, action: 'wait' },
+        { bot: 2, action: 'wait' },
+      ],
+    },
+    {
+      type: 'tick',
+      tick: 1,
+      state_snapshot: {
+        bots: [
+          { id: 0, position: [8, 8], inventory: [] },
+          { id: 1, position: [8, 8], inventory: [] },
+          { id: 2, position: [7, 8], inventory: [] },
+        ],
+        items: oracle.items,
+        orders: [],
+      },
+      actions_sent: [
+        { bot: 0, action: 'wait' },
+        { bot: 1, action: 'wait' },
+        { bot: 2, action: 'wait' },
+      ],
+    },
+  ]);
+
+  const script = extractScriptFromReplay(replayPath, 0);
+  assert.equal(script.ticks.length, 1);
+  assert.deepEqual(script.ticks[0].actions[0], { bot: 0, action: 'move_left' });
+});
+
+test('replay compressor rewinds to earliest tick that reaches the target score', () => {
+  const oracle = buildFixtureOracle();
+  const replayPath = writeReplayWithActions(oracle, [
+    {
+      type: 'tick',
+      tick: 0,
+      state_snapshot: {
+        bots: [
+          { id: 0, position: [4, 8], inventory: [] },
+          { id: 1, position: [8, 8], inventory: [] },
+          { id: 2, position: [7, 8], inventory: [] },
+        ],
+        items: oracle.items,
+        orders: [],
+      },
+      actions_sent: [
+        { bot: 0, action: 'move_up' },
+        { bot: 1, action: 'wait' },
+        { bot: 2, action: 'wait' },
+      ],
+    },
+    {
+      type: 'tick',
+      tick: 1,
+      state_snapshot: {
+        bots: [
+          { id: 0, position: [4, 7], inventory: [] },
+          { id: 1, position: [8, 8], inventory: [] },
+          { id: 2, position: [7, 8], inventory: [] },
+        ],
+        items: oracle.items,
+        orders: [],
+      },
+      actions_sent: [
+        { bot: 0, action: 'wait' },
+        { bot: 1, action: 'wait' },
+        { bot: 2, action: 'wait' },
+      ],
+    },
+    {
+      type: 'tick',
+      tick: 2,
+      state_snapshot: {
+        bots: [
+          { id: 0, position: [4, 7], inventory: [] },
+          { id: 1, position: [8, 8], inventory: [] },
+          { id: 2, position: [7, 8], inventory: [] },
+        ],
+        items: oracle.items,
+        orders: [],
+      },
+      actions_sent: [
+        { bot: 0, action: 'move_up' },
+        { bot: 1, action: 'wait' },
+        { bot: 2, action: 'wait' },
+      ],
+    },
+    {
+      type: 'tick',
+      tick: 3,
+      state_snapshot: {
+        bots: [
+          { id: 0, position: [4, 6], inventory: [] },
+          { id: 1, position: [8, 8], inventory: [] },
+          { id: 2, position: [7, 8], inventory: [] },
+        ],
+        items: oracle.items,
+        orders: [],
+      },
+      actions_sent: [
+        { bot: 0, action: 'pick_up', item_id: 'item_oats_0' },
+        { bot: 1, action: 'wait' },
+        { bot: 2, action: 'wait' },
+      ],
+    },
+    {
+      type: 'tick',
+      tick: 4,
+      state_snapshot: {
+        bots: [
+          { id: 0, position: [4, 6], inventory: ['oats'] },
+          { id: 1, position: [8, 8], inventory: [] },
+          { id: 2, position: [7, 8], inventory: [] },
+        ],
+        items: oracle.items.filter((item) => item.id !== 'item_oats_0'),
+        orders: [],
+      },
+      actions_sent: [
+        { bot: 0, action: 'move_down' },
+        { bot: 1, action: 'wait' },
+        { bot: 2, action: 'wait' },
+      ],
+    },
+    {
+      type: 'tick',
+      tick: 5,
+      state_snapshot: {
+        bots: [
+          { id: 0, position: [4, 7], inventory: ['oats'] },
+          { id: 1, position: [8, 8], inventory: [] },
+          { id: 2, position: [7, 8], inventory: [] },
+        ],
+        items: oracle.items.filter((item) => item.id !== 'item_oats_0'),
+        orders: [],
+      },
+      actions_sent: [
+        { bot: 0, action: 'move_down' },
+        { bot: 1, action: 'wait' },
+        { bot: 2, action: 'wait' },
+      ],
+    },
+    {
+      type: 'tick',
+      tick: 6,
+      state_snapshot: {
+        bots: [
+          { id: 0, position: [4, 8], inventory: ['oats'] },
+          { id: 1, position: [8, 8], inventory: [] },
+          { id: 2, position: [7, 8], inventory: [] },
+        ],
+        items: oracle.items.filter((item) => item.id !== 'item_oats_0'),
+        orders: [],
+      },
+      actions_sent: [
+        { bot: 0, action: 'move_left' },
+        { bot: 1, action: 'wait' },
+        { bot: 2, action: 'wait' },
+      ],
+    },
+    {
+      type: 'tick',
+      tick: 7,
+      state_snapshot: {
+        bots: [
+          { id: 0, position: [3, 8], inventory: ['oats'] },
+          { id: 1, position: [8, 8], inventory: [] },
+          { id: 2, position: [7, 8], inventory: [] },
+        ],
+        items: oracle.items.filter((item) => item.id !== 'item_oats_0'),
+        orders: [],
+      },
+      actions_sent: [
+        { bot: 0, action: 'move_left' },
+        { bot: 1, action: 'wait' },
+        { bot: 2, action: 'wait' },
+      ],
+    },
+    {
+      type: 'tick',
+      tick: 8,
+      state_snapshot: {
+        bots: [
+          { id: 0, position: [2, 8], inventory: ['oats'] },
+          { id: 1, position: [8, 8], inventory: [] },
+          { id: 2, position: [7, 8], inventory: [] },
+        ],
+        items: oracle.items.filter((item) => item.id !== 'item_oats_0'),
+        orders: [],
+      },
+      actions_sent: [
+        { bot: 0, action: 'move_left' },
+        { bot: 1, action: 'wait' },
+        { bot: 2, action: 'wait' },
+      ],
+    },
+    {
+      type: 'tick',
+      tick: 9,
+      state_snapshot: {
+        bots: [
+          { id: 0, position: [1, 8], inventory: ['oats'] },
+          { id: 1, position: [8, 8], inventory: [] },
+          { id: 2, position: [7, 8], inventory: [] },
+        ],
+        items: oracle.items.filter((item) => item.id !== 'item_oats_0'),
+        orders: [],
+      },
+      actions_sent: [
+        { bot: 0, action: 'drop_off' },
+        { bot: 1, action: 'wait' },
+        { bot: 2, action: 'wait' },
+      ],
+    },
+    {
+      type: 'tick',
+      tick: 10,
+      state_snapshot: {
+        bots: [
+          { id: 0, position: [1, 8], inventory: [] },
+          { id: 1, position: [8, 8], inventory: [] },
+          { id: 2, position: [7, 8], inventory: [] },
+        ],
+        items: oracle.items.filter((item) => item.id !== 'item_oats_0'),
+        orders: [],
+        score: 6,
+      },
+      actions_sent: [
+        { bot: 0, action: 'wait' },
+        { bot: 1, action: 'wait' },
+        { bot: 2, action: 'wait' },
+      ],
+    },
+  ]);
+
+  const compressed = compressOracleReplayScript({
+    oracle,
+    replayPath,
+  });
+
+  assert.equal(compressed.estimated_score, 6);
+  assert.equal(compressed.last_scripted_tick, 9);
+  assert.equal(compressed.replay_target_meta.final_tick_delta, 1);
 });

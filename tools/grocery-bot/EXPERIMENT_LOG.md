@@ -277,3 +277,14 @@ Purpose: keep an operational record of strategy experiments so we can avoid repe
 - Validation:
   - `node --test tools/grocery-bot/test/*.test.mjs`
 - Verdict: keep. This is now the preferred offline oracle entrypoint before live expert script attempts.
+
+# 2026-03-07 - Replay Compression Optimizer
+
+- Hypothesis: once the live/player model has already proven a good oracle-known prefix, we should optimize that run backward instead of asking the forward scheduler to rediscover it. Removing redundant slack from a proven replay should free ticks for earlier handoff.
+- Changes:
+  - added `src/oracle-script-compressor.mjs` to extract replay actions, evaluate the oracle-known outcome, and remove redundant all-wait ticks from the back of the schedule
+  - added `compress-oracle-script.mjs` to emit a replay-derived compressed script and report JSON
+  - documented replay compression as a first-class expert oracle workflow
+- Validation:
+  - `node --test tools/grocery-bot/test/oracle-script.test.mjs`
+- Verdict: keep as `v1`. It is intentionally narrow, but it matches the replay-tightening strategy and gives us a deterministic post-processing pass on proven runs.
