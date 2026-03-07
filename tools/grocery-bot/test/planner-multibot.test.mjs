@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { buildTasks, prioritizeBotsForPlanning } from '../src/planner-multibot.mjs';
+import { buildTasks } from '../src/planner-multibot.mjs';
 import { defaultProfiles } from '../src/profile.mjs';
 import { buildWorldContext } from '../src/world-model.mjs';
 
@@ -71,28 +71,4 @@ test('buildTasks caps preview pickup candidates to remaining preview demand plus
   const pastaTasks = tasks.filter((task) => task.kind === 'pick_up' && task.item.type === 'pasta');
 
   assert.equal(pastaTasks.length <= 2, true);
-});
-
-test('prioritizeBotsForPlanning favors drop-off carriers before active pickups and preview pickups', () => {
-  const state = baseState({
-    bots: [
-      { id: 0, position: [1, 1], inventory: ['milk', 'milk'] },
-      { id: 1, position: [3, 1], inventory: [] },
-      { id: 2, position: [5, 1], inventory: ['bread'] },
-    ],
-    orders: [
-      { id: 'o0', items_required: ['milk', 'milk', 'bread'], items_delivered: [], status: 'active', complete: false },
-      { id: 'o1', items_required: ['pasta'], items_delivered: [], status: 'preview', complete: false },
-    ],
-  });
-  const world = buildWorldContext(state);
-  const taskByBot = new Map([
-    [0, { kind: 'drop_off', key: 'drop:0' }],
-    [1, { kind: 'pick_up', key: 'item:pasta_0', sourceOrder: 'preview' }],
-    [2, { kind: 'pick_up', key: 'item:bread_0', sourceOrder: 'active' }],
-  ]);
-
-  const prioritized = prioritizeBotsForPlanning(state, taskByBot, world.activeDemand).map((bot) => bot.id);
-
-  assert.deepEqual(prioritized, [0, 2, 1]);
 });

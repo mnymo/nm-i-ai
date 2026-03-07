@@ -94,7 +94,6 @@ export function reservePath({
   edgeReservations,
   horizon,
   holdAtGoal = true,
-  holdSteps = null,
 }) {
   if (!path || path.length === 0) {
     return;
@@ -121,9 +120,8 @@ export function reservePath({
   if (holdAtGoal) {
     const goalKey = encodeCoord(path[path.length - 1]);
     const baseTime = startTime + path.length - 1;
-    const effectiveHoldSteps = Math.max(0, holdSteps ?? horizon);
 
-    for (let offset = 1; offset <= effectiveHoldSteps; offset += 1) {
+    for (let offset = 1; offset <= horizon; offset += 1) {
       const holdTime = baseTime + offset;
       if (!reservations.has(holdTime)) {
         reservations.set(holdTime, new Set());

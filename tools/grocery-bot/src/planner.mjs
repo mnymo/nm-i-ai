@@ -16,7 +16,6 @@ import {
   makeOccupancyReservations,
   actionFromTask,
   chooseFallbackAction,
-  prioritizeBotsForPlanning,
 } from './planner-multibot.mjs';
 import {
   mapCountFromInventory,
@@ -697,7 +696,7 @@ export class GroceryPlanner {
     const reservations = makeOccupancyReservations(state);
     const edgeReservations = new Map();
 
-    const botsByPriority = prioritizeBotsForPlanning(state, taskByBot, world.activeDemand);
+    const botsByPriority = [...state.bots].sort((a, b) => a.id - b.id);
     const singleBotMode = botsByPriority.length === 1;
     const actions = [];
     let forcedWaits = 0;
@@ -715,7 +714,6 @@ export class GroceryPlanner {
           edgeReservations,
           horizon: this.profile.routing.horizon,
           holdAtGoal: true,
-          holdSteps: 1,
         });
         actions.push({ bot: bot.id, action: 'wait' });
         forcedWaits += 1;
@@ -770,11 +768,6 @@ export class GroceryPlanner {
         edgeReservations,
         horizon: this.profile.routing.horizon,
         holdAtGoal: resolved.targetType !== 'drop_off',
-        holdSteps: resolved.targetType === 'drop_off'
-          ? 0
-          : resolved.action === 'wait'
-            ? 1
-            : (resolved.holdGoalSteps ?? this.profile.routing.hold_goal_steps),
       });
 
       if (resolved.action === 'pick_up') {
