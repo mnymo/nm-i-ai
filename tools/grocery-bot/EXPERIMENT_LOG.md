@@ -6,6 +6,8 @@ Purpose: keep an operational record of strategy experiments so we can avoid repe
 
 - Easy: `118`
 - Medium: `115`
+- Expert historical reference: `33` (91 high score 1 off)
+- Expert current UTC-day baseline: `13` (`2026-03-08T00-03-58-975Z-expert-expert`)
 
 ## Oracle / Script Status
 
@@ -288,3 +290,22 @@ Purpose: keep an operational record of strategy experiments so we can avoid repe
 - Validation:
   - `node --test tools/grocery-bot/test/oracle-script.test.mjs`
 - Verdict: keep as `v1`. It is intentionally narrow, but it matches the replay-tightening strategy and gives us a deterministic post-processing pass on proven runs.
+
+# 2026-03-07/08 - Replay Handoff Fidelity + Provenance
+
+- Hypothesis: replay drift in expert hybrid mode was caused by our replay model or execution path, not by game randomness, so exact diff tooling plus stricter expected-state handling should make rewind/handoff debuggable and traceable.
+- Changes:
+  - added `diff-replay-transition.mjs` plus `src/replay-transition-diff.mjs`
+  - tightened replay-script expected-state checks in `src/planner.mjs`
+  - fixed replay-derived script generation in `src/oracle-script-compressor.mjs` to preserve full expected state and merge layout drop-zone data
+  - added run provenance capture via `src/run-provenance.mjs` and `index.mjs`
+  - added `expert_replay_handoff` as an explicit frozen handoff profile
+- Validation:
+  - `node --test tools/grocery-bot/test/run-provenance.test.mjs tools/grocery-bot/test/oracle-script.test.mjs tools/grocery-bot/test/planner-script.test.mjs`
+  - replay/handoff live runs improved from immediate tick-0 failure to trusted replay prefixes and clean handoff
+- Key runs:
+  - `2026-03-07T23-52-29-214Z-expert-expert_replay_handoff` -> `13`, trusted replay through tick `51`
+  - `2026-03-07T23-59-03-111Z-expert-expert_replay_handoff` -> `12`, replay drift at tick `27`
+  - `2026-03-08T00-03-58-975Z-expert-expert` -> `13`, first new-day clean expert baseline
+- Verdict: keep the tooling; stop treating replay as the main blocker.
+- Notes: replay/handoff is now instrumented and provenance-tagged. The dominant expert problem is still post-opening planner robustness, not just replay execution.

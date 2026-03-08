@@ -30,6 +30,10 @@ Artifacts are written to:
 - `tools/grocery-bot/out/<run-id>/summary.json` — final score, orders, items
 - `tools/grocery-bot/out/<run-id>/analysis.json` — compact run analysis (read this first)
 
+Live run provenance is also recorded:
+- `summary.json` includes commit, dirty state, profile hash, and oracle/script hashes
+- `replay.jsonl` includes a `run_meta` record for the same inputs
+
 ### 2) Summarize replay
 
 ```bash
@@ -152,6 +156,17 @@ This is the backward optimizer:
 
 Use this when the live/player model has already proven a good known-order prefix and you want to free ticks for a better handoff.
 
+### 11) Diff a replay transition
+
+```bash
+node tools/grocery-bot/diff-replay-transition.mjs \
+  --source-replay tools/grocery-bot/out/<source-run>/replay.jsonl \
+  --validation-replay tools/grocery-bot/out/<validation-run>/replay.jsonl \
+  --tick 51
+```
+
+Use this when a replay-derived script drifts unexpectedly. It compares the full comparable replay state, exact action envelope, and next-state delta for the chosen tick.
+
 ## Replay Viewer
 
 Start the local replay viewer:
@@ -175,6 +190,15 @@ Use it for diagnosis before tuning:
 - inspect held deliverable inventory that is not getting cashed out
 - inspect warehouse control-mode oscillation
 
+## Daily Rotation Warning
+
+Orders and shelf item types rotate at midnight UTC.
+
+Implications:
+- old `oracle-expert.json` and `script-expert.json` become stale after UTC rollover
+- the live planner remains valid because it reads shelf items from game state
+- rebuild oracle/script assets from the new day before trusting them again
+
 ## Strategy Summary
 
 - Centralized multi-bot assignment each round via minimum-cost matching
@@ -197,6 +221,7 @@ node tools/grocery-bot/generate-script.mjs --oracle tools/grocery-bot/config/ora
 node tools/grocery-bot/tune-oracle-script.mjs --oracle tools/grocery-bot/config/oracle-expert.json --replay tools/grocery-bot/out/2026-03-07T20-37-02-748Z-expert-expert/replay.jsonl --out tools/grocery-bot/out/oracle-script-sweep.json
 node tools/grocery-bot/optimize-oracle-script.mjs --oracle tools/grocery-bot/config/oracle-expert.json --replay tools/grocery-bot/out/2026-03-07T20-37-02-748Z-expert-expert/replay.jsonl --out-script tools/grocery-bot/config/script-expert.json --out-report tools/grocery-bot/out/oracle-script-optimizer-report.json --objective handoff_first --iterations 1000 --score-to-beat 91 --ticks-to-beat 292
 node tools/grocery-bot/compress-oracle-script.mjs --oracle tools/grocery-bot/config/oracle-expert.json --replay tools/grocery-bot/out/2026-03-07T20-37-02-748Z-expert-expert/replay.jsonl --out-script tools/grocery-bot/config/script-expert.json --out-report tools/grocery-bot/out/oracle-script-compression-report.json
+node tools/grocery-bot/diff-replay-transition.mjs --source-replay tools/grocery-bot/out/<source-run>/replay.jsonl --validation-replay tools/grocery-bot/out/<validation-run>/replay.jsonl --tick 51
 node -e "const d=require('fs').readFileSync('tools/grocery-bot/config/script-expert.json','utf8'); console.log(d)"
 node tools/grocery-bot/index.mjs --mode benchmark --difficulty expert --replay tools/grocery-bot/out
 node tools/grocery-bot/index.mjs --mode simulate --difficulty expert --profile expert --replay tools/grocery-bot/out/<run-id>/replay.jsonl

@@ -2,8 +2,13 @@
 
 ## Current Baseline
 
+Daily caveat:
+- Orders and shelf item types rotate at midnight UTC.
+- Previous-day scores remain useful as historical references, but oracle/script data must be rebuilt after rollover.
+
 - Best repeatable easy score: `118`
 - Current medium benchmark: `115`
+- Current UTC-day expert baseline: `13`
 - Verified runs:
   - `tools/grocery-bot/out/2026-03-07T15-56-13-035Z-easy-easy`
   - `tools/grocery-bot/out/2026-03-07T16-00-36-191Z-easy-easy`
@@ -20,9 +25,12 @@
   - The latest jump came from restoring the simpler `82ee32e`-style multi-bot assignment/runtime path while keeping client legality fixes.
 - Hard progression:
   - `tools/grocery-bot/out/2026-03-07T19-54-02-292Z-hard-hard` -> score `28`, `3` orders, `13` items
-- Expert references:
+- Expert historical references:
   - `tools/grocery-bot/out/2026-03-07T16-52-29-717Z-expert-expert` -> score `33`, `3` orders, `18` items
   - `tools/grocery-bot/out/2026-03-07T19-21-18-326Z-expert-expert` -> score `11`, `1` order, `6` items
+- New UTC-day expert baseline:
+  - `tools/grocery-bot/out/2026-03-08T00-03-58-975Z-expert-expert` -> score `13`, `1` order, `8` items
+  - use this as the starting point for current-day expert tuning and oracle rebuild
 
 ## What Changed To Reach 118
 
@@ -34,7 +42,7 @@
 
 - Easy is no longer the active bottleneck.
 - Medium is now the active bottleneck.
-- Expert is now the main upside target after the replay viewer lands, because the current expert reference (`33`) is still far below the likely score ceiling.
+- Expert is still the main upside target, but the old `33` run is now a historical reference, not the active current-day baseline.
 - The current target is no longer just `>116`; it is to turn the stable `115` branch into an architecture that can climb toward the high `200`s on medium.
 - Detailed experiment history now lives in [`EXPERIMENT_LOG.md`](./EXPERIMENT_LOG.md).
 - Structural refactor backlog now lives in [`STRUCTURE_REVIEW.md`](./STRUCTURE_REVIEW.md).
@@ -55,6 +63,24 @@
   - `compress-oracle-script.mjs` is the replay-tightening pass for proven prefixes
   - `src/oracle-script-evaluator.mjs` validates the generated script deterministically before it is written
   - current preferred objective is `handoff_first`: finish known oracle work earlier and let live planner take over sooner
+- Replay/handoff status at the end of the previous UTC day:
+  - replay-derived handoff is instrumented and provenance-tagged
+  - `diff-replay-transition.mjs` exists for replay drift debugging
+  - replay opening was no longer the main blocker; the live expert planner after handoff was
+  - those replay/oracle assets are now stale after rollover and should not be reused blindly
+- Run provenance is now part of the workflow:
+  - every live run writes commit, dirty state, profile hash, and oracle/script hashes into `summary.json`
+  - use this to revert to a specific model state when comparing runs
+
+## Immediate Next-Day Plan
+
+1. Treat `tools/grocery-bot/out/2026-03-08T00-03-58-975Z-expert-expert` as the new expert baseline.
+2. Rebuild `tools/grocery-bot/config/oracle-expert.json` from the new day before any more oracle/script work.
+3. Tune the live expert planner first:
+   - reduce preview/non-deliverable hoarding
+   - increase active-order completion and drop cadence
+   - reduce stationary-occupant conflicts at 10 bots
+4. Reintroduce hybrid replay/oracle only after the new-day expert planner is healthier.
 
 ## Current Strategy (As Implemented)
 

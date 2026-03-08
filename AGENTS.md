@@ -19,7 +19,9 @@ Use this file together with [CLAUDE.md](/home/magnus/prog/nm-i-ai/CLAUDE.md) whe
 6. For multi-bot strategy work, run `--mode benchmark --difficulty medium --replay tools/grocery-bot/out` before spending more live tokens.
 7. Use `--profile medium_warehouse_v1` when benchmarking the experimental warehouse-control branch.
 8. For expert oracle/script work, use: extract oracle -> generate script -> inspect/evaluate script -> live run with `--script` + `--oracle` -> update oracle.
-9. Use the replay viewer to inspect scripted/live handoff and drop-off queue behavior before changing the oracle scheduler again.
+9. After UTC rollover, treat old `oracle-expert.json` and `script-expert.json` as stale until rebuilt from the new day.
+10. Use the replay viewer plus `diff-replay-transition.mjs` to inspect scripted/live handoff and first replay drift before changing the oracle scheduler again.
+11. Read `tools/grocery-bot/NEXT_SESSION_PROMPT.md` at startup when resuming strategy work after a break.
 
 ## Structural Policy
 
@@ -63,7 +65,9 @@ Use this file together with [CLAUDE.md](/home/magnus/prog/nm-i-ai/CLAUDE.md) whe
 - Oracle/script optimizer: `tools/grocery-bot/generate-script.mjs`
 - Heavy oracle optimizer: `tools/grocery-bot/optimize-oracle-script.mjs`
 - Replay compression optimizer: `tools/grocery-bot/compress-oracle-script.mjs`
+- Replay drift debugger: `tools/grocery-bot/diff-replay-transition.mjs`
 - Oracle/script modules: `tools/grocery-bot/src/oracle-script-optimizer.mjs`, `tools/grocery-bot/src/oracle-script-evaluator.mjs`, `tools/grocery-bot/src/oracle-script-io.mjs`, `tools/grocery-bot/src/oracle-script-search.mjs`, `tools/grocery-bot/src/oracle-script-legacy.mjs`, `tools/grocery-bot/src/oracle-script-compressor.mjs`
+- Run provenance: `tools/grocery-bot/src/run-provenance.mjs`
 
 ## MCP
 

@@ -8,12 +8,16 @@ Docs/MCP: configured in `mcp.json` → `https://mcp-docs.ainm.no/mcp`
 
 ## Score Baselines
 
+Daily caveat:
+- Orders and shelf item types rotate at midnight UTC.
+- Scores from a previous UTC day are historical references, not current-day oracle/script inputs.
+
 | Difficulty | Bots | Best score | Orders | Status |
 |------------|------|-----------|--------|--------|
-| easy       | 1    | 118       | 14     | repeatable |
-| medium     | 3    | 115       | 12     | current benchmark |
-| hard       | 5    | 28        | 3      | provisional |
-| expert     | 10   | 33        | 3      | provisional |
+| easy       | 1    | 118       | 14     | historical reference |
+| medium     | 3    | 115       | 12     | historical reference |
+| hard       | 5    | 28        | 3      | historical reference |
+| expert     | 10   | 13        | 1      | current UTC-day baseline |
 
 Update this table after every significant run.
 
@@ -31,8 +35,11 @@ Latest hard run:
 - `2026-03-07T19-54-02-292Z-hard-hard` -> score `28`, orders `3`, items `13` (first valid hard baseline, still throughput-limited)
 
 Latest expert runs:
-- `2026-03-07T16-52-29-717Z-expert-expert` -> score `33`, orders `3`, items `18` (best current expert reference)
-- `2026-03-07T19-21-18-326Z-expert-expert` -> score `11`, orders `1`, items `6`
+- Historical reference:
+  - `2026-03-07T16-52-29-717Z-expert-expert` -> score `33`, orders `3`, items `18`
+- New UTC-day baseline:
+  - `2026-03-08T00-03-58-975Z-expert-expert` -> score `13`, orders `1`, items `8`
+  - treat this as the active expert baseline for the new day
 
 ## Quick Commands
 
@@ -89,6 +96,12 @@ node tools/grocery-bot/compress-oracle-script.mjs \
   --replay tools/grocery-bot/out/2026-03-07T20-37-02-748Z-expert-expert/replay.jsonl \
   --out-script tools/grocery-bot/config/script-expert.json \
   --out-report tools/grocery-bot/out/oracle-script-compression-report.json
+
+# Diff a replay transition when validating replay-derived scripts
+node tools/grocery-bot/diff-replay-transition.mjs \
+  --source-replay tools/grocery-bot/out/<source-run>/replay.jsonl \
+  --validation-replay tools/grocery-bot/out/<validation-run>/replay.jsonl \
+  --tick 51
 
 # Run tests
 node --test tools/grocery-bot/test/*.test.mjs
@@ -200,15 +213,22 @@ For each improvement iteration:
 9. If score improves → run `--mode tune` against the new replay and merge params
 
 Oracle/script workflow for expert:
-1. Extract/update oracle data: `node tools/grocery-bot/tmp-extract-oracle.mjs`
-2. Generate or optimize script:
+1. After UTC rollover, treat old `oracle-expert.json` and `script-expert.json` as stale until rebuilt from the new day.
+2. Extract/update oracle data: `node tools/grocery-bot/tmp-extract-oracle.mjs`
+3. Generate or optimize script:
    - quick pass: `node tools/grocery-bot/generate-script.mjs --oracle ... --replay ... --out tools/grocery-bot/config/script-expert.json`
    - real offline pass: `node tools/grocery-bot/optimize-oracle-script.mjs --oracle ... --replay ... --out-script tools/grocery-bot/config/script-expert.json --out-report tools/grocery-bot/out/oracle-script-optimizer-report.json --objective handoff_first --iterations 1000 --score-to-beat 91 --ticks-to-beat 292`
    - replay-tightening pass: `node tools/grocery-bot/compress-oracle-script.mjs --oracle ... --replay ... --out-script tools/grocery-bot/config/script-expert.json --out-report tools/grocery-bot/out/oracle-script-compression-report.json`
-3. Inspect metadata in `tools/grocery-bot/config/script-expert.json`
-4. Use the replay viewer to inspect handoff assumptions and drop-off queueing
-5. Play live with both flags: `--script tools/grocery-bot/config/script-expert.json --oracle tools/grocery-bot/config/oracle-expert.json`
-6. Update the oracle after the run
+4. Inspect metadata in `tools/grocery-bot/config/script-expert.json`
+5. Use the replay viewer to inspect handoff assumptions and drop-off queueing
+6. For replay-derived scripts, use `diff-replay-transition.mjs` to locate the first drift before trusting a longer replay prefix
+7. Play live with both flags: `--script tools/grocery-bot/config/script-expert.json --oracle tools/grocery-bot/config/oracle-expert.json`
+8. Update the oracle after the run
+
+Run provenance:
+- Every live run now records commit, dirty state, profile hash, and oracle/script hashes in `summary.json`.
+- A matching `run_meta` event is also written into `replay.jsonl`.
+- Use this to revert to a known-good model state with `git checkout <commit>` plus the recorded profile/script/oracle inputs.
 
 ## Structural Policy
 
@@ -247,6 +267,11 @@ Full analysis in `tools/grocery-bot/STRATEGY_REVIEW.md`. Priority order:
 3. **Prove or reject `warehouse_v1` offline first** — use benchmark mode, replay metrics, and specs before live tokens
 4. **Reduce multi-bot stall cascades** — focus on released-work control, service-bay queueing, and order-close cadence
 5. **Tune expert on warehouse_v1** — use the replay viewer plus corpus benchmark before spending more expert tokens
+6. **Rebuild expert for the new UTC day** — use `2026-03-08T00-03-58-975Z-expert-expert` as the active baseline and stop trusting previous-day oracle/script assets
+
+## Next Session
+
+Resume from `tools/grocery-bot/NEXT_SESSION_PROMPT.md`.
 
 ## Conventions
 
