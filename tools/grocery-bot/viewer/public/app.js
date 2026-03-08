@@ -133,88 +133,40 @@ function renderBoard(snapshot, layout, plannerMetrics) {
     botsByCell.set(key, entry);
   }
 
-  // Color palette for zones - softer, more distinct colors  
-  const ZONE_COLORS = ['#ffcccb', '#add8e6', '#90ee90', '#ffffe0', '#dda0dd', '#f0e68c', '#afeeee', '#d3d3d3', '#ffb6c1', '#98fb98'];
+  // Task type colors for bot visualization
+  const TASK_COLORS = {
+    item: '#2a9d8f',        // pickup - teal
+    pick_up: '#2a9d8f',
+    pickup_active: '#2a9d8f',
+    pickup_preview: '#457b9d',
+    drop_off: '#e76f51',    // delivery - orange-red
+    drop_active: '#e76f51',
+    parking: '#6c757d',     // idle - gray
+    none: '#6c757d',
+    single: '#2a9d8f',
+    fallback: '#bc6c25',    // fallback - brown
+    anti_deadlock: '#d62828', // deadlock - red
+    warehouse_fallback: '#d62828',
+    idle_reposition: '#6c757d',
+    reposition_zone: '#6c757d',
+    queue_service_bay: '#457b9d',
+  };
 
-  // Smart zone assignment based on store layout
-  function getOptimalZone(x, y, width, height, numBots) {
-    // Create zones based on store quadrants and sections
-    const zonesPerRow = Math.ceil(Math.sqrt(numBots));
-    const zonesPerCol = Math.ceil(numBots / zonesPerRow);
-    
-    const zoneWidth = Math.floor(width / zonesPerRow);
-    const zoneHeight = Math.floor(height / zonesPerCol);
-    
-    const zoneX = Math.min(Math.floor(x / zoneWidth), zonesPerRow - 1);
-    const zoneY = Math.min(Math.floor(y / zoneHeight), zonesPerCol - 1);
-    
-    return zoneY * zonesPerRow + zoneX;
-  }
+  const botDetails = (plannerMetrics && plannerMetrics.botDetails) || {};
 
-  // Smart road/conveyor belt system for optimal bot flow
-  function getRoadDirection(x, y, width, height) {
-    // Create main arteries and local roads
-    const isMainArtery = (x % 6 === 0) || (y % 4 === 0);
-    const isLocalRoad = (x % 3 === 1) || (y % 3 === 2);
-    
-    if (isMainArtery) {
-      // Main arteries: create circular flow pattern
-      if (x % 6 === 0 && y > 1 && y < height - 2) {
-        // Vertical main roads - alternate direction
-        return (x % 12 === 0) ? '⬇️' : '⬆️';
-      }
-      if (y % 4 === 0 && x > 1 && x < width - 2) {
-        // Horizontal main roads - create flow toward drop-off
-        return (y < height / 2) ? '➡️' : '⬅️';
-      }
-    } else if (isLocalRoad && !isMainArtery) {
-      // Local feeder roads between shelf aisles
-      if (x % 3 === 1) {
-        // Vertical feeders
-        return ((x + y) % 4 < 2) ? '⬆️' : '⬇️';
-      }
-      if (y % 3 === 2) {
-        // Horizontal feeders
-        return ((x + y) % 4 < 2) ? '➡️' : '⬅️';
-      }
-    }
-    return '';
-  }
+  // Cell size constant (must match CSS .cell width/height)
+  const CELL_SIZE = 29; // 28px + 1px gap
 
-  // Get bot assignments from planner or default
-  const zoneByBot = (plannerMetrics && plannerMetrics.zoneAssignmentByBot) || {};
-  const numBots = Object.keys(zoneByBot).length || snapshot?.bots?.length || 3;
-
-  // --- Enhanced zone, road and item rendering ---
   for (let y = 0; y < height; y += 1) {
     for (let x = 0; x < width; x += 1) {
       const key = `${x},${y}`;
       const cell = document.createElement('div');
       cell.className = 'cell';
-      
-      // Intelligent zoning
-      const zoneIdx = getOptimalZone(x, y, width, height, numBots);
-      
+
       if (walls.has(key)) {
         cell.classList.add('wall');
-        cell.style.background = '#444';
-      } else {
-        // Zone background with low opacity to not interfere with items
-        cell.style.background = ZONE_COLORS[zoneIdx % ZONE_COLORS.length] + '20';
-        if (drops.has(key)) {
-          cell.classList.add('drop');
-          cell.style.background = '#ffd700' + '60'; // Gold for drop-off areas
-        }
-      }
-
-      // Smart road system for optimal traffic flow
-      const roadArrow = getRoadDirection(x, y, width, height);
-      if (roadArrow && !walls.has(key)) {
-        const arrowEl = document.createElement('div');
-        arrowEl.className = 'road-arrow';
-        arrowEl.textContent = roadArrow;
-        arrowEl.style.cssText = 'position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 10px; opacity: 0.6; z-index: 1; pointer-events: none;';
-        cell.appendChild(arrowEl);
+      } else if (drops.has(key)) {
+        cell.classList.add('drop');
       }
 
       const item = itemsByCell.get(key);
@@ -231,13 +183,10 @@ function renderBoard(snapshot, layout, plannerMetrics) {
       if (bots.length > 0) {
         const botEl = document.createElement('div');
         botEl.className = 'bot';
-        botEl.textContent = bots.map((bot) => {
-          const zone = (zoneByBot && typeof zoneByBot[bot.id] !== 'undefined') ? zoneByBot[bot.id] : bot.id;
-          return `🤖${bot.id}`;
-        }).join(' ');
-        // Color bots by zone
-        const zone = (zoneByBot && typeof zoneByBot[bots[0]?.id] !== 'undefined') ? zoneByBot[bots[0]?.id] : bots[0]?.id;
-        botEl.style.background = ZONE_COLORS[zone % ZONE_COLORS.length];
+        const firstBotDetail = botDetails[bots[0]?.id];
+        const taskType = firstBotDetail?.taskType || 'none';
+        botEl.style.background = TASK_COLORS[taskType] || TASK_COLORS.none;
+        botEl.textContent = bots.map((bot) => `${bot.id}`).join(' ');
         cell.appendChild(botEl);
         if (bots.length > 1) {
           const stackEl = document.createElement('div');
@@ -250,6 +199,77 @@ function renderBoard(snapshot, layout, plannerMetrics) {
       elements.board.appendChild(cell);
     }
   }
+
+  // SVG overlay for bot target lines and paths
+  const svgWidth = width * CELL_SIZE;
+  const svgHeight = height * CELL_SIZE;
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('width', svgWidth);
+  svg.setAttribute('height', svgHeight);
+  svg.style.cssText = `position:absolute;top:8px;left:8px;pointer-events:none;z-index:10;`;
+
+  for (const bot of snapshot?.bots || []) {
+    const detail = botDetails[bot.id];
+    if (!detail) continue;
+    const color = TASK_COLORS[detail.taskType] || TASK_COLORS.none;
+    const bx = bot.position[0] * CELL_SIZE + CELL_SIZE / 2;
+    const by = bot.position[1] * CELL_SIZE + CELL_SIZE / 2;
+
+    // Draw planned path as dotted line
+    if (detail.path && detail.path.length > 1) {
+      const points = detail.path.map((p) => `${p[0] * CELL_SIZE + CELL_SIZE / 2},${p[1] * CELL_SIZE + CELL_SIZE / 2}`).join(' ');
+      const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+      polyline.setAttribute('points', points);
+      polyline.setAttribute('fill', 'none');
+      polyline.setAttribute('stroke', color);
+      polyline.setAttribute('stroke-width', '2');
+      polyline.setAttribute('stroke-dasharray', '4,3');
+      polyline.setAttribute('opacity', '0.6');
+      svg.appendChild(polyline);
+    }
+
+    // Draw target indicator (circle at target)
+    if (detail.target) {
+      const tx = detail.target[0] * CELL_SIZE + CELL_SIZE / 2;
+      const ty = detail.target[1] * CELL_SIZE + CELL_SIZE / 2;
+      const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      circle.setAttribute('cx', tx);
+      circle.setAttribute('cy', ty);
+      circle.setAttribute('r', '5');
+      circle.setAttribute('fill', 'none');
+      circle.setAttribute('stroke', color);
+      circle.setAttribute('stroke-width', '2');
+      circle.setAttribute('opacity', '0.8');
+      svg.appendChild(circle);
+
+      // Direct line from bot to target (if no path)
+      if (!detail.path || detail.path.length <= 1) {
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', bx);
+        line.setAttribute('y1', by);
+        line.setAttribute('x2', tx);
+        line.setAttribute('y2', ty);
+        line.setAttribute('stroke', color);
+        line.setAttribute('stroke-width', '1.5');
+        line.setAttribute('stroke-dasharray', '6,4');
+        line.setAttribute('opacity', '0.4');
+        svg.appendChild(line);
+      }
+    }
+
+    // Bot ID label at bot position
+    const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    label.setAttribute('x', bx);
+    label.setAttribute('y', by - 10);
+    label.setAttribute('text-anchor', 'middle');
+    label.setAttribute('font-size', '9');
+    label.setAttribute('fill', color);
+    label.setAttribute('font-weight', 'bold');
+    label.textContent = `B${bot.id}`;
+    svg.appendChild(label);
+  }
+
+  elements.board.appendChild(svg);
 }
 
 function renderTick() {
@@ -285,11 +305,21 @@ function renderTick() {
   // Render order boxes with active/assigned bots
   const orders = tick.state_snapshot?.orders || [];
   const bots = tick.state_snapshot?.bots || [];
-  const missionByBot = tick.planner_metrics?.missionTypeByBot || {};
-  const zoneByBot = tick.planner_metrics?.zoneAssignmentByBot || {};
+  const botDetailsMap = tick.planner_metrics?.botDetails || {};
+  const TASK_COLORS = {
+    item: '#2a9d8f', pick_up: '#2a9d8f', pickup_active: '#2a9d8f', pickup_preview: '#457b9d',
+    drop_off: '#e76f51', drop_active: '#e76f51',
+    parking: '#6c757d', none: '#6c757d', single: '#2a9d8f',
+    fallback: '#bc6c25', anti_deadlock: '#d62828', warehouse_fallback: '#d62828',
+    idle_reposition: '#6c757d', reposition_zone: '#6c757d', queue_service_bay: '#457b9d',
+  };
+  const ITEM_EMOJIS = {
+    apples: '🍎', eggs: '🥚', flour: '🌾', bananas: '🍌', cheese: '🧀', cream: '🥛',
+    cereal: '🥣', rice: '🍚', pasta: '🍝', oats: '🌾', butter: '🧈', bread: '🍞',
+    onions: '🧅', milk: '🐮', tomatoes: '🍅', yogurt: '🍦', default: '🛒',
+  };
   elements.ordersView.innerHTML = orders.map((order) => {
     const isActive = order.status === 'active' && !order.complete;
-    const assignedBots = bots.filter((bot) => missionByBot[bot.id]?.includes(order.id));
     const requiredItems = order.items_required || [];
     const deliveredItems = order.items_delivered || [];
     const progress = deliveredItems.length;
@@ -297,19 +327,20 @@ function renderTick() {
     return `<div style="border:1px solid #888;padding:4px;margin-bottom:2px;background:${isActive ? '#fffde7' : '#ececec'}">
       <b>Order ${order.id}</b> ${isActive ? '🟢' : '⚪'} (${progress}/${total})<br>
       Required: ${requiredItems.map((it) => (ITEM_EMOJIS[it] || ITEM_EMOJIS.default)).join(' ')}<br>
-      Delivered: ${deliveredItems.map((it) => (ITEM_EMOJIS[it] || ITEM_EMOJIS.default)).join(' ')}<br>
-      Bots: ${assignedBots.map((b) => `🤖${b.id}`).join(' ')}
+      Delivered: ${deliveredItems.map((it) => (ITEM_EMOJIS[it] || ITEM_EMOJIS.default)).join(' ')}
     </div>`;
   }).join('');
-  // Render bots with zone and mission info
+  // Render bots with task type and target info
   elements.botsView.innerHTML = bots.map((bot) => {
-    const zone = zoneByBot[bot.id] ?? bot.id;
-    const color = ZONE_COLORS[zone % ZONE_COLORS.length];
-    const mission = missionByBot[bot.id] || '';
+    const detail = botDetailsMap[bot.id] || {};
+    const taskType = detail.taskType || 'none';
+    const color = TASK_COLORS[taskType] || TASK_COLORS.none;
+    const targetStr = detail.target ? `[${detail.target.join(',')}]` : '-';
+    const stallStr = detail.stallCount > 0 ? ` stall:${detail.stallCount}` : '';
     return `<div style="border-left:6px solid ${color};margin-bottom:2px;padding-left:4px;">
-      🤖<b>${bot.id}</b> @ [${bot.position.join(',')}]<br>
+      <b>B${bot.id}</b> @ [${bot.position.join(',')}]<br>
       Inv: ${bot.inventory.map((it) => (ITEM_EMOJIS[it.type] || ITEM_EMOJIS.default)).join(' ')}<br>
-      Zone: <span style="color:${color}">${zone}</span> | Mission: ${mission}
+      Task: <span style="color:${color};font-weight:bold">${taskType}</span> → ${targetStr}${stallStr}
     </div>`;
   }).join('');
 }

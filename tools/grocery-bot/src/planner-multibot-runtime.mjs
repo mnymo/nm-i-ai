@@ -151,6 +151,12 @@ export function executeMissionStrategy({
     }
 
     planner.lastActionByBot.set(bot.id, resolved.action);
+    planner._botDetails.set(bot.id, {
+      target: resolved.nextPath?.at(-1) || null,
+      path: resolved.nextPath || [],
+      taskType: resolved.targetType || (mission?.missionType ?? 'none'),
+      stallCount: planner.stalls.get(stallKey) || 0,
+    });
   }
 
   planner.lastMetrics = {
@@ -166,6 +172,7 @@ export function executeMissionStrategy({
     orderEtaAtDecision: null,
     projectedCompletionFeasible: null,
     ...missionPlan.metrics,
+    botDetails: Object.fromEntries(planner._botDetails),
   };
 
   return actions;
@@ -294,6 +301,12 @@ export function executeWarehouseStrategy({
     }
 
     planner.lastActionByBot.set(bot.id, resolved.action);
+    planner._botDetails.set(bot.id, {
+      target: resolved.nextPath?.at(-1) || null,
+      path: resolved.nextPath || [],
+      taskType: resolved.targetType || (mission?.missionType ?? 'none'),
+      stallCount: planner.stalls.get(stallKey) || 0,
+    });
   }
 
   planner.lastMetrics = {
@@ -311,6 +324,7 @@ export function executeWarehouseStrategy({
       ? warehousePlan.metrics.projectedActiveCloseEta <= warehousePlan.control.roundsLeft
       : null,
     ...warehousePlan.metrics,
+    botDetails: Object.fromEntries(planner._botDetails),
   };
 
   return actions;
@@ -456,6 +470,12 @@ export function executeAssignedTaskStrategy({
     }
 
     planner.lastActionByBot.set(bot.id, resolved.action);
+    planner._botDetails.set(bot.id, {
+      target: resolved.nextPath?.at(-1) || null,
+      path: resolved.nextPath || [],
+      taskType: resolved.targetType || (task?.kind ?? 'none'),
+      stallCount: planner.stalls.get(stallKey) || 0,
+    });
   }
 
   planner.lastMetrics = {
@@ -470,6 +490,7 @@ export function executeAssignedTaskStrategy({
     approachBlacklistSize: 0,
     orderEtaAtDecision: null,
     projectedCompletionFeasible: null,
+    botDetails: Object.fromEntries(planner._botDetails),
   };
 
   return actions;

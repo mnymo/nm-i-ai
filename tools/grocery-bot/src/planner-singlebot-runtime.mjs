@@ -478,6 +478,12 @@ export function executeSingleBotTurn({
     targetStallTriggered,
     orderStallBailoutTriggered,
     pendingPickupLockActive,
+    botDetails: { [botId]: {
+      target: finalAction.nextPath?.at(-1) || null,
+      path: finalAction.nextPath || [],
+      taskType: finalAction.targetType || 'single',
+      stallCount: 0,
+    }},
   };
 
   planner.lastActionByBot.set(botId, finalAction.action);

@@ -47,6 +47,7 @@ export class GroceryPlanner {
     this.loopDetectionsThisTick = 0;
     this.targetFocusByBot = new Map();
     this.missionsByBot = new Map();
+    this._botDetails = new Map();
     this.scriptDisabled = false;
     this.scriptDivergedAtRound = null;
     this.assumptionCheckDone = false;
@@ -146,6 +147,7 @@ export class GroceryPlanner {
   }
 
   plan(state) {
+    this._botDetails = new Map();
     const assumptionMismatch = this.validateOracleAndScriptAssumptions(state);
     let scriptFallbackMetrics = null;
     // Only run opener phase for multi-bot games (2+ bots), not during script replay or single-bot/test
