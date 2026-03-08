@@ -96,8 +96,9 @@ function renderBoard(snapshot, layout, plannerMetrics) {
   const walls = new Set((layout.grid.walls || []).map(([x, y]) => `${x},${y}`));
   const drops = new Set((layout.drop_offs || []).map(([x, y]) => `${x},${y}`));
   // Emoji map for item types (customize as needed)
+  // Expanded emoji map for more item types
   const ITEM_EMOJIS = {
-    apple: '🍎', banana: '🍌', bread: '🍞', milk: '🥛', cheese: '🧀', egg: '🥚', fish: '🐟', meat: '🥩', orange: '🍊', tomato: '🍅', lettuce: '🥬', carrot: '🥕', onion: '🧅', potato: '🥔', grape: '🍇', lemon: '🍋', pepper: '🫑', cucumber: '🥒', default: '🛒'
+    apple: '🍎', banana: '🍌', bread: '🍞', milk: '🥛', cheese: '🧀', egg: '🥚', fish: '🐟', meat: '🥩', orange: '🍊', tomato: '🍅', lettuce: '🥬', carrot: '🥕', onion: '🧅', potato: '🥔', grape: '🍇', lemon: '🍋', pepper: '🫑', cucumber: '🥒', chicken: '🍗', beef: '🥩', pork: '🍖', shrimp: '🦐', rice: '🍚', pasta: '🍝', cereal: '🥣', yogurt: '🥛', butter: '🧈', icecream: '🍦', chocolate: '🍫', coffee: '☕', tea: '🍵', water: '💧', soda: '🥤', juice: '🧃', beer: '🍺', wine: '🍷', applejuice: '🧃', pear: '🍐', kiwi: '🥝', pineapple: '🍍', watermelon: '🍉', strawberry: '🍓', blueberry: '🫐', raspberry: '🍇', blackberry: '🍇', mushroom: '🍄', corn: '🌽', pea: '🫛', bean: '🫘', garlic: '🧄', chili: '🌶️', pumpkin: '🎃', avocado: '🥑', broccoli: '🥦', spinach: '🥬', cabbage: '🥬', radish: '🌶️', beet: '🧃', default: '🛒'
   };
   const itemsByCell = new Map();
   for (const item of snapshot?.items || []) {
@@ -116,20 +117,42 @@ function renderBoard(snapshot, layout, plannerMetrics) {
   const ZONE_COLORS = ['#e57373', '#64b5f6', '#81c784', '#ffd54f', '#ba68c8', '#ffb74d', '#4db6ac', '#a1887f', '#90a4ae', '#f06292'];
   // Get zone assignment if available
   const zoneByBot = (plannerMetrics && plannerMetrics.zoneAssignmentByBot) || {};
+  // --- Zone and road overlays ---
+  // For demo: assign each column to a zone, and render one-way road arrows for edge rows/columns
   for (let y = 0; y < height; y += 1) {
     for (let x = 0; x < width; x += 1) {
       const key = `${x},${y}`;
       const cell = document.createElement('div');
       cell.className = 'cell';
+      // Zone background (by column for demo)
+      const zoneIdx = Math.floor((x / width) * ZONE_COLORS.length);
       if (walls.has(key)) {
         cell.classList.add('wall');
-      } else if (drops.has(key)) {
-        cell.classList.add('drop');
+        cell.style.background = '';
+      } else {
+        cell.style.background = ZONE_COLORS[zoneIdx % ZONE_COLORS.length] + '22';
+        if (drops.has(key)) {
+          cell.classList.add('drop');
+        }
+      }
+
+      // One-way road arrows (for demo: leftmost col up, rightmost col down, top row right, bottom row left)
+      let roadArrow = '';
+      if (x === 1 && y > 0 && y < height - 1) roadArrow = '⬆️';
+      if (x === width - 2 && y > 0 && y < height - 1) roadArrow = '⬇️';
+      if (y === 1 && x > 0 && x < width - 1) roadArrow = '➡️';
+      if (y === height - 2 && x > 0 && x < width - 1) roadArrow = '⬅️';
+      if (roadArrow) {
+        const arrowEl = document.createElement('div');
+        arrowEl.className = 'road-arrow';
+        arrowEl.textContent = roadArrow;
+        cell.appendChild(arrowEl);
       }
 
       const item = itemsByCell.get(key);
       if (item) {
-        const emoji = ITEM_EMOJIS[item.type] || ITEM_EMOJIS.default;
+        const typeKey = (item.type || '').toLowerCase();
+        const emoji = ITEM_EMOJIS[typeKey] || ITEM_EMOJIS.default;
         const itemEl = document.createElement('div');
         itemEl.className = 'item';
         itemEl.textContent = emoji;
@@ -141,11 +164,11 @@ function renderBoard(snapshot, layout, plannerMetrics) {
         const botEl = document.createElement('div');
         botEl.className = 'bot';
         botEl.textContent = bots.map((bot) => {
-          const zone = zoneByBot[bot.id] ?? bot.id;
+          const zone = (zoneByBot && typeof zoneByBot[bot.id] !== 'undefined') ? zoneByBot[bot.id] : bot.id;
           return `🤖${bot.id}`;
         }).join(' ');
         // Color bots by zone
-        const zone = zoneByBot[bots[0]?.id] ?? bots[0]?.id;
+        const zone = (zoneByBot && typeof zoneByBot[bots[0]?.id] !== 'undefined') ? zoneByBot[bots[0]?.id] : bots[0]?.id;
         botEl.style.background = ZONE_COLORS[zone % ZONE_COLORS.length];
         cell.appendChild(botEl);
         if (bots.length > 1) {

@@ -148,8 +148,10 @@ export class GroceryPlanner {
   plan(state) {
     const assumptionMismatch = this.validateOracleAndScriptAssumptions(state);
     let scriptFallbackMetrics = null;
-    // Opener phase: run set piece opener until all bots are in position
-    if (this.openerActive) {
+    // Only run opener phase for multi-bot games (2+ bots), not during script replay or single-bot/test
+    const isMultiBot = state.bots.length > 1;
+    const isScripted = !this.scriptDisabled && this.script?.tickMap?.has(state.round);
+    if (this.openerActive && isMultiBot && !isScripted) {
       if (!this.openerTargetPositions) {
         // Compute target positions for opener (staggered beneath aisles, closest to drop-off)
         this.openerTargetPositions = computeOpenerTargets(state);
