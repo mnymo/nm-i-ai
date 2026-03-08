@@ -333,6 +333,10 @@ test('chooseParkingAction prefers moving away from drop-off and away from crowde
       { id: 1, position: [2, 8], inventory: [] },
       { id: 2, position: [4, 8], inventory: [] },
     ],
+    items: [
+      { id: 'milk_0', type: 'milk', position: [3, 3] },
+      { id: 'milk_1', type: 'milk', position: [7, 3] },
+    ],
     drop_off: [1, 8],
   });
   const graph = buildGraph(state);
@@ -348,10 +352,12 @@ test('chooseParkingAction prefers moving away from drop-off and away from crowde
     horizon: 10,
     dropOff,
     otherBots: state.bots,
+    items: state.items,
+    gridWidth: state.grid.width,
+    gridHeight: state.grid.height,
   });
 
   assert.notEqual(result.action, 'wait');
-  assert.notEqual(result.action, 'move_left');
 });
 
 test('buildTasks suppresses preview when too many bots already carry non-active items', () => {

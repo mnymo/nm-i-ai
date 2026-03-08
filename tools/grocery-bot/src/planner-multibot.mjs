@@ -324,6 +324,38 @@ export function chooseFallbackAction(
   return { action: 'wait', path: [bot.position] };
 }
 
+function computeParkingSlots(graph, gridWidth, gridHeight, items) {
+  const itemCols = [...new Set(items.map((item) => item.position[0]))].sort((a, b) => a - b);
+
+  const corridorRows = [];
+  for (let y = 1; y < gridHeight - 1; y += 1) {
+    let open = 0;
+    for (let x = 1; x < gridWidth - 1; x += 1) {
+      if (graph.isWalkable([x, y])) open += 1;
+    }
+    if (open >= gridWidth - 4) corridorRows.push(y);
+  }
+
+  const parkRow = corridorRows.length >= 2
+    ? corridorRows[corridorRows.length - 2]
+    : corridorRows.length > 0
+      ? corridorRows[corridorRows.length - 1]
+      : gridHeight - 2;
+
+  const slots = [];
+  for (const col of itemCols) {
+    if (graph.isWalkable([col, parkRow])) {
+      slots.push([col, parkRow]);
+    } else if (graph.isWalkable([col + 1, parkRow])) {
+      slots.push([col + 1, parkRow]);
+    } else if (graph.isWalkable([col - 1, parkRow])) {
+      slots.push([col - 1, parkRow]);
+    }
+  }
+
+  return slots;
+}
+
 export function chooseParkingAction({
   bot,
   graph,
@@ -332,13 +364,66 @@ export function chooseParkingAction({
   horizon,
   dropOff,
   otherBots,
+  items,
+  gridWidth,
+  gridHeight,
 }) {
   const neighbors = [...graph.neighbors(bot.position)];
   if (neighbors.length === 0) {
     return { action: 'wait', path: [bot.position] };
   }
 
-  const botDropDist = manhattanDistance(bot.position, dropOff);
+  const slots = computeParkingSlots(graph, gridWidth || 28, gridHeight || 18, items || []);
+
+  let targetSlot = null;
+  if (slots.length > 0) {
+    const otherBotSlots = new Set();
+    for (const other of otherBots) {
+      if (other.id === bot.id) continue;
+      let bestSlotIdx = -1;
+      let bestDist = Infinity;
+      for (let i = 0; i < slots.length; i += 1) {
+        const d = manhattanDistance(other.position, slots[i]);
+        if (d < bestDist) { bestDist = d; bestSlotIdx = i; }
+      }
+      if (bestDist <= 2) otherBotSlots.add(bestSlotIdx);
+    }
+
+    let bestDist = Infinity;
+    for (let i = 0; i < slots.length; i += 1) {
+      if (otherBotSlots.has(i)) continue;
+      const d = manhattanDistance(bot.position, slots[i]);
+      if (d < bestDist) { bestDist = d; targetSlot = slots[i]; }
+    }
+
+    if (!targetSlot) {
+      let fallbackBest = Infinity;
+      for (const slot of slots) {
+        const d = manhattanDistance(bot.position, slot);
+        if (d < fallbackBest) { fallbackBest = d; targetSlot = slot; }
+      }
+    }
+  }
+
+  if (targetSlot) {
+    if (bot.position[0] === targetSlot[0] && bot.position[1] === targetSlot[1]) {
+      return { action: 'wait', path: [bot.position] };
+    }
+
+    const path = findTimeAwarePath({
+      graph,
+      start: bot.position,
+      goal: targetSlot,
+      reservations,
+      edgeReservations,
+      startTime: 0,
+      horizon,
+    });
+
+    if (path && path.length >= 2) {
+      return { action: moveToAction(path[0], path[1]), path };
+    }
+  }
 
   const scored = [];
   for (const neighbor of neighbors) {
@@ -348,6 +433,7 @@ export function chooseParkingAction({
     if (edgeReservations.get(1)?.has(reverse)) continue;
 
     const dropDist = manhattanDistance(neighbor, dropOff);
+    const botDropDist = manhattanDistance(bot.position, dropOff);
     let crowding = 0;
     for (const other of otherBots) {
       if (other.id === bot.id) continue;

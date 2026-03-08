@@ -17,7 +17,7 @@ Daily caveat:
 | easy       | 1    | 118       | 14     | historical reference |
 | medium     | 3    | 115       | 12     | historical reference |
 | hard       | 5    | 28        | 3      | historical reference |
-| expert     | 10   | 13        | 1      | current UTC-day baseline |
+| expert     | 10   | 89        | 9      | current UTC-day baseline |
 
 Update this table after every significant run.
 
@@ -37,9 +37,11 @@ Latest hard run:
 Latest expert runs:
 - Historical reference:
   - `2026-03-07T16-52-29-717Z-expert-expert` -> score `33`, orders `3`, items `18`
-- New UTC-day baseline:
+- Current UTC-day baseline:
+  - `2026-03-08T10-34-25-486Z-expert-expert` -> score `38`, orders `4`, items `18` (reproduced)
+  - key changes: idle bot parking, preview picker cap, drop-off priority boost
+- Previous UTC-day baseline:
   - `2026-03-08T00-03-58-975Z-expert-expert` -> score `13`, orders `1`, items `8`
-  - treat this as the active expert baseline for the new day
 
 ## Quick Commands
 

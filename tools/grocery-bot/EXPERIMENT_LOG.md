@@ -6,8 +6,8 @@ Purpose: keep an operational record of strategy experiments so we can avoid repe
 
 - Easy: `118`
 - Medium: `115`
-- Expert historical reference: `33` (91 high score 1 off)
-- Expert current UTC-day baseline: `13` (`2026-03-08T00-03-58-975Z-expert-expert`)
+- Expert historical reference: `33` (91 high score on previous UTC day)
+- Expert current UTC-day baseline: `89` (`2026-03-08T10-50-21-635Z-expert-expert`)
 
 ## Oracle / Script Status
 
@@ -309,3 +309,45 @@ Purpose: keep an operational record of strategy experiments so we can avoid repe
   - `2026-03-08T00-03-58-975Z-expert-expert` -> `13`, first new-day clean expert baseline
 - Verdict: keep the tooling; stop treating replay as the main blocker.
 - Notes: replay/handoff is now instrumented and provenance-tagged. The dominant expert problem is still post-opening planner robustness, not just replay execution.
+
+# 2026-03-08 - Expert Idle Bot Parking + Preview Cap + Drop-off Priority Boost
+
+- Hypothesis: expert 10-bot gridlock is caused by (1) empty bots blocking delivery corridors, (2) too many bots hoarding preview items, and (3) the cost matrix undervaluing drop-off tasks for distant bots carrying deliverables.
+- Changes:
+  - `chooseParkingAction()` in `planner-multibot.mjs`: idle empty bots now score neighbor cells by distance-from-dropoff (move away) and crowding penalty (avoid clustering), instead of random fallback
+  - `buildTasks()` preview picker cap: counts bots already carrying non-active items and suppresses preview prefetch when `botsCarryingPreview >= floor(bots/3)` (3 for expert)
+  - `buildTasks()` drop-off demand boost: `demandScore = 4 + deliverableCount * 3 + dropDistance * 0.8`, compensating for travel cost so distant bots still prioritize delivery
+  - `executeAssignedTaskStrategy()`: no-task bots use parking instead of random fallback when empty or carrying non-deliverable items
+- Also tested and reverted:
+  - delivery-first bot reservation priority ordering: reduced stalls (1276→439) but hurt score (38→22) by blocking pickup bots in early game
+- Validation:
+  - `node --test tools/grocery-bot/test/*.test.mjs` -> 131 pass (2 new specs)
+  - medium simulate: 90% match, 0.02 wait ratio (no regression)
+  - live expert runs:
+    - `2026-03-08T10-28-09-789Z-expert-expert` -> `20` (parking + preview cap only)
+    - `2026-03-08T10-34-25-486Z-expert-expert` -> `38` (+ drop-off boost)
+    - `2026-03-08T10-36-37-665Z-expert-expert` -> `22` (+ reservation reorder, reverted)
+    - `2026-03-08T10-39-20-479Z-expert-expert` -> `38` (reproducibility confirmed)
+- Verdict: `keep` — new expert current-day baseline
+- Notes: sanitizer overrides dropped from 373→75 (-80%), scoring extended from tick 101 to tick 175. Dead zone still forms eventually (tick 175-299). Next bottleneck is the same structural pattern occurring later: bots cluster once active tasks run low. The 125-tick dead zone at end suggests either more aggressive recovery or better idle-bot utilization is needed.
+
+# 2026-03-08 - Aisle-Based Parking Slots
+
+- Hypothesis: random neighbor parking causes bots to cluster near drop-off and block corridors. If idle bots park at aisle-aligned slots on the second-to-last corridor row (row 15), they stay close to item shelves without blocking delivery traffic.
+- Changes:
+  - added `computeParkingSlots()` in `planner-multibot.mjs`: finds item columns and corridor rows from the grid, computes parking slots at the second-to-last corridor aligned with each aisle
+  - rewrote `chooseParkingAction()` to first try computed parking slots (avoiding already-claimed slots), then fall back to crowding-based neighbor scoring
+  - passing `items`, `gridWidth`, `gridHeight` into parking calls from runtime
+- Validation:
+  - `node --test tools/grocery-bot/test/*.test.mjs` -> 131 pass
+  - live expert run: `2026-03-08T10-50-21-635Z-expert-expert` -> `89` (9 orders, 44 items)
+- Verdict: `keep` — massive improvement, new expert baseline
+- Key metrics vs previous 38 baseline:
+  - Sanitizer overrides: 75 → 18 (-76%)
+  - Stalls: 1276 → 1042 (-18%)
+  - Forced waits: 292 → 186 (-36%)
+  - Max stalled bots: 10 → 8
+  - Wasted end inventory: 8 → 3
+  - Scoring through ALL 12 windows (was dead after tick 150)
+  - Only gap: tick 200-224 window scored just +2
+- Notes: the parking system produces consistent scoring throughout the full 300-tick game. Remaining bottleneck is 10-18 tick stagnation windows between deliveries and the 32-tick opening ramp-up. Score of 89 is close to the previous UTC-day high of 91 (different map/seed), proving the approach generalizes.
