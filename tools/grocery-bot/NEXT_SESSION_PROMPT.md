@@ -44,6 +44,11 @@ Do first:
      - `tools/grocery-bot/out/oracle-script-score100-report.json`
      - current best `score_by_tick_100`: `22`
      - current best `tick_to_40`: `156`
+   - triage-first opening report now exists:
+     - `tools/grocery-bot/out/oracle-script-opening100-report.json`
+     - replay baseline `score_at_tick_100`: `22`
+     - `promotable_shortlist`: empty
+     - meaning: current opening-focused offline families still do not beat baseline
 5. Follow the repeat loop:
    - live planner baseline run
    - pick best replay with `runs` + `analyze`

@@ -447,3 +447,40 @@ Purpose: keep an operational record of strategy experiments so we can avoid repe
     - best `tick_to_80`: `276`
 - Verdict: keep and iterate
 - Notes: this pass did not beat the baseline replay’s early pace. That is still useful because it proves the opening bottleneck is now isolated and measurable. The next offline improvement should attack the first `100` ticks directly with stronger opening orchestration rather than more late replay compression.
+
+# 2026-03-08 - Sim Triage + Opening-Family Search
+
+- Hypothesis: poor sim results are being over-ranked because the search does not compare against the replay baseline strongly enough, and the report does not distinguish tied/weak candidates from promotable ones. Baseline-aware triage plus opening-focused families should make the failure mode explicit and allow stronger opening search to compete fairly.
+- Changes:
+  - added replay-baseline extraction and candidate triage in `src/oracle-script-metrics.mjs`
+  - search now decorates candidates with:
+    - `baseline_match`
+    - `baseline_beat`
+    - `promotable`
+    - penalty reasons
+  - added opening families in `src/oracle-script-replay-seed.mjs`:
+    - `opening_bucket_v2`
+    - `drop_lane_scheduler`
+    - `opening_aisle_partition`
+  - added lightweight optimizer support for opening families in `src/oracle-script-optimizer.mjs`:
+    - true pre-release staging for hidden known orders
+    - aisle-bias bot selection
+    - opening/drop-lane ranking hints
+  - batch reporting now includes:
+    - replay `baseline`
+    - `promotable_shortlist`
+    - per-candidate triage flags
+  - batch CLI now supports presets:
+    - `opening_100`
+    - `tick_to_40`
+    - `tick_to_60`
+    - `tick_to_80`
+- Validation:
+  - `node --test tools/grocery-bot/test/*.test.mjs` -> 20 pass
+  - `node tools/grocery-bot/optimize-oracle-script-batch.mjs --oracle tools/grocery-bot/config/oracle-expert.json --replay tools/grocery-bot/out/2026-03-08T10-50-21-635Z-expert-expert/replay.jsonl --out-script tools/grocery-bot/config/script-expert-opening100.json --out-report tools/grocery-bot/out/oracle-script-opening100-report.json --preset opening_100 --runs 18 --parallel 9 --seed 7004`
+  - result:
+    - baseline `score_at_tick_100`: `22`
+    - best candidate `score_at_tick_100`: `22`
+    - `promotable_shortlist`: empty
+- Verdict: keep
+- Notes: this did not beat the opening baseline, but it removed ambiguity: the current opening families are still too weak, and the report now says so directly instead of hiding that behind late-score winners.

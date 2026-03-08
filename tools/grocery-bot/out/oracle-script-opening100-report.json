@@ -1,0 +1,987 @@
+{
+  "generated_at": "2026-03-08T13:17:15.909Z",
+  "oracle_source": "/home/magnus/prog/nm-i-ai/tools/grocery-bot/config/oracle-expert.json",
+  "replay": "/home/magnus/prog/nm-i-ai/tools/grocery-bot/out/2026-03-08T10-50-21-635Z-expert-expert/replay.jsonl",
+  "baseline": {
+    "score_at_tick_100": 22,
+    "tick_to_40": null,
+    "tick_to_60": null,
+    "tick_to_80": null,
+    "tick_to_targets": {
+      "40": null,
+      "60": null,
+      "80": null
+    },
+    "dead_opening_ticks": 32
+  },
+  "objective": "score_by_tick_100",
+  "parallel": 9,
+  "jobs_requested": 18,
+  "jobs_completed": 18,
+  "elapsed_ms": 227334,
+  "best_job": {
+    "id": 8,
+    "seed": 7012,
+    "objective": "score_by_tick_100",
+    "strategy": "replay_seeded_handoff_rewind",
+    "estimated_score": 22,
+    "last_scripted_tick": 103,
+    "out_script": "/tmp/oracle-batch-r4SfCd/script-8.json",
+    "out_report": "/tmp/oracle-batch-r4SfCd/report-8.json"
+  },
+  "best_by_objective": [
+    {
+      "objective": "score_by_tick_100",
+      "id": 8,
+      "seed": 7012,
+      "strategy": "replay_seeded_handoff_rewind",
+      "estimated_score": 22,
+      "last_scripted_tick": 103
+    },
+    {
+      "objective": "throughput_frontier",
+      "id": 5,
+      "seed": 7009,
+      "strategy": "replay_seeded_preserve",
+      "estimated_score": 89,
+      "last_scripted_tick": 298
+    }
+  ],
+  "frontier": {
+    "best_score_by_tick_100": {
+      "id": 8,
+      "seed": 7012,
+      "objective": "score_by_tick_100",
+      "strategy": "replay_seeded_handoff_rewind",
+      "score_at_tick_100": 22,
+      "last_scripted_tick": 103
+    },
+    "best_tick_to_40": {
+      "id": 5,
+      "seed": 7009,
+      "objective": "throughput_frontier",
+      "strategy": "replay_seeded_preserve",
+      "tick_to_40": 156,
+      "score_at_tick_100": 22
+    },
+    "best_tick_to_60": {
+      "id": 5,
+      "seed": 7009,
+      "objective": "throughput_frontier",
+      "strategy": "replay_seeded_preserve",
+      "tick_to_60": 237,
+      "score_at_tick_100": 22
+    },
+    "best_tick_to_80": {
+      "id": 5,
+      "seed": 7009,
+      "objective": "throughput_frontier",
+      "strategy": "replay_seeded_preserve",
+      "tick_to_80": 276,
+      "score_at_tick_100": 22
+    }
+  },
+  "promotable_shortlist": [],
+  "top_results": [
+    {
+      "score_at_tick_100": 22,
+      "tick_to_40": null,
+      "tick_to_60": null,
+      "tick_to_80": null,
+      "tick_to_targets": {
+        "40": null,
+        "60": null,
+        "80": null
+      },
+      "stranded_inventory": 5,
+      "bots_near_drop": 1,
+      "average_bot_spread": 10,
+      "dead_opening_ticks": 32,
+      "rank": 1,
+      "id": 8,
+      "seed": 7012,
+      "objective": "score_by_tick_100",
+      "strategy": "replay_seeded_handoff_rewind",
+      "estimated_score": 22,
+      "last_scripted_tick": 103,
+      "baseline_match": true,
+      "baseline_beat": false,
+      "promotable": false,
+      "triage": {
+        "baseline_match": true,
+        "baseline_beat": false,
+        "promotable": false,
+        "penalties": [
+          "excess_stranded_inventory"
+        ],
+        "metrics": {
+          "score_at_tick_100": 22,
+          "tick_to_40": null,
+          "tick_to_60": null,
+          "tick_to_80": null,
+          "tick_to_targets": {
+            "40": null,
+            "60": null,
+            "80": null
+          },
+          "stranded_inventory": 5,
+          "bots_near_drop": 1,
+          "average_bot_spread": 10,
+          "dead_opening_ticks": 32
+        }
+      },
+      "total_waits": 374,
+      "out_script": "script-8.json",
+      "out_report": "report-8.json"
+    },
+    {
+      "score_at_tick_100": 22,
+      "tick_to_40": null,
+      "tick_to_60": null,
+      "tick_to_80": null,
+      "tick_to_targets": {
+        "40": null,
+        "60": null,
+        "80": null
+      },
+      "stranded_inventory": 5,
+      "bots_near_drop": 1,
+      "average_bot_spread": 10,
+      "dead_opening_ticks": 32,
+      "rank": 2,
+      "id": 2,
+      "seed": 7006,
+      "objective": "score_by_tick_100",
+      "strategy": "replay_seeded_handoff_rewind",
+      "estimated_score": 22,
+      "last_scripted_tick": 103,
+      "baseline_match": true,
+      "baseline_beat": false,
+      "promotable": false,
+      "triage": {
+        "baseline_match": true,
+        "baseline_beat": false,
+        "promotable": false,
+        "penalties": [
+          "excess_stranded_inventory"
+        ],
+        "metrics": {
+          "score_at_tick_100": 22,
+          "tick_to_40": null,
+          "tick_to_60": null,
+          "tick_to_80": null,
+          "tick_to_targets": {
+            "40": null,
+            "60": null,
+            "80": null
+          },
+          "stranded_inventory": 5,
+          "bots_near_drop": 1,
+          "average_bot_spread": 10,
+          "dead_opening_ticks": 32
+        }
+      },
+      "total_waits": 374,
+      "out_script": "script-2.json",
+      "out_report": "report-2.json"
+    },
+    {
+      "score_at_tick_100": 22,
+      "tick_to_40": null,
+      "tick_to_60": null,
+      "tick_to_80": null,
+      "tick_to_targets": {
+        "40": null,
+        "60": null,
+        "80": null
+      },
+      "stranded_inventory": 5,
+      "bots_near_drop": 1,
+      "average_bot_spread": 10,
+      "dead_opening_ticks": 32,
+      "rank": 3,
+      "id": 0,
+      "seed": 7004,
+      "objective": "score_by_tick_100",
+      "strategy": "replay_seeded_handoff_rewind",
+      "estimated_score": 22,
+      "last_scripted_tick": 103,
+      "baseline_match": true,
+      "baseline_beat": false,
+      "promotable": false,
+      "triage": {
+        "baseline_match": true,
+        "baseline_beat": false,
+        "promotable": false,
+        "penalties": [
+          "excess_stranded_inventory"
+        ],
+        "metrics": {
+          "score_at_tick_100": 22,
+          "tick_to_40": null,
+          "tick_to_60": null,
+          "tick_to_80": null,
+          "tick_to_targets": {
+            "40": null,
+            "60": null,
+            "80": null
+          },
+          "stranded_inventory": 5,
+          "bots_near_drop": 1,
+          "average_bot_spread": 10,
+          "dead_opening_ticks": 32
+        }
+      },
+      "total_waits": 374,
+      "out_script": "script-0.json",
+      "out_report": "report-0.json"
+    },
+    {
+      "score_at_tick_100": 22,
+      "tick_to_40": null,
+      "tick_to_60": null,
+      "tick_to_80": null,
+      "tick_to_targets": {
+        "40": null,
+        "60": null,
+        "80": null
+      },
+      "stranded_inventory": 5,
+      "bots_near_drop": 1,
+      "average_bot_spread": 10,
+      "dead_opening_ticks": 32,
+      "rank": 4,
+      "id": 4,
+      "seed": 7008,
+      "objective": "score_by_tick_100",
+      "strategy": "replay_seeded_handoff_rewind",
+      "estimated_score": 22,
+      "last_scripted_tick": 103,
+      "baseline_match": true,
+      "baseline_beat": false,
+      "promotable": false,
+      "triage": {
+        "baseline_match": true,
+        "baseline_beat": false,
+        "promotable": false,
+        "penalties": [
+          "excess_stranded_inventory"
+        ],
+        "metrics": {
+          "score_at_tick_100": 22,
+          "tick_to_40": null,
+          "tick_to_60": null,
+          "tick_to_80": null,
+          "tick_to_targets": {
+            "40": null,
+            "60": null,
+            "80": null
+          },
+          "stranded_inventory": 5,
+          "bots_near_drop": 1,
+          "average_bot_spread": 10,
+          "dead_opening_ticks": 32
+        }
+      },
+      "total_waits": 374,
+      "out_script": "script-4.json",
+      "out_report": "report-4.json"
+    },
+    {
+      "score_at_tick_100": 22,
+      "tick_to_40": null,
+      "tick_to_60": null,
+      "tick_to_80": null,
+      "tick_to_targets": {
+        "40": null,
+        "60": null,
+        "80": null
+      },
+      "stranded_inventory": 5,
+      "bots_near_drop": 1,
+      "average_bot_spread": 10,
+      "dead_opening_ticks": 32,
+      "rank": 5,
+      "id": 6,
+      "seed": 7010,
+      "objective": "score_by_tick_100",
+      "strategy": "replay_seeded_handoff_rewind",
+      "estimated_score": 22,
+      "last_scripted_tick": 103,
+      "baseline_match": true,
+      "baseline_beat": false,
+      "promotable": false,
+      "triage": {
+        "baseline_match": true,
+        "baseline_beat": false,
+        "promotable": false,
+        "penalties": [
+          "excess_stranded_inventory"
+        ],
+        "metrics": {
+          "score_at_tick_100": 22,
+          "tick_to_40": null,
+          "tick_to_60": null,
+          "tick_to_80": null,
+          "tick_to_targets": {
+            "40": null,
+            "60": null,
+            "80": null
+          },
+          "stranded_inventory": 5,
+          "bots_near_drop": 1,
+          "average_bot_spread": 10,
+          "dead_opening_ticks": 32
+        }
+      },
+      "total_waits": 374,
+      "out_script": "script-6.json",
+      "out_report": "report-6.json"
+    },
+    {
+      "score_at_tick_100": 22,
+      "tick_to_40": null,
+      "tick_to_60": null,
+      "tick_to_80": null,
+      "tick_to_targets": {
+        "40": null,
+        "60": null,
+        "80": null
+      },
+      "stranded_inventory": 5,
+      "bots_near_drop": 1,
+      "average_bot_spread": 10,
+      "dead_opening_ticks": 32,
+      "rank": 6,
+      "id": 10,
+      "seed": 7014,
+      "objective": "score_by_tick_100",
+      "strategy": "replay_seeded_handoff_rewind",
+      "estimated_score": 22,
+      "last_scripted_tick": 103,
+      "baseline_match": true,
+      "baseline_beat": false,
+      "promotable": false,
+      "triage": {
+        "baseline_match": true,
+        "baseline_beat": false,
+        "promotable": false,
+        "penalties": [
+          "excess_stranded_inventory"
+        ],
+        "metrics": {
+          "score_at_tick_100": 22,
+          "tick_to_40": null,
+          "tick_to_60": null,
+          "tick_to_80": null,
+          "tick_to_targets": {
+            "40": null,
+            "60": null,
+            "80": null
+          },
+          "stranded_inventory": 5,
+          "bots_near_drop": 1,
+          "average_bot_spread": 10,
+          "dead_opening_ticks": 32
+        }
+      },
+      "total_waits": 374,
+      "out_script": "script-10.json",
+      "out_report": "report-10.json"
+    },
+    {
+      "score_at_tick_100": 22,
+      "tick_to_40": null,
+      "tick_to_60": null,
+      "tick_to_80": null,
+      "tick_to_targets": {
+        "40": null,
+        "60": null,
+        "80": null
+      },
+      "stranded_inventory": 5,
+      "bots_near_drop": 1,
+      "average_bot_spread": 10,
+      "dead_opening_ticks": 32,
+      "rank": 7,
+      "id": 14,
+      "seed": 7018,
+      "objective": "score_by_tick_100",
+      "strategy": "replay_seeded_handoff_rewind",
+      "estimated_score": 22,
+      "last_scripted_tick": 103,
+      "baseline_match": true,
+      "baseline_beat": false,
+      "promotable": false,
+      "triage": {
+        "baseline_match": true,
+        "baseline_beat": false,
+        "promotable": false,
+        "penalties": [
+          "excess_stranded_inventory"
+        ],
+        "metrics": {
+          "score_at_tick_100": 22,
+          "tick_to_40": null,
+          "tick_to_60": null,
+          "tick_to_80": null,
+          "tick_to_targets": {
+            "40": null,
+            "60": null,
+            "80": null
+          },
+          "stranded_inventory": 5,
+          "bots_near_drop": 1,
+          "average_bot_spread": 10,
+          "dead_opening_ticks": 32
+        }
+      },
+      "total_waits": 374,
+      "out_script": "script-14.json",
+      "out_report": "report-14.json"
+    },
+    {
+      "score_at_tick_100": 22,
+      "tick_to_40": null,
+      "tick_to_60": null,
+      "tick_to_80": null,
+      "tick_to_targets": {
+        "40": null,
+        "60": null,
+        "80": null
+      },
+      "stranded_inventory": 5,
+      "bots_near_drop": 1,
+      "average_bot_spread": 10,
+      "dead_opening_ticks": 32,
+      "rank": 8,
+      "id": 12,
+      "seed": 7016,
+      "objective": "score_by_tick_100",
+      "strategy": "replay_seeded_handoff_rewind",
+      "estimated_score": 22,
+      "last_scripted_tick": 103,
+      "baseline_match": true,
+      "baseline_beat": false,
+      "promotable": false,
+      "triage": {
+        "baseline_match": true,
+        "baseline_beat": false,
+        "promotable": false,
+        "penalties": [
+          "excess_stranded_inventory"
+        ],
+        "metrics": {
+          "score_at_tick_100": 22,
+          "tick_to_40": null,
+          "tick_to_60": null,
+          "tick_to_80": null,
+          "tick_to_targets": {
+            "40": null,
+            "60": null,
+            "80": null
+          },
+          "stranded_inventory": 5,
+          "bots_near_drop": 1,
+          "average_bot_spread": 10,
+          "dead_opening_ticks": 32
+        }
+      },
+      "total_waits": 374,
+      "out_script": "script-12.json",
+      "out_report": "report-12.json"
+    },
+    {
+      "score_at_tick_100": 22,
+      "tick_to_40": null,
+      "tick_to_60": null,
+      "tick_to_80": null,
+      "tick_to_targets": {
+        "40": null,
+        "60": null,
+        "80": null
+      },
+      "stranded_inventory": 5,
+      "bots_near_drop": 1,
+      "average_bot_spread": 10,
+      "dead_opening_ticks": 32,
+      "rank": 9,
+      "id": 16,
+      "seed": 7020,
+      "objective": "score_by_tick_100",
+      "strategy": "replay_seeded_handoff_rewind",
+      "estimated_score": 22,
+      "last_scripted_tick": 103,
+      "baseline_match": true,
+      "baseline_beat": false,
+      "promotable": false,
+      "triage": {
+        "baseline_match": true,
+        "baseline_beat": false,
+        "promotable": false,
+        "penalties": [
+          "excess_stranded_inventory"
+        ],
+        "metrics": {
+          "score_at_tick_100": 22,
+          "tick_to_40": null,
+          "tick_to_60": null,
+          "tick_to_80": null,
+          "tick_to_targets": {
+            "40": null,
+            "60": null,
+            "80": null
+          },
+          "stranded_inventory": 5,
+          "bots_near_drop": 1,
+          "average_bot_spread": 10,
+          "dead_opening_ticks": 32
+        }
+      },
+      "total_waits": 374,
+      "out_script": "script-16.json",
+      "out_report": "report-16.json"
+    },
+    {
+      "score_at_tick_100": 22,
+      "tick_to_40": 156,
+      "tick_to_60": 237,
+      "tick_to_80": 276,
+      "tick_to_targets": {
+        "40": 156,
+        "60": 237,
+        "80": 276
+      },
+      "stranded_inventory": 3,
+      "bots_near_drop": 1,
+      "average_bot_spread": 10.13,
+      "dead_opening_ticks": 32,
+      "rank": 10,
+      "id": 5,
+      "seed": 7009,
+      "objective": "throughput_frontier",
+      "strategy": "replay_seeded_preserve",
+      "estimated_score": 89,
+      "last_scripted_tick": 298,
+      "baseline_match": true,
+      "baseline_beat": false,
+      "promotable": false,
+      "triage": {
+        "baseline_match": true,
+        "baseline_beat": false,
+        "promotable": false,
+        "penalties": [],
+        "metrics": {
+          "score_at_tick_100": 22,
+          "tick_to_40": 156,
+          "tick_to_60": 237,
+          "tick_to_80": 276,
+          "tick_to_targets": {
+            "40": 156,
+            "60": 237,
+            "80": 276
+          },
+          "stranded_inventory": 3,
+          "bots_near_drop": 1,
+          "average_bot_spread": 10.13,
+          "dead_opening_ticks": 32
+        }
+      },
+      "total_waits": 927,
+      "out_script": "script-5.json",
+      "out_report": "report-5.json"
+    },
+    {
+      "score_at_tick_100": 22,
+      "tick_to_40": 156,
+      "tick_to_60": 237,
+      "tick_to_80": 276,
+      "tick_to_targets": {
+        "40": 156,
+        "60": 237,
+        "80": 276
+      },
+      "stranded_inventory": 3,
+      "bots_near_drop": 1,
+      "average_bot_spread": 10.13,
+      "dead_opening_ticks": 32,
+      "rank": 11,
+      "id": 1,
+      "seed": 7005,
+      "objective": "throughput_frontier",
+      "strategy": "replay_seeded_preserve",
+      "estimated_score": 89,
+      "last_scripted_tick": 298,
+      "baseline_match": true,
+      "baseline_beat": false,
+      "promotable": false,
+      "triage": {
+        "baseline_match": true,
+        "baseline_beat": false,
+        "promotable": false,
+        "penalties": [],
+        "metrics": {
+          "score_at_tick_100": 22,
+          "tick_to_40": 156,
+          "tick_to_60": 237,
+          "tick_to_80": 276,
+          "tick_to_targets": {
+            "40": 156,
+            "60": 237,
+            "80": 276
+          },
+          "stranded_inventory": 3,
+          "bots_near_drop": 1,
+          "average_bot_spread": 10.13,
+          "dead_opening_ticks": 32
+        }
+      },
+      "total_waits": 927,
+      "out_script": "script-1.json",
+      "out_report": "report-1.json"
+    },
+    {
+      "score_at_tick_100": 22,
+      "tick_to_40": 156,
+      "tick_to_60": 237,
+      "tick_to_80": 276,
+      "tick_to_targets": {
+        "40": 156,
+        "60": 237,
+        "80": 276
+      },
+      "stranded_inventory": 3,
+      "bots_near_drop": 1,
+      "average_bot_spread": 10.13,
+      "dead_opening_ticks": 32,
+      "rank": 12,
+      "id": 3,
+      "seed": 7007,
+      "objective": "throughput_frontier",
+      "strategy": "replay_seeded_preserve",
+      "estimated_score": 89,
+      "last_scripted_tick": 298,
+      "baseline_match": true,
+      "baseline_beat": false,
+      "promotable": false,
+      "triage": {
+        "baseline_match": true,
+        "baseline_beat": false,
+        "promotable": false,
+        "penalties": [],
+        "metrics": {
+          "score_at_tick_100": 22,
+          "tick_to_40": 156,
+          "tick_to_60": 237,
+          "tick_to_80": 276,
+          "tick_to_targets": {
+            "40": 156,
+            "60": 237,
+            "80": 276
+          },
+          "stranded_inventory": 3,
+          "bots_near_drop": 1,
+          "average_bot_spread": 10.13,
+          "dead_opening_ticks": 32
+        }
+      },
+      "total_waits": 927,
+      "out_script": "script-3.json",
+      "out_report": "report-3.json"
+    },
+    {
+      "score_at_tick_100": 22,
+      "tick_to_40": 156,
+      "tick_to_60": 237,
+      "tick_to_80": 276,
+      "tick_to_targets": {
+        "40": 156,
+        "60": 237,
+        "80": 276
+      },
+      "stranded_inventory": 3,
+      "bots_near_drop": 1,
+      "average_bot_spread": 10.13,
+      "dead_opening_ticks": 32,
+      "rank": 13,
+      "id": 7,
+      "seed": 7011,
+      "objective": "throughput_frontier",
+      "strategy": "replay_seeded_preserve",
+      "estimated_score": 89,
+      "last_scripted_tick": 298,
+      "baseline_match": true,
+      "baseline_beat": false,
+      "promotable": false,
+      "triage": {
+        "baseline_match": true,
+        "baseline_beat": false,
+        "promotable": false,
+        "penalties": [],
+        "metrics": {
+          "score_at_tick_100": 22,
+          "tick_to_40": 156,
+          "tick_to_60": 237,
+          "tick_to_80": 276,
+          "tick_to_targets": {
+            "40": 156,
+            "60": 237,
+            "80": 276
+          },
+          "stranded_inventory": 3,
+          "bots_near_drop": 1,
+          "average_bot_spread": 10.13,
+          "dead_opening_ticks": 32
+        }
+      },
+      "total_waits": 927,
+      "out_script": "script-7.json",
+      "out_report": "report-7.json"
+    },
+    {
+      "score_at_tick_100": 22,
+      "tick_to_40": 156,
+      "tick_to_60": 237,
+      "tick_to_80": 276,
+      "tick_to_targets": {
+        "40": 156,
+        "60": 237,
+        "80": 276
+      },
+      "stranded_inventory": 3,
+      "bots_near_drop": 1,
+      "average_bot_spread": 10.13,
+      "dead_opening_ticks": 32,
+      "rank": 14,
+      "id": 17,
+      "seed": 7021,
+      "objective": "throughput_frontier",
+      "strategy": "replay_seeded_preserve",
+      "estimated_score": 89,
+      "last_scripted_tick": 298,
+      "baseline_match": true,
+      "baseline_beat": false,
+      "promotable": false,
+      "triage": {
+        "baseline_match": true,
+        "baseline_beat": false,
+        "promotable": false,
+        "penalties": [],
+        "metrics": {
+          "score_at_tick_100": 22,
+          "tick_to_40": 156,
+          "tick_to_60": 237,
+          "tick_to_80": 276,
+          "tick_to_targets": {
+            "40": 156,
+            "60": 237,
+            "80": 276
+          },
+          "stranded_inventory": 3,
+          "bots_near_drop": 1,
+          "average_bot_spread": 10.13,
+          "dead_opening_ticks": 32
+        }
+      },
+      "total_waits": 927,
+      "out_script": "script-17.json",
+      "out_report": "report-17.json"
+    },
+    {
+      "score_at_tick_100": 22,
+      "tick_to_40": 156,
+      "tick_to_60": 237,
+      "tick_to_80": 276,
+      "tick_to_targets": {
+        "40": 156,
+        "60": 237,
+        "80": 276
+      },
+      "stranded_inventory": 3,
+      "bots_near_drop": 1,
+      "average_bot_spread": 10.13,
+      "dead_opening_ticks": 32,
+      "rank": 15,
+      "id": 13,
+      "seed": 7017,
+      "objective": "throughput_frontier",
+      "strategy": "replay_seeded_preserve",
+      "estimated_score": 89,
+      "last_scripted_tick": 298,
+      "baseline_match": true,
+      "baseline_beat": false,
+      "promotable": false,
+      "triage": {
+        "baseline_match": true,
+        "baseline_beat": false,
+        "promotable": false,
+        "penalties": [],
+        "metrics": {
+          "score_at_tick_100": 22,
+          "tick_to_40": 156,
+          "tick_to_60": 237,
+          "tick_to_80": 276,
+          "tick_to_targets": {
+            "40": 156,
+            "60": 237,
+            "80": 276
+          },
+          "stranded_inventory": 3,
+          "bots_near_drop": 1,
+          "average_bot_spread": 10.13,
+          "dead_opening_ticks": 32
+        }
+      },
+      "total_waits": 927,
+      "out_script": "script-13.json",
+      "out_report": "report-13.json"
+    },
+    {
+      "score_at_tick_100": 22,
+      "tick_to_40": 156,
+      "tick_to_60": 237,
+      "tick_to_80": 276,
+      "tick_to_targets": {
+        "40": 156,
+        "60": 237,
+        "80": 276
+      },
+      "stranded_inventory": 3,
+      "bots_near_drop": 1,
+      "average_bot_spread": 10.13,
+      "dead_opening_ticks": 32,
+      "rank": 16,
+      "id": 11,
+      "seed": 7015,
+      "objective": "throughput_frontier",
+      "strategy": "replay_seeded_preserve",
+      "estimated_score": 89,
+      "last_scripted_tick": 298,
+      "baseline_match": true,
+      "baseline_beat": false,
+      "promotable": false,
+      "triage": {
+        "baseline_match": true,
+        "baseline_beat": false,
+        "promotable": false,
+        "penalties": [],
+        "metrics": {
+          "score_at_tick_100": 22,
+          "tick_to_40": 156,
+          "tick_to_60": 237,
+          "tick_to_80": 276,
+          "tick_to_targets": {
+            "40": 156,
+            "60": 237,
+            "80": 276
+          },
+          "stranded_inventory": 3,
+          "bots_near_drop": 1,
+          "average_bot_spread": 10.13,
+          "dead_opening_ticks": 32
+        }
+      },
+      "total_waits": 927,
+      "out_script": "script-11.json",
+      "out_report": "report-11.json"
+    },
+    {
+      "score_at_tick_100": 22,
+      "tick_to_40": 156,
+      "tick_to_60": 237,
+      "tick_to_80": 276,
+      "tick_to_targets": {
+        "40": 156,
+        "60": 237,
+        "80": 276
+      },
+      "stranded_inventory": 3,
+      "bots_near_drop": 1,
+      "average_bot_spread": 10.13,
+      "dead_opening_ticks": 32,
+      "rank": 17,
+      "id": 15,
+      "seed": 7019,
+      "objective": "throughput_frontier",
+      "strategy": "replay_seeded_preserve",
+      "estimated_score": 89,
+      "last_scripted_tick": 298,
+      "baseline_match": true,
+      "baseline_beat": false,
+      "promotable": false,
+      "triage": {
+        "baseline_match": true,
+        "baseline_beat": false,
+        "promotable": false,
+        "penalties": [],
+        "metrics": {
+          "score_at_tick_100": 22,
+          "tick_to_40": 156,
+          "tick_to_60": 237,
+          "tick_to_80": 276,
+          "tick_to_targets": {
+            "40": 156,
+            "60": 237,
+            "80": 276
+          },
+          "stranded_inventory": 3,
+          "bots_near_drop": 1,
+          "average_bot_spread": 10.13,
+          "dead_opening_ticks": 32
+        }
+      },
+      "total_waits": 927,
+      "out_script": "script-15.json",
+      "out_report": "report-15.json"
+    },
+    {
+      "score_at_tick_100": 22,
+      "tick_to_40": 156,
+      "tick_to_60": 237,
+      "tick_to_80": 276,
+      "tick_to_targets": {
+        "40": 156,
+        "60": 237,
+        "80": 276
+      },
+      "stranded_inventory": 3,
+      "bots_near_drop": 1,
+      "average_bot_spread": 10.13,
+      "dead_opening_ticks": 32,
+      "rank": 18,
+      "id": 9,
+      "seed": 7013,
+      "objective": "throughput_frontier",
+      "strategy": "replay_seeded_preserve",
+      "estimated_score": 89,
+      "last_scripted_tick": 298,
+      "baseline_match": true,
+      "baseline_beat": false,
+      "promotable": false,
+      "triage": {
+        "baseline_match": true,
+        "baseline_beat": false,
+        "promotable": false,
+        "penalties": [],
+        "metrics": {
+          "score_at_tick_100": 22,
+          "tick_to_40": 156,
+          "tick_to_60": 237,
+          "tick_to_80": 276,
+          "tick_to_targets": {
+            "40": 156,
+            "60": 237,
+            "80": 276
+          },
+          "stranded_inventory": 3,
+          "bots_near_drop": 1,
+          "average_bot_spread": 10.13,
+          "dead_opening_ticks": 32
+        }
+      },
+      "total_waits": 927,
+      "out_script": "script-9.json",
+      "out_report": "report-9.json"
+    }
+  ]
+}

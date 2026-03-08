@@ -217,8 +217,30 @@ This produces a frontier report with:
 - `best_tick_to_40`
 - `best_tick_to_60`
 - `best_tick_to_80`
+- replay `baseline`
+- `promotable_shortlist`
+- per-candidate `baseline_match`, `baseline_beat`, and `promotable`
 
 Current same-day early frontier from the `89` replay is only `22` score by tick `100`, so the next work should target opening throughput rather than late handoff.
+
+Preset shortcuts are also supported:
+
+```bash
+node tools/grocery-bot/optimize-oracle-script-batch.mjs \
+  --oracle tools/grocery-bot/config/oracle-expert.json \
+  --replay tools/grocery-bot/out/2026-03-08T10-50-21-635Z-expert-expert/replay.jsonl \
+  --out-script tools/grocery-bot/config/script-expert-opening100.json \
+  --out-report tools/grocery-bot/out/oracle-script-opening100-report.json \
+  --preset opening_100 \
+  --runs 18 \
+  --parallel 9
+```
+
+Available presets:
+- `opening_100`
+- `tick_to_40`
+- `tick_to_60`
+- `tick_to_80`
 
 ### 14) Compress a proven replay backward
 
