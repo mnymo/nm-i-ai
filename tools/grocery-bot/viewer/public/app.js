@@ -125,10 +125,12 @@ function renderBoard(snapshot, layout, plannerMetrics) {
     rice: '🍚',
     pasta: '🍝',
     cereal: '🥣',
-    yogurt: '🥛', // explicitly present in replay
+    yogurt: '🍦', // explicitly present in replay (use different emoji than milk)
     butter: '🧈', // explicitly present in replay
     cheese: '🧀', // explicitly present in replay
     milk: '🥛',   // explicitly present in replay
+    cream: '🥤', // present in medium replays
+    eggs: '🥚',  // present in medium replays (eggs vs egg)
     icecream: '🍦',
     chocolate: '🍫',
     coffee: '☕',
@@ -176,39 +178,87 @@ function renderBoard(snapshot, layout, plannerMetrics) {
     botsByCell.set(key, entry);
   }
 
-  // Color palette for zones
-  const ZONE_COLORS = ['#e57373', '#64b5f6', '#81c784', '#ffd54f', '#ba68c8', '#ffb74d', '#4db6ac', '#a1887f', '#90a4ae', '#f06292'];
-  // Get zone assignment if available
+  // Color palette for zones - softer, more distinct colors  
+  const ZONE_COLORS = ['#ffcccb', '#add8e6', '#90ee90', '#ffffe0', '#dda0dd', '#f0e68c', '#afeeee', '#d3d3d3', '#ffb6c1', '#98fb98'];
+
+  // Smart zone assignment based on store layout
+  function getOptimalZone(x, y, width, height, numBots) {
+    // Create zones based on store quadrants and sections
+    const zonesPerRow = Math.ceil(Math.sqrt(numBots));
+    const zonesPerCol = Math.ceil(numBots / zonesPerRow);
+    
+    const zoneWidth = Math.floor(width / zonesPerRow);
+    const zoneHeight = Math.floor(height / zonesPerCol);
+    
+    const zoneX = Math.min(Math.floor(x / zoneWidth), zonesPerRow - 1);
+    const zoneY = Math.min(Math.floor(y / zoneHeight), zonesPerCol - 1);
+    
+    return zoneY * zonesPerRow + zoneX;
+  }
+
+  // Smart road/conveyor belt system for optimal bot flow
+  function getRoadDirection(x, y, width, height) {
+    // Create main arteries and local roads
+    const isMainArtery = (x % 6 === 0) || (y % 4 === 0);
+    const isLocalRoad = (x % 3 === 1) || (y % 3 === 2);
+    
+    if (isMainArtery) {
+      // Main arteries: create circular flow pattern
+      if (x % 6 === 0 && y > 1 && y < height - 2) {
+        // Vertical main roads - alternate direction
+        return (x % 12 === 0) ? '⬇️' : '⬆️';
+      }
+      if (y % 4 === 0 && x > 1 && x < width - 2) {
+        // Horizontal main roads - create flow toward drop-off
+        return (y < height / 2) ? '➡️' : '⬅️';
+      }
+    } else if (isLocalRoad && !isMainArtery) {
+      // Local feeder roads between shelf aisles
+      if (x % 3 === 1) {
+        // Vertical feeders
+        return ((x + y) % 4 < 2) ? '⬆️' : '⬇️';
+      }
+      if (y % 3 === 2) {
+        // Horizontal feeders
+        return ((x + y) % 4 < 2) ? '➡️' : '⬅️';
+      }
+    }
+    return '';
+  }
+
+  // Get bot assignments from planner or default
   const zoneByBot = (plannerMetrics && plannerMetrics.zoneAssignmentByBot) || {};
-  // --- Zone and road overlays ---
-  // For demo: assign each column to a zone, and render one-way road arrows for edge rows/columns
+  const numBots = Object.keys(zoneByBot).length || snapshot?.bots?.length || 3;
+
+  // --- Enhanced zone, road and item rendering ---
   for (let y = 0; y < height; y += 1) {
     for (let x = 0; x < width; x += 1) {
       const key = `${x},${y}`;
       const cell = document.createElement('div');
       cell.className = 'cell';
-      // Zone background (by column for demo)
-      const zoneIdx = Math.floor((x / width) * ZONE_COLORS.length);
+      
+      // Intelligent zoning
+      const zoneIdx = getOptimalZone(x, y, width, height, numBots);
+      
       if (walls.has(key)) {
         cell.classList.add('wall');
-        cell.style.background = '';
+        cell.style.background = '#444';
       } else {
-        cell.style.background = ZONE_COLORS[zoneIdx % ZONE_COLORS.length] + '22';
+        // Zone background with low opacity to not interfere with items
+        cell.style.background = ZONE_COLORS[zoneIdx % ZONE_COLORS.length] + '20';
         if (drops.has(key)) {
           cell.classList.add('drop');
+          cell.style.background = '#ffd700' + '60'; // Gold for drop-off areas
         }
       }
 
-      // One-way road arrows (for demo: leftmost col up, rightmost col down, top row right, bottom row left)
-      let roadArrow = '';
-      if (x === 1 && y > 0 && y < height - 1) roadArrow = '⬆️';
-      if (x === width - 2 && y > 0 && y < height - 1) roadArrow = '⬇️';
-      if (y === 1 && x > 0 && x < width - 1) roadArrow = '➡️';
-      if (y === height - 2 && x > 0 && x < width - 1) roadArrow = '⬅️';
-      if (roadArrow) {
+      // Smart road system for optimal traffic flow
+      const roadArrow = getRoadDirection(x, y, width, height);
+      if (roadArrow && !walls.has(key)) {
         const arrowEl = document.createElement('div');
         arrowEl.className = 'road-arrow';
         arrowEl.textContent = roadArrow;
+        arrowEl.style.cssText = 'position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 10px; opacity: 0.6; z-index: 1; pointer-events: none;';
         cell.appendChild(arrowEl);
       }
 
