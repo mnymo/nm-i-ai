@@ -11,6 +11,7 @@ import { GroceryPlanner } from './src/planner.mjs';
 import { loadProfiles, resolveProfile } from './src/profile.mjs';
 import { buildRunProvenance } from './src/run-provenance.mjs';
 import {
+  buildOpeningAuditWorkflowReport,
   buildReplayAnalysisReport,
   buildRunListing,
   buildScriptInfoReport,
@@ -183,6 +184,16 @@ function runScriptInfoMode(args) {
   console.log(JSON.stringify(report, null, 2));
 }
 
+function runOpeningAuditMode(args) {
+  const report = buildOpeningAuditWorkflowReport({
+    oraclePath: args.oracle,
+    replayPath: args.replay,
+    scriptPath: args.script,
+    maxTick: args.maxTick,
+  });
+  console.log(JSON.stringify(report, null, 2));
+}
+
 async function main() {
   const args = parseCliArguments(process.argv.slice(2));
 
@@ -228,6 +239,11 @@ async function main() {
 
   if (args.mode === 'script-info') {
     runScriptInfoMode(args);
+    return;
+  }
+
+  if (args.mode === 'opening-audit') {
+    runOpeningAuditMode(args);
   }
 }
 

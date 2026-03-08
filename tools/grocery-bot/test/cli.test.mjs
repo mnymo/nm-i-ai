@@ -88,6 +88,21 @@ test('parseCliArguments requires --script for script-info mode', () => {
   );
 });
 
+test('parseCliArguments accepts opening-audit mode with replay, oracle, script, and max tick', () => {
+  const args = parseCliArguments([
+    '--mode', 'opening-audit',
+    '--difficulty', 'expert',
+    '--replay', 'tools/grocery-bot/out/example/replay.jsonl',
+    '--oracle', 'tools/grocery-bot/config/oracle-expert.json',
+    '--script', 'tools/grocery-bot/config/script-expert.json',
+    '--max-tick', '90',
+  ]);
+
+  assert.equal(args.mode, 'opening-audit');
+  assert.equal(args.maxTick, 90);
+  assert.match(args.replay, /tools\/grocery-bot\/out\/example\/replay\.jsonl$/);
+});
+
 test('nightmare difficulty is accepted and has a default profile', () => {
   const args = parseCliArguments([
     '--token', 'header.payload.signature',

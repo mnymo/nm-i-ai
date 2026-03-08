@@ -31,6 +31,7 @@ function buildTimelineFromReplay(replayPath, maxTick = 100) {
     .filter((row) => row.type === 'tick' && row.tick <= maxTick)
     .map((row) => {
       const snapshot = rebuildSnapshot(row.state_snapshot, layout);
+      const actions = row.actions_sent || row.actions_planned || [];
       return { tick: row.tick, score: snapshot?.score ?? 0 };
     });
 }
@@ -112,6 +113,12 @@ export function getScriptMilestoneMetrics(script, options = {}) {
     || script?.ticks?.at(-1)?.expected_state?.drop_off
     || null;
   const strandedInventory = finalBots.reduce((sum, bot) => sum + ((bot.inventory || []).length), 0);
+  const tickProfiles = script?.evaluation?.tickProfiles || [];
+  const productiveBotTicks = tickProfiles.reduce((sum, tick) => sum + (tick.productive_bot_ticks || 0), 0);
+  const wastedBotTicks = tickProfiles.reduce((sum, tick) => sum + (tick.waiting_bot_ticks || 0) + (tick.blocked_bot_ticks || 0), 0);
+  const productiveRatio = productiveBotTicks + wastedBotTicks === 0
+    ? null
+    : Number((productiveBotTicks / (productiveBotTicks + wastedBotTicks)).toFixed(4));
 
   return {
     score_at_tick_100: scoreAtTick,
@@ -123,6 +130,9 @@ export function getScriptMilestoneMetrics(script, options = {}) {
     bots_near_drop: botsNearDrop(finalBots, dropOff),
     average_bot_spread: averageBotSpread(finalBots),
     dead_opening_ticks: longestDeadWindow(timeline, scoreTick),
+    productive_bot_ticks: productiveBotTicks,
+    wasted_bot_ticks: wastedBotTicks,
+    productive_bot_tick_ratio: productiveRatio,
   };
 }
 
@@ -134,7 +144,9 @@ export function extractReplayBaselineMetrics(replayPath, options = {}) {
     scoreTick = 100,
     scoreTargets = [40, 60, 80],
   } = options;
-  const timeline = buildTimelineFromReplay(replayPath, scoreTick);
+  const rows = parseJsonl(replayPath)
+    .filter((row) => row.type === 'tick' && row.tick <= scoreTick);
+  const timeline = rows.map((row) => ({ tick: row.tick, score: row.state_snapshot?.score ?? 0 }));
   const scoreAtTick = lastEntryAtOrBefore(timeline, scoreTick, 'score', 0);
   const tickToScore = Object.fromEntries(scoreTargets.map((target) => {
     const hit = timeline.find((entry) => entry.score >= target);
@@ -147,6 +159,14 @@ export function extractReplayBaselineMetrics(replayPath, options = {}) {
     tick_to_80: tickToScore[80],
     tick_to_targets: tickToScore,
     dead_opening_ticks: longestDeadWindow(timeline, scoreTick),
+    productive_bot_ticks: rows.reduce((sum, row) => sum + ((row.actions_sent || row.actions_planned || []).filter((action) => action.action !== 'wait').length), 0),
+    wasted_bot_ticks: rows.reduce((sum, row) => {
+      const actions = row.actions_sent || row.actions_planned || [];
+      const botCount = row.state_snapshot?.bots?.length || actions.length;
+      const productive = actions.filter((action) => action.action !== 'wait').length;
+      const blocked = row.sanitizer_overrides?.length || 0;
+      return sum + Math.max(0, botCount - productive) + blocked;
+    }, 0),
   };
 }
 
@@ -170,6 +190,9 @@ export function assessScriptPromotion(script, baselineMetrics, options = {}) {
   }
   if (metrics.dead_opening_ticks > (baselineMetrics?.dead_opening_ticks ?? Number.POSITIVE_INFINITY)) {
     penalties.push('dead_opening_regression');
+  }
+  if (baselineMetrics?.productive_bot_ticks && metrics.productive_bot_ticks && metrics.productive_bot_ticks < baselineMetrics.productive_bot_ticks) {
+    penalties.push('productive_bot_tick_regression');
   }
   if ((baselineMetrics?.tick_to_40 ?? null) !== null && metrics.tick_to_40 === null) {
     penalties.push('missed_milestone_40');

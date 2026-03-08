@@ -1,7 +1,24 @@
 import path from 'node:path';
 
+import { buildOpeningAuditReport } from './opening-audit.mjs';
 import { extractReplayBaselineMetrics, getScriptMilestoneMetrics } from './oracle-script-metrics.mjs';
 import { compareGeneratedScripts } from './oracle-script-search.mjs';
+
+function buildCandidateOpeningAudit({ oraclePath, replayPath, scriptPath }) {
+  if (!oraclePath || !replayPath || !scriptPath) {
+    return null;
+  }
+  try {
+    return buildOpeningAuditReport({
+      oraclePath,
+      replayPath,
+      scriptPath,
+      maxTick: 120,
+    });
+  } catch {
+    return null;
+  }
+}
 
 export function buildOptimizationJobs({
   runs = 8,
@@ -40,6 +57,11 @@ export function buildBatchReport({
   const sorted = [...results].sort((left, right) => compareOptimizationResults(left, right, objective));
   const best = sorted[0] || null;
   const baseline = replayPath ? extractReplayBaselineMetrics(replayPath) : null;
+  const bestAudit = best ? buildCandidateOpeningAudit({
+    oraclePath,
+    replayPath,
+    scriptPath: best.paths.outScript,
+  }) : null;
   const frontier = {
     best_score_by_tick_100: null,
     best_tick_to_40: null,
@@ -108,6 +130,10 @@ export function buildBatchReport({
     oracle_source: oraclePath,
     replay: replayPath,
     baseline,
+    opening_baseline: bestAudit?.opening_baseline || null,
+    opening_profile: bestAudit?.opening_profile || null,
+    first_divergence_tick: bestAudit?.first_divergence_tick ?? null,
+    first_divergence: bestAudit?.first_divergence || null,
     objective,
     parallel,
     jobs_requested: jobs.length,
@@ -126,22 +152,31 @@ export function buildBatchReport({
     best_by_objective: bestByObjective,
     frontier,
     promotable_shortlist: promotableShortlist,
-    top_results: sorted.slice(0, 20).map((result, index) => ({
-      ...getScriptMilestoneMetrics(result.script),
-      rank: index + 1,
-      id: result.job.id,
-      seed: result.job.seed,
-      objective: result.job.objective,
-      strategy: result.script.strategy,
-      estimated_score: result.script.estimated_score,
-      last_scripted_tick: result.script.last_scripted_tick,
-      baseline_match: result.script.search_meta?.triage?.baseline_match || false,
-      baseline_beat: result.script.search_meta?.triage?.baseline_beat || false,
-      promotable: result.script.search_meta?.triage?.promotable || false,
-      triage: result.script.search_meta?.triage || null,
-      total_waits: result.script.aggregate_efficiency?.total_waits || 0,
-      out_script: path.basename(result.paths.outScript),
-      out_report: path.basename(result.paths.outReport),
-    })),
+    top_results: sorted.slice(0, 20).map((result, index) => {
+      const audit = buildCandidateOpeningAudit({
+        oraclePath,
+        replayPath,
+        scriptPath: result.paths.outScript,
+      });
+      return {
+        ...getScriptMilestoneMetrics(result.script),
+        rank: index + 1,
+        id: result.job.id,
+        seed: result.job.seed,
+        objective: result.job.objective,
+        strategy: result.script.strategy,
+        estimated_score: result.script.estimated_score,
+        last_scripted_tick: result.script.last_scripted_tick,
+        baseline_match: result.script.search_meta?.triage?.baseline_match || false,
+        baseline_beat: result.script.search_meta?.triage?.baseline_beat || false,
+        promotable: result.script.search_meta?.triage?.promotable || false,
+        first_divergence_tick: audit?.first_divergence_tick ?? null,
+        first_divergence: audit?.first_divergence || null,
+        triage: result.script.search_meta?.triage || null,
+        total_waits: result.script.aggregate_efficiency?.total_waits || 0,
+        out_script: path.basename(result.paths.outScript),
+        out_report: path.basename(result.paths.outReport),
+      };
+    }),
   };
 }

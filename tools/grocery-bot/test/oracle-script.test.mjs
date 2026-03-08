@@ -12,6 +12,7 @@ import {
 } from '../src/oracle-script-compressor.mjs';
 import { loadOracleFile, loadScriptFile } from '../src/oracle-script-io.mjs';
 import { buildLegacyOracleScript } from '../src/oracle-script-legacy.mjs';
+import { assessScriptPromotion } from '../src/oracle-script-metrics.mjs';
 import {
   buildOracleSearchReport,
   compareGeneratedScripts,
@@ -420,6 +421,28 @@ test('score-by-tick-100 objective penalizes non-promotable late-score candidates
   };
 
   assert.equal(compareGeneratedScripts(promotable, nonPromotable, 'score_by_tick_100') < 0, true);
+});
+
+test('promotion triage rejects candidates that tie early score but regress on productive bot ticks', () => {
+  const report = assessScriptPromotion({
+    replay_target_meta: { score_timeline: [{ tick: 100, score: 22 }] },
+    evaluation: {
+      tickProfiles: [
+        { productive_bot_ticks: 4, waiting_bot_ticks: 6, blocked_bot_ticks: 0 },
+        { productive_bot_ticks: 4, waiting_bot_ticks: 6, blocked_bot_ticks: 0 },
+      ],
+      finalBots: [],
+      dropOff: [1, 8],
+    },
+  }, {
+    score_at_tick_100: 22,
+    dead_opening_ticks: 101,
+    productive_bot_ticks: 20,
+  });
+
+  assert.equal(report.baseline_match, true);
+  assert.equal(report.promotable, false);
+  assert.ok(report.penalties.includes('productive_bot_tick_regression'));
 });
 
 test('throughput-frontier objective prefers candidates that hit milestones earlier', () => {

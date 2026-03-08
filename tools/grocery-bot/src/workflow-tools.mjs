@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+import { buildOpeningAuditReport } from './opening-audit.mjs';
 import { loadOracleFile, loadScriptFile } from './oracle-script-io.mjs';
 import { generateAnalysis, summarizeReplay } from './replay.mjs';
 import { listReplayRuns } from './replay-viewer.mjs';
@@ -169,4 +170,13 @@ export function buildScriptInfoReport({ scriptPath, oraclePath = null }) {
   }
 
   return report;
+}
+
+export function buildOpeningAuditWorkflowReport({ oraclePath, replayPath, scriptPath, maxTick = 120 }) {
+  return buildOpeningAuditReport({
+    oraclePath,
+    replayPath,
+    scriptPath,
+    maxTick,
+  });
 }

@@ -72,6 +72,7 @@ function parseArgs(argv) {
     limit: 10,
     oracle: null,
     script: null,
+    maxTick: 120,
   };
   let difficultyExplicit = false;
 
@@ -83,7 +84,7 @@ function parseArgs(argv) {
       continue;
     }
 
-    if (['--token', '--difficulty', '--profile', '--out-dir', '--config', '--mode', '--replay', '--seeds', '--limit', '--oracle', '--script'].includes(key)) {
+    if (['--token', '--difficulty', '--profile', '--out-dir', '--config', '--mode', '--replay', '--seeds', '--limit', '--oracle', '--script', '--max-tick'].includes(key)) {
       if (value === undefined) {
         throw new Error(`Missing value for ${key}`);
       }
@@ -126,6 +127,9 @@ function parseArgs(argv) {
       case '--script':
         args.script = path.resolve(process.cwd(), value);
         break;
+      case '--max-tick':
+        args.maxTick = Number(value);
+        break;
       default:
         break;
     }
@@ -146,7 +150,7 @@ export function parseCliArguments(argv) {
     throw new Error(`Invalid difficulty: ${args.difficulty}`);
   }
 
-  const validModes = new Set(['play', 'summarize', 'simulate', 'tune', 'benchmark', 'runs', 'analyze', 'script-info']);
+  const validModes = new Set(['play', 'summarize', 'simulate', 'tune', 'benchmark', 'runs', 'analyze', 'script-info', 'opening-audit']);
   validModes.add('estimate-max');
   if (!validModes.has(args.mode)) {
     throw new Error(`Invalid mode: ${args.mode}`);
@@ -167,9 +171,15 @@ export function parseCliArguments(argv) {
   if (args.mode === 'script-info' && !args.script) {
     throw new Error('--script is required for mode=script-info');
   }
+  if (args.mode === 'opening-audit' && (!args.script || !args.oracle || !args.replay)) {
+    throw new Error('--script, --oracle, and --replay are required for mode=opening-audit');
+  }
 
   if (!Number.isFinite(args.limit) || args.limit <= 0) {
     throw new Error(`Invalid --limit: ${args.limit}`);
+  }
+  if (!Number.isFinite(args.maxTick) || args.maxTick <= 0) {
+    throw new Error(`Invalid --max-tick: ${args.maxTick}`);
   }
 
   return args;

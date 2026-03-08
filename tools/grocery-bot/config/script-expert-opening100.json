@@ -1,7 +1,7 @@
 {
   "description": "Compressed replay-derived script for expert",
   "strategy": "replay_seeded_handoff_rewind",
-  "generated_at": "2026-03-08T13:15:03.265Z",
+  "generated_at": "2026-03-08T13:28:57.648Z",
   "oracle_source": null,
   "orders_covered": null,
   "estimated_score": 22,
@@ -119089,7 +119089,9 @@
         "60": null,
         "80": null
       },
-      "dead_opening_ticks": 32
+      "dead_opening_ticks": 32,
+      "productive_bot_ticks": 643,
+      "wasted_bot_ticks": 378
     },
     "triage": {
       "baseline_match": true,
@@ -119111,7 +119113,10 @@
         "stranded_inventory": 5,
         "bots_near_drop": 1,
         "average_bot_spread": 10,
-        "dead_opening_ticks": 32
+        "dead_opening_ticks": 32,
+        "productive_bot_ticks": 0,
+        "wasted_bot_ticks": 0,
+        "productive_bot_tick_ratio": null
       }
     }
   },
@@ -119124,7 +119129,7 @@
     "score_to_beat": null,
     "ticks_to_beat": null,
     "seed": 7012,
-    "elapsed_ms": 100542,
+    "elapsed_ms": 100861,
     "rank": 1,
     "top_candidates": [
       {
@@ -119162,7 +119167,10 @@
             "stranded_inventory": 5,
             "bots_near_drop": 1,
             "average_bot_spread": 10,
-            "dead_opening_ticks": 32
+            "dead_opening_ticks": 32,
+            "productive_bot_ticks": 0,
+            "wasted_bot_ticks": 0,
+            "productive_bot_tick_ratio": null
           }
         },
         "total_waits": 374
@@ -119202,7 +119210,10 @@
             "stranded_inventory": 5,
             "bots_near_drop": 0,
             "average_bot_spread": 11.64,
-            "dead_opening_ticks": 32
+            "dead_opening_ticks": 32,
+            "productive_bot_ticks": 0,
+            "wasted_bot_ticks": 0,
+            "productive_bot_tick_ratio": null
           }
         },
         "total_waits": 384
@@ -119242,7 +119253,10 @@
             "stranded_inventory": 5,
             "bots_near_drop": 1,
             "average_bot_spread": 11.49,
-            "dead_opening_ticks": 32
+            "dead_opening_ticks": 32,
+            "productive_bot_ticks": 0,
+            "wasted_bot_ticks": 0,
+            "productive_bot_tick_ratio": null
           }
         },
         "total_waits": 392
@@ -119280,7 +119294,10 @@
             "stranded_inventory": 4,
             "bots_near_drop": 1,
             "average_bot_spread": 11.69,
-            "dead_opening_ticks": 32
+            "dead_opening_ticks": 32,
+            "productive_bot_ticks": 0,
+            "wasted_bot_ticks": 0,
+            "productive_bot_tick_ratio": null
           }
         },
         "total_waits": 393
@@ -119320,7 +119337,10 @@
             "stranded_inventory": 7,
             "bots_near_drop": 2,
             "average_bot_spread": 10.71,
-            "dead_opening_ticks": 32
+            "dead_opening_ticks": 32,
+            "productive_bot_ticks": 0,
+            "wasted_bot_ticks": 0,
+            "productive_bot_tick_ratio": null
           }
         },
         "total_waits": 416
@@ -119360,7 +119380,10 @@
             "stranded_inventory": 6,
             "bots_near_drop": 0,
             "average_bot_spread": 10.33,
-            "dead_opening_ticks": 32
+            "dead_opening_ticks": 32,
+            "productive_bot_ticks": 0,
+            "wasted_bot_ticks": 0,
+            "productive_bot_tick_ratio": null
           }
         },
         "total_waits": 428
@@ -119400,7 +119423,10 @@
             "stranded_inventory": 6,
             "bots_near_drop": 1,
             "average_bot_spread": 10.44,
-            "dead_opening_ticks": 32
+            "dead_opening_ticks": 32,
+            "productive_bot_ticks": 0,
+            "wasted_bot_ticks": 0,
+            "productive_bot_tick_ratio": null
           }
         },
         "total_waits": 437
@@ -119440,7 +119466,10 @@
             "stranded_inventory": 5,
             "bots_near_drop": 1,
             "average_bot_spread": 10.36,
-            "dead_opening_ticks": 32
+            "dead_opening_ticks": 32,
+            "productive_bot_ticks": 0,
+            "wasted_bot_ticks": 0,
+            "productive_bot_tick_ratio": null
           }
         },
         "total_waits": 440
@@ -119478,7 +119507,10 @@
             "stranded_inventory": 4,
             "bots_near_drop": 2,
             "average_bot_spread": 11.67,
-            "dead_opening_ticks": 32
+            "dead_opening_ticks": 32,
+            "productive_bot_ticks": 0,
+            "wasted_bot_ticks": 0,
+            "productive_bot_tick_ratio": null
           }
         },
         "total_waits": 482
@@ -119518,7 +119550,10 @@
             "stranded_inventory": 6,
             "bots_near_drop": 2,
             "average_bot_spread": 11.11,
-            "dead_opening_ticks": 32
+            "dead_opening_ticks": 32,
+            "productive_bot_ticks": 0,
+            "wasted_bot_ticks": 0,
+            "productive_bot_tick_ratio": null
           }
         },
         "total_waits": 491

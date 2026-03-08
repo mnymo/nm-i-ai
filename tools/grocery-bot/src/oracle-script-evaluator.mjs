@@ -50,6 +50,22 @@ function getActiveOrder(orders, tick) {
   return orders.find((order) => order.releaseTick <= tick && !order.complete) || null;
 }
 
+function countDeliverableInventory(inventory, activeOrder) {
+  if (!activeOrder) {
+    return 0;
+  }
+  const remaining = new Map(activeOrder.remaining);
+  let deliverable = 0;
+  for (const type of inventory) {
+    const count = remaining.get(type) || 0;
+    if (count > 0) {
+      remaining.set(type, count - 1);
+      deliverable += 1;
+    }
+  }
+  return deliverable;
+}
+
 export function evaluateOracleScript({ oracle, script, replayPath = null, maxTripItems = 2, sanitize = true }) {
   const normalizedOracle = normalizeOracle(oracle);
   const world = buildOracleScriptWorld({ oracle: normalizedOracle, replayPath });
@@ -72,6 +88,7 @@ export function evaluateOracleScript({ oracle, script, replayPath = null, maxTri
   const sanitizedTicks = [];
   let sanitizerOverrideCount = 0;
   const scoreTimeline = [];
+  const tickProfiles = [];
 
   for (const tickEntry of script.ticks || []) {
     const tick = tickEntry.tick;
@@ -288,6 +305,26 @@ export function evaluateOracleScript({ oracle, script, replayPath = null, maxTri
       break;
     }
 
+    const activeOrderForTick = getActiveOrder(orders, tick);
+    const productiveBotTicks = actions.filter((action) => action.action !== 'wait').length;
+    const waitingBotTicks = actions.length - productiveBotTicks;
+    const carryingDeliverableBots = bots.filter((bot) => countDeliverableInventory(bot.inventory, activeOrderForTick) > 0).length;
+    const stagedFutureBots = bots.filter((bot) => bot.inventory.length > 0 && countDeliverableInventory(bot.inventory, activeOrderForTick) === 0).length;
+    const pickupActionsThisTick = actions.filter((action) => action.action === 'pick_up').length;
+    const dropActionsThisTick = actions.filter((action) => action.action === 'drop_off').length;
+    tickProfiles.push({
+      tick,
+      score,
+      productive_bot_ticks: productiveBotTicks,
+      waiting_bot_ticks: waitingBotTicks,
+      blocked_bot_ticks: sanitizerOverrides.length,
+      carrying_deliverable_bots: carryingDeliverableBots,
+      staged_future_bots: stagedFutureBots,
+      pickup_actions: pickupActionsThisTick,
+      drop_actions: dropActionsThisTick,
+      drop_lane_occupied: dropActionsThisTick > 0,
+      active_order_id: activeOrderForTick?.id || null,
+    });
     scoreTimeline.push({ tick, score });
   }
 
@@ -317,6 +354,7 @@ export function evaluateOracleScript({ oracle, script, replayPath = null, maxTri
     sanitizedTicks,
     sanitizerOverrideCount,
     scoreTimeline,
+    tickProfiles,
     finalBots,
     dropOff: world.dropOff,
   };
