@@ -37,9 +37,7 @@ Do first:
    - shrink the 32-tick opening ramp
    - reduce 10-18 tick delivery gaps
    - use the `89` run as the replay source for oracle/compactor work first
-   - prefer the current offline live-worthiness baseline:
-     - `tools/grocery-bot/config/script-expert-batch-liveworthy.json`
-     - `75` score by tick `260`
+   - previous offline live-worthiness baseline was `75` score by tick `260` (file deleted in cleanup)
    - early-game frontier baseline is now:
      - `tools/grocery-bot/out/oracle-script-score100-report.json`
      - current best `score_by_tick_100`: `22`
@@ -50,7 +48,7 @@ Do first:
      - `promotable_shortlist`: empty
      - meaning: current opening-focused offline families still do not beat baseline
    - opening fidelity audit now exists:
-     - `tools/grocery-bot/out/opening-audit-2026-03-08T10-50-21-635Z-vs-script-expert-opening100.json`
+     - `tools/grocery-bot/out/opening-audit-*.json` (if present)
      - first divergence tick: `0`
      - cause: `drop_lane_or_congestion_gap`
      - candidate opening profile: `0` score by tick `120`, no pickups or drops

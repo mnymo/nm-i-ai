@@ -109,7 +109,7 @@ node tools/grocery-bot/extract-oracle.mjs \
   --out tools/grocery-bot/config/oracle-expert.json
 ```
 
-This is the supported replacement for the old `tmp-extract-oracle.mjs` helper.
+This is the supported expert oracle extractor.
 
 ### 11) Generate expert oracle script
 
