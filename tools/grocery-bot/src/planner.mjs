@@ -51,6 +51,12 @@ export class GroceryPlanner {
     this.scriptDivergedAtRound = null;
     this.assumptionCheckDone = false;
     this.assumptionMismatch = null;
+    
+    // Opener phase state
+    this.openerActive = true;
+    this.openerBotsInPosition = false;
+    this.openerTargetPositions = null;
+    this.openerTick = 0;
   }
 
   resetIntentState() {
@@ -142,6 +148,73 @@ export class GroceryPlanner {
   plan(state) {
     const assumptionMismatch = this.validateOracleAndScriptAssumptions(state);
     let scriptFallbackMetrics = null;
+    // Opener phase: run set piece opener until all bots are in position
+    if (this.openerActive) {
+      if (!this.openerTargetPositions) {
+        // Compute target positions for opener (staggered beneath aisles, closest to drop-off)
+        this.openerTargetPositions = computeOpenerTargets(state);
+      }
+      const openerActions = computeOpenerActions(state, this.openerTargetPositions, this.openerTick);
+      this.openerBotsInPosition = checkOpenerBotsInPosition(state, this.openerTargetPositions);
+      this.openerTick += 1;
+      if (this.openerBotsInPosition) {
+        this.openerActive = false;
+        // Reset opener state for next game if needed
+        this.openerTargetPositions = null;
+        this.openerTick = 0;
+      }
+      return openerActions;
+    }
+
+    function computeOpenerTargets(state) {
+      // Example: Place bots in staggered formation beneath each aisle, closest to drop-off
+      // This is a placeholder; real logic should analyze drop-off and aisle layout
+      const dropOff = (state.drop_offs && state.drop_offs[0]) || [0, 0];
+      const width = state.grid.width;
+      const height = state.grid.height;
+      // Place bots in a line below each aisle, as close to drop-off as possible
+      const targets = [];
+      for (let x = 1; x < width - 1; x += 2) {
+        targets.push([x, Math.min(height - 2, dropOff[1] + 2)]);
+      }
+      return targets.slice(0, state.bots.length);
+    }
+
+    function computeOpenerActions(state, targets, tick) {
+      // Move each bot toward its assigned target position
+      const actions = [];
+      for (let i = 0; i < state.bots.length; ++i) {
+        const bot = state.bots[i];
+        const target = targets[i];
+        if (!target) {
+          actions.push({ bot_id: bot.id, action: 'wait' });
+          continue;
+        }
+        const [bx, by] = bot.position;
+        const [tx, ty] = target;
+        let move = null;
+        if (bx < tx) move = 'right';
+        else if (bx > tx) move = 'left';
+        else if (by < ty) move = 'down';
+        else if (by > ty) move = 'up';
+        else move = 'wait';
+        actions.push({ bot_id: bot.id, action: move });
+      }
+      return actions;
+    }
+
+    function checkOpenerBotsInPosition(state, targets) {
+      // Return true if all bots are at their target positions
+      for (let i = 0; i < state.bots.length; ++i) {
+        const bot = state.bots[i];
+        const target = targets[i];
+        if (!target) continue;
+        if (bot.position[0] !== target[0] || bot.position[1] !== target[1]) {
+          return false;
+        }
+      }
+      return true;
+    }
     // Script replay: if we have precomputed actions for this tick, use them verbatim
     if (!this.scriptDisabled && this.script?.tickMap?.has(state.round)) {
       const scriptEntry = this.script.entryMap?.get(state.round) || {
@@ -326,10 +399,32 @@ export class GroceryPlanner {
     this.lastActiveOrderId = activeOrderId;
 
     const shelfWalls = state.items.map((item) => item.position);
+    // Define strict one-way roads (example: vertical conveyor up left, down right)
+    const oneWayRoads = buildOneWayRoads(state);
     const graph = new GridGraph({
       ...state.grid,
       walls: [...state.grid.walls, ...shelfWalls],
+      oneWayRoads,
     });
+    // --- Strict One-Way Road System ---
+    function buildOneWayRoads(state) {
+      // Example: create a conveyor system with up/down/left/right lanes
+      // This is a placeholder; real logic should analyze the map and desired road layout
+      const roads = {};
+      const width = state.grid.width;
+      const height = state.grid.height;
+      // Example: leftmost column is up only, rightmost is down only
+      for (let y = 1; y < height - 1; ++y) {
+        roads[`1,${y}`] = ['up'];
+        roads[`${width - 2},${y}`] = ['down'];
+      }
+      // Example: top row is right only, bottom row is left only
+      for (let x = 1; x < width - 1; ++x) {
+        roads[`${x},1`] = ['right'];
+        roads[`${x},${height - 2}`] = ['left'];
+      }
+      return roads;
+    }
     const world = buildWorldContext(state);
 
     if (state.bots.length === 1) {
@@ -369,9 +464,36 @@ export class GroceryPlanner {
       return actions;
     }
 
+    // Assign bots to zones, allow dynamic switching if needed
+    if (!this.zoneAssignmentByBot) {
+      this.zoneAssignmentByBot = assignInitialZones(state);
+    }
+    updateDynamicZones(state, this.zoneAssignmentByBot);
     const blockedItemsByBot = new Map(
       state.bots.map((bot) => [bot.id, this.blockedPickupByBot.get(bot.id) || new Map()]),
     );
+    // --- Zone Assignment Helpers ---
+    function assignInitialZones(state) {
+      // Assign each bot to a zone (e.g., left, middle, right, etc.)
+      const zones = {};
+      const botOrder = [...state.bots].sort((a, b) => a.id - b.id);
+      for (let i = 0; i < botOrder.length; ++i) {
+        zones[botOrder[i].id] = i;
+      }
+      return zones;
+    }
+
+    function updateDynamicZones(state, zones) {
+      // Allow bots to switch zones if their zone is congested or in recovery
+      // Placeholder: if a bot is stuck (no progress for 4+ rounds), reassign to next zone
+      for (const bot of state.bots) {
+        const botId = bot.id;
+        // Example: if bot is in recovery or has not moved, switch zone
+        // (Real logic should use actual congestion/recovery detection)
+        // For now, do nothing unless you want to implement dynamic switching
+        // zones[botId] = ...
+      }
+    }
     if (runtime.multi_bot_strategy === 'mission_v1') {
       const actions = executeMissionStrategy({
         planner: this,

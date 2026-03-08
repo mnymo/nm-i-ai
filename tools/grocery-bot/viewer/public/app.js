@@ -95,6 +95,10 @@ function renderBoard(snapshot, layout, plannerMetrics) {
 
   const walls = new Set((layout.grid.walls || []).map(([x, y]) => `${x},${y}`));
   const drops = new Set((layout.drop_offs || []).map(([x, y]) => `${x},${y}`));
+  // Emoji map for item types (customize as needed)
+  const ITEM_EMOJIS = {
+    apple: '🍎', banana: '🍌', bread: '🍞', milk: '🥛', cheese: '🧀', egg: '🥚', fish: '🐟', meat: '🥩', orange: '🍊', tomato: '🍅', lettuce: '🥬', carrot: '🥕', onion: '🧅', potato: '🥔', grape: '🍇', lemon: '🍋', pepper: '🫑', cucumber: '🥒', default: '🛒'
+  };
   const itemsByCell = new Map();
   for (const item of snapshot?.items || []) {
     itemsByCell.set(`${item.position[0]},${item.position[1]}`, item);
@@ -108,6 +112,10 @@ function renderBoard(snapshot, layout, plannerMetrics) {
     botsByCell.set(key, entry);
   }
 
+  // Color palette for zones
+  const ZONE_COLORS = ['#e57373', '#64b5f6', '#81c784', '#ffd54f', '#ba68c8', '#ffb74d', '#4db6ac', '#a1887f', '#90a4ae', '#f06292'];
+  // Get zone assignment if available
+  const zoneByBot = (plannerMetrics && plannerMetrics.zoneAssignmentByBot) || {};
   for (let y = 0; y < height; y += 1) {
     for (let x = 0; x < width; x += 1) {
       const key = `${x},${y}`;
@@ -121,9 +129,10 @@ function renderBoard(snapshot, layout, plannerMetrics) {
 
       const item = itemsByCell.get(key);
       if (item) {
+        const emoji = ITEM_EMOJIS[item.type] || ITEM_EMOJIS.default;
         const itemEl = document.createElement('div');
         itemEl.className = 'item';
-        itemEl.textContent = item.type.slice(0, 2);
+        itemEl.textContent = emoji;
         cell.appendChild(itemEl);
       }
 
@@ -132,9 +141,12 @@ function renderBoard(snapshot, layout, plannerMetrics) {
         const botEl = document.createElement('div');
         botEl.className = 'bot';
         botEl.textContent = bots.map((bot) => {
-          const mission = plannerMetrics?.missionTypeByBot?.[bot.id] || plannerMetrics?.missionTypeByBot?.[`${bot.id}`];
-          return mission ? `${bot.id}:${mission.replace(/_.*/, '')}` : `${bot.id}`;
-        }).join('|');
+          const zone = zoneByBot[bot.id] ?? bot.id;
+          return `🤖${bot.id}`;
+        }).join(' ');
+        // Color bots by zone
+        const zone = zoneByBot[bots[0]?.id] ?? bots[0]?.id;
+        botEl.style.background = ZONE_COLORS[zone % ZONE_COLORS.length];
         cell.appendChild(botEl);
         if (bots.length > 1) {
           const stackEl = document.createElement('div');
@@ -179,13 +191,31 @@ function renderTick() {
     overrides: tick.sanitizer_overrides || [],
   });
   elements.plannerView.textContent = formatJson(tick.planner_metrics || {});
-  elements.ordersView.textContent = formatJson(tick.state_snapshot?.orders || []);
-  elements.botsView.textContent = formatJson((tick.state_snapshot?.bots || []).map((bot) => ({
-    id: bot.id,
-    position: bot.position,
-    inventory: bot.inventory,
-    mission: tick.planner_metrics?.missionTypeByBot?.[bot.id] || tick.planner_metrics?.missionTypeByBot?.[`${bot.id}`] || null,
-  })));
+  // Render order boxes with active/assigned bots
+  const orders = tick.state_snapshot?.orders || [];
+  const bots = tick.state_snapshot?.bots || [];
+  const missionByBot = tick.planner_metrics?.missionTypeByBot || {};
+  const zoneByBot = tick.planner_metrics?.zoneAssignmentByBot || {};
+  elements.ordersView.innerHTML = orders.map((order) => {
+    const isActive = order.status === 'active' && !order.complete;
+    const assignedBots = bots.filter((bot) => missionByBot[bot.id]?.includes(order.id));
+    return `<div style="border:1px solid #888;padding:4px;margin-bottom:2px;background:${isActive ? '#fffde7' : '#ececec'}">
+      <b>Order ${order.id}</b> ${isActive ? '🟢' : '⚪'}<br>
+      Items: ${order.items.map((it) => (ITEM_EMOJIS[it.type] || ITEM_EMOJIS.default)).join(' ')}<br>
+      Bots: ${assignedBots.map((b) => `🤖${b.id}`).join(' ')}
+    </div>`;
+  }).join('');
+  // Render bots with zone and mission info
+  elements.botsView.innerHTML = bots.map((bot) => {
+    const zone = zoneByBot[bot.id] ?? bot.id;
+    const color = ZONE_COLORS[zone % ZONE_COLORS.length];
+    const mission = missionByBot[bot.id] || '';
+    return `<div style="border-left:6px solid ${color};margin-bottom:2px;padding-left:4px;">
+      🤖<b>${bot.id}</b> @ [${bot.position.join(',')}]<br>
+      Inv: ${bot.inventory.map((it) => (ITEM_EMOJIS[it.type] || ITEM_EMOJIS.default)).join(' ')}<br>
+      Zone: <span style="color:${color}">${zone}</span> | Mission: ${mission}
+    </div>`;
+  }).join('');
 }
 
 async function loadRuns() {
