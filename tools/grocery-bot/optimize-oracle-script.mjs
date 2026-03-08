@@ -15,7 +15,7 @@ function parseArgs(argv) {
     outScript: null,
     outReport: null,
     strategy: 'auto',
-    objective: 'handoff_first',
+    objective: 'score_by_tick_100',
     iterations: 1000,
     scoreToBeat: null,
     ticksToBeat: null,

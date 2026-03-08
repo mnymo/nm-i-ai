@@ -19,9 +19,12 @@ import {
   generateOracleScriptCandidates,
 } from '../src/oracle-script-search.mjs';
 import {
+  buildReplaySeededAislePartitionOptions,
   buildReplaySeededBucketOptions,
+  buildReplaySeededDropLaneOptions,
   buildReplaySeededHandoffOptions,
   buildReplaySeededModularOptions,
+  buildReplaySeededOpeningBucketOptions,
   buildReplaySeededRewindTicks,
   buildReplaySeededScoreTargets,
   buildReplaySeededWaveOptions,
@@ -305,6 +308,7 @@ test('wide oracle search report includes target metadata and ranked candidates',
   assert.equal(report.objective, 'score_first');
   assert.ok(report.top_candidates.length <= 20);
   assert.equal(typeof report.best_candidate.beats_score_target, 'boolean');
+  assert.equal(typeof report.top_candidates[0].score_at_tick_100, 'number');
 });
 
 test('oracle search progress callback includes current best candidate summary', () => {
@@ -376,6 +380,67 @@ test('handoff-value objective prefers higher score before earlier cutoff', () =>
   };
 
   assert.equal(compareGeneratedScripts(earlyLow, lateHigh, 'handoff_value') > 0, true);
+});
+
+test('score-by-tick-100 objective prefers stronger early score over later total score', () => {
+  const earlyStrong = {
+    estimated_score: 70,
+    last_scripted_tick: 90,
+    aggregate_efficiency: { total_waits: 100 },
+    replay_target_meta: {
+      score_timeline: [{ tick: 90, score: 70 }],
+    },
+  };
+  const lateHigher = {
+    estimated_score: 89,
+    last_scripted_tick: 298,
+    aggregate_efficiency: { total_waits: 50 },
+    replay_target_meta: {
+      score_timeline: [{ tick: 100, score: 20 }, { tick: 298, score: 89 }],
+    },
+  };
+
+  assert.equal(compareGeneratedScripts(earlyStrong, lateHigher, 'score_by_tick_100') < 0, true);
+});
+
+test('score-by-tick-100 objective penalizes non-promotable late-score candidates', () => {
+  const promotable = {
+    estimated_score: 22,
+    last_scripted_tick: 103,
+    aggregate_efficiency: { total_waits: 100 },
+    replay_target_meta: { score_timeline: [{ tick: 100, score: 22 }] },
+    search_meta: { triage: { promotable: true, baseline_match: false, baseline_beat: true, penalties: [] } },
+  };
+  const nonPromotable = {
+    estimated_score: 89,
+    last_scripted_tick: 298,
+    aggregate_efficiency: { total_waits: 50 },
+    replay_target_meta: { score_timeline: [{ tick: 100, score: 22 }, { tick: 298, score: 89 }] },
+    search_meta: { triage: { promotable: false, baseline_match: true, baseline_beat: false, penalties: ['drop_lane_congestion'] } },
+  };
+
+  assert.equal(compareGeneratedScripts(promotable, nonPromotable, 'score_by_tick_100') < 0, true);
+});
+
+test('throughput-frontier objective prefers candidates that hit milestones earlier', () => {
+  const slower = {
+    estimated_score: 80,
+    last_scripted_tick: 100,
+    aggregate_efficiency: { total_waits: 100 },
+    replay_target_meta: {
+      score_timeline: [{ tick: 40, score: 40 }, { tick: 70, score: 60 }, { tick: 100, score: 80 }],
+    },
+  };
+  const faster = {
+    estimated_score: 75,
+    last_scripted_tick: 95,
+    aggregate_efficiency: { total_waits: 100 },
+    replay_target_meta: {
+      score_timeline: [{ tick: 20, score: 40 }, { tick: 45, score: 60 }, { tick: 80, score: 75 }],
+    },
+  };
+
+  assert.equal(compareGeneratedScripts(slower, faster, 'throughput_frontier') > 0, true);
 });
 
 test('live-worthy objective prefers strong middle handoff over late preserve script', () => {
@@ -463,6 +528,12 @@ test('replay-seeded option builders are deterministic for the same replay', () =
   assert.ok(firstBucket.length > 0);
   assert.ok(firstBucket.every((options) => options.stageHiddenKnownOrders === true));
   assert.ok(firstBucket.every((options) => options.knownOrderDepth >= options.visibleOrderDepth));
+  const openingBucket = buildReplaySeededOpeningBucketOptions({ skeleton: first });
+  assert.ok(openingBucket.every((options) => options.openingFocus === true));
+  const dropLane = buildReplaySeededDropLaneOptions({ skeleton: first });
+  assert.ok(dropLane.every((options) => options.dropLaneScheduler === true));
+  const aislePartition = buildReplaySeededAislePartitionOptions({ skeleton: first });
+  assert.ok(aislePartition.every((options) => options.aislePartitionWeight > 0));
   assert.deepEqual(buildReplaySeededHandoffOptions({ skeleton: first }), buildReplaySeededHandoffOptions({ skeleton: second }));
 });
 
@@ -618,6 +689,7 @@ test('replay compression supports wider rewind windows for handoff exploration',
   assert.equal(script.last_scripted_tick, 0);
   assert.equal(script.replay_target_meta.rewind_ticks, 2);
   assert.equal(script.replay_target_meta.script_cutoff_tick, 0);
+  assert.equal(script.replay_target_meta.score_at_tick_100, 0);
 });
 
 test('oracle evaluator allows stacked starting bots to wait on the same cell', () => {

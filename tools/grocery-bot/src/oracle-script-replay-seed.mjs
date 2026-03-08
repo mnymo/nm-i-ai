@@ -184,6 +184,71 @@ export function buildReplaySeededHandoffOptions({ skeleton }) {
   ]));
 }
 
+export function buildReplaySeededOpeningBucketOptions({ skeleton }) {
+  return [90, 100, 110].map((targetCutoffTick) => ({
+    maxActiveBots: Math.min(10, Math.max(8, skeleton.activeBotCount + 4)),
+    closeNowBotCap: 4,
+    stageBotCap: 6,
+    maxTripItems: 2,
+    previewRunnerCap: 2,
+    previewItemCap: 10,
+    visibleOrderDepth: Math.min(5, skeleton.visibleOrderDepth + 2),
+    knownOrderDepth: 8,
+    stageHiddenKnownOrders: true,
+    futureOrderBotCap: 6,
+    futureOrderItemCap: 10,
+    futureOrderPerOrderItemCap: 2,
+    closeOrderReserveBots: 4,
+    dropLaneConcurrency: 1,
+    openingFocus: true,
+    targetCutoffTick,
+  }));
+}
+
+export function buildReplaySeededDropLaneOptions({ skeleton }) {
+  return [90, 100].map((targetCutoffTick) => ({
+    maxActiveBots: Math.min(10, Math.max(7, skeleton.activeBotCount + 3)),
+    closeNowBotCap: 5,
+    stageBotCap: 5,
+    maxTripItems: 1,
+    previewRunnerCap: 1,
+    previewItemCap: 6,
+    visibleOrderDepth: Math.min(4, skeleton.visibleOrderDepth + 1),
+    knownOrderDepth: 6,
+    stageHiddenKnownOrders: true,
+    futureOrderBotCap: 4,
+    futureOrderItemCap: 6,
+    futureOrderPerOrderItemCap: 2,
+    closeOrderReserveBots: 4,
+    dropLaneConcurrency: 1,
+    openingFocus: true,
+    dropLaneScheduler: true,
+    targetCutoffTick,
+  }));
+}
+
+export function buildReplaySeededAislePartitionOptions({ skeleton }) {
+  return [100, 120].map((targetCutoffTick) => ({
+    maxActiveBots: Math.min(10, Math.max(8, skeleton.activeBotCount + 4)),
+    closeNowBotCap: 4,
+    stageBotCap: 6,
+    maxTripItems: 2,
+    previewRunnerCap: 1,
+    previewItemCap: 8,
+    visibleOrderDepth: Math.min(5, skeleton.visibleOrderDepth + 2),
+    knownOrderDepth: 8,
+    stageHiddenKnownOrders: true,
+    futureOrderBotCap: 6,
+    futureOrderItemCap: 8,
+    futureOrderPerOrderItemCap: 2,
+    closeOrderReserveBots: 3,
+    dropLaneConcurrency: 1,
+    openingFocus: true,
+    aislePartitionWeight: 2,
+    targetCutoffTick,
+  }));
+}
+
 export function buildReplaySeededScoreTargets({ replayPath }) {
   const rows = snapshotRows(replayPath);
   const milestones = [];

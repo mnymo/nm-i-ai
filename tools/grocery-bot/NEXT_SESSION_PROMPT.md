@@ -15,6 +15,11 @@ What changed recently:
   - replay rewind variants across multiple score targets
   - `live_worthy` ranking for stronger mid-handoff prefixes
   - `optimize-oracle-script-batch.mjs` for parallel offline sweeps
+  - `checkpoint_rewriter` milestone extraction from the best replay
+  - early-game objectives:
+    - `score_by_tick_100`
+    - `throughput_frontier`
+    - `tick_to_score`
 
 Do first:
 1. Read:
@@ -35,6 +40,10 @@ Do first:
    - prefer the current offline live-worthiness baseline:
      - `tools/grocery-bot/config/script-expert-batch-liveworthy.json`
      - `75` score by tick `260`
+   - early-game frontier baseline is now:
+     - `tools/grocery-bot/out/oracle-script-score100-report.json`
+     - current best `score_by_tick_100`: `22`
+     - current best `tick_to_40`: `156`
 5. Follow the repeat loop:
    - live planner baseline run
    - pick best replay with `runs` + `analyze`

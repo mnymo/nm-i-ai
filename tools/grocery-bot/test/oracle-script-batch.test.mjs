@@ -43,12 +43,28 @@ test('buildBatchReport orders top results by objective', () => {
     results: [
       {
         job: { id: 0, seed: 1, objective: 'handoff_value' },
-        script: { strategy: 'modular', estimated_score: 20, last_scripted_tick: 180, orders_covered: 2, aggregate_efficiency: { total_waits: 100 } },
+        script: {
+          strategy: 'modular',
+          estimated_score: 20,
+          last_scripted_tick: 180,
+          orders_covered: 2,
+          aggregate_efficiency: { total_waits: 100 },
+          replay_target_meta: { score_timeline: [{ tick: 100, score: 20 }] },
+          search_meta: { triage: { baseline_match: true, baseline_beat: false, promotable: false, penalties: [] } },
+        },
         paths: { outScript: '/tmp/a.json', outReport: '/tmp/a-report.json' },
       },
       {
         job: { id: 1, seed: 2, objective: 'handoff_value' },
-        script: { strategy: 'replay_seeded_preserve', estimated_score: 80, last_scripted_tick: 260, orders_covered: 0, aggregate_efficiency: { total_waits: 800 } },
+        script: {
+          strategy: 'replay_seeded_preserve',
+          estimated_score: 80,
+          last_scripted_tick: 260,
+          orders_covered: 0,
+          aggregate_efficiency: { total_waits: 800 },
+          replay_target_meta: { score_timeline: [{ tick: 40, score: 40 }, { tick: 80, score: 80 }] },
+          search_meta: { triage: { baseline_match: false, baseline_beat: true, promotable: true, penalties: [] } },
+        },
         paths: { outScript: '/tmp/b.json', outReport: '/tmp/b-report.json' },
       },
     ],
@@ -58,4 +74,9 @@ test('buildBatchReport orders top results by objective', () => {
   assert.equal(report.top_results[0].strategy, 'replay_seeded_preserve');
   assert.equal(report.best_by_objective.length, 1);
   assert.equal(report.best_by_objective[0].objective, 'handoff_value');
+  assert.equal(report.baseline, null);
+  assert.equal(report.frontier.best_score_by_tick_100.id, 1);
+  assert.equal(report.frontier.best_tick_to_40.id, 1);
+  assert.equal(report.promotable_shortlist[0].id, 1);
+  assert.equal(report.top_results[0].promotable, true);
 });

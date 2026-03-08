@@ -18,18 +18,19 @@ function parseArgs(argv) {
     outScript: null,
     outReport: null,
     strategy: 'auto',
-    objective: 'live_worthy',
+    objective: 'score_by_tick_100',
     iterations: 150,
     runs: 16,
     parallel: Math.min(os.cpus().length, 8),
     seed: 7004,
-    objectives: ['live_worthy', 'handoff_value', 'handoff_first'],
+    objectives: ['score_by_tick_100', 'throughput_frontier', 'tick_to_score'],
+    preset: null,
   };
 
   for (let index = 0; index < argv.length; index += 1) {
     const key = argv[index];
     const value = argv[index + 1];
-    if (['--oracle', '--replay', '--out-script', '--out-report', '--strategy', '--objective', '--iterations', '--runs', '--parallel', '--seed', '--objectives'].includes(key)) {
+    if (['--oracle', '--replay', '--out-script', '--out-report', '--strategy', '--objective', '--iterations', '--runs', '--parallel', '--seed', '--objectives', '--preset'].includes(key)) {
       if (value === undefined) {
         throw new Error(`Missing value for ${key}`);
       }
@@ -69,9 +70,49 @@ function parseArgs(argv) {
       case '--objectives':
         args.objectives = value.split(',').map((entry) => entry.trim()).filter(Boolean);
         break;
+      case '--preset':
+        args.preset = value;
+        break;
       default:
         break;
     }
+  }
+
+  if (args.preset) {
+    const presets = {
+      opening_100: {
+        objective: 'score_by_tick_100',
+        objectives: ['score_by_tick_100', 'throughput_frontier'],
+        iterations: 220,
+        strategy: 'auto',
+      },
+      tick_to_40: {
+        objective: 'tick_to_score',
+        objectives: ['tick_to_score'],
+        iterations: 180,
+        strategy: 'auto',
+      },
+      tick_to_60: {
+        objective: 'tick_to_score',
+        objectives: ['tick_to_score', 'throughput_frontier'],
+        iterations: 220,
+        strategy: 'auto',
+      },
+      tick_to_80: {
+        objective: 'throughput_frontier',
+        objectives: ['throughput_frontier', 'tick_to_score'],
+        iterations: 260,
+        strategy: 'auto',
+      },
+    };
+    const preset = presets[args.preset];
+    if (!preset) {
+      throw new Error(`Unknown preset: ${args.preset}`);
+    }
+    args.objective = preset.objective;
+    args.objectives = preset.objectives;
+    args.iterations = preset.iterations;
+    args.strategy = preset.strategy;
   }
 
   if (!args.oracle) throw new Error('--oracle required');

@@ -197,6 +197,29 @@ Use this when the machine can support many offline searches at once. It:
 
 Use `live_worthy` when you want a strong handoff candidate instead of the latest high-score replay preserve. Current same-day offline best for that objective is `75` score by tick `260`.
 
+For early-game throughput work, use:
+
+```bash
+node tools/grocery-bot/optimize-oracle-script-batch.mjs \
+  --oracle tools/grocery-bot/config/oracle-expert.json \
+  --replay tools/grocery-bot/out/2026-03-08T10-50-21-635Z-expert-expert/replay.jsonl \
+  --out-script tools/grocery-bot/config/script-expert-score100.json \
+  --out-report tools/grocery-bot/out/oracle-script-score100-report.json \
+  --objective score_by_tick_100 \
+  --objectives score_by_tick_100,throughput_frontier,tick_to_score \
+  --iterations 180 \
+  --runs 18 \
+  --parallel 9
+```
+
+This produces a frontier report with:
+- `best_score_by_tick_100`
+- `best_tick_to_40`
+- `best_tick_to_60`
+- `best_tick_to_80`
+
+Current same-day early frontier from the `89` replay is only `22` score by tick `100`, so the next work should target opening throughput rather than late handoff.
+
 ### 14) Compress a proven replay backward
 
 ```bash

@@ -413,6 +413,7 @@ export function chooseBestBotForTrip({
   scriptByTick,
   stagingCells,
   horizon,
+  settings = {},
   holdUntilTick = null,
   stationaryHoldUntil = null,
 }) {
@@ -461,6 +462,20 @@ export function chooseBestBotForTrip({
         bot,
         botState: botCopy,
         finishTick,
+        rankingScore: (() => {
+          let score = finishTick;
+          if ((settings.aislePartitionWeight || 0) > 0) {
+            const averageItemX = items.reduce((sum, item) => sum + item.position[0], 0) / Math.max(1, items.length);
+            score += Math.abs((bot.homePosition || bot.position)[0] - averageItemX) * settings.aislePartitionWeight;
+          }
+          if (settings.dropLaneScheduler && mode === 'deliver') {
+            score += Math.max(0, (bot.inventory?.length || 0) - 1) * 2;
+          }
+          if (settings.openingFocus && mode === 'stage') {
+            score -= Math.min(2, items.length);
+          }
+          return score;
+        })(),
         reservationsCopy,
         edgeReservationsCopy,
         scriptCopy,
@@ -468,7 +483,7 @@ export function chooseBestBotForTrip({
       };
     })
     .filter(Boolean)
-    .sort((left, right) => left.finishTick - right.finishTick || left.bot.id - right.bot.id);
+    .sort((left, right) => left.rankingScore - right.rankingScore || left.finishTick - right.finishTick || left.bot.id - right.bot.id);
 
   if (candidates.length === 0) {
     return null;
@@ -582,7 +597,7 @@ function scheduleWavePrefetch({
         bots: stageBots,
         items: cappedTrip,
         mode: 'stage',
-        earliestStartTick: order.releaseTick,
+        earliestStartTick: settings.stageHiddenKnownOrders ? 0 : order.releaseTick,
         latestUsefulTick: Math.min(currentCompletionTick, scriptHorizon),
         world,
         reservations,
@@ -590,6 +605,7 @@ function scheduleWavePrefetch({
         scriptByTick,
         stagingCells,
         horizon: settings.horizon,
+        settings,
         holdUntilTick: currentCompletionTick + Math.max(2, settings.dropLaneConcurrency),
       });
       if (!best) {
@@ -820,6 +836,7 @@ export function generateOracleScript({
   const bots = world.botStartPositions.map((position, botId) => ({
     id: botId,
     position: [...position],
+    homePosition: [...position],
     availableAt: 0,
     inventory: [],
     lockedOrderId: null,
@@ -906,14 +923,15 @@ export function generateOracleScript({
           mode: 'deliver',
           earliestStartTick: activeStartTick,
           latestUsefulTick: scriptHorizon,
-          world,
-          reservations,
-          edgeReservations,
-          scriptByTick,
-          stagingCells,
-          horizon: settings.horizon,
-          stationaryHoldUntil,
-        });
+        world,
+        reservations,
+        edgeReservations,
+        scriptByTick,
+        stagingCells,
+        horizon: settings.horizon,
+        settings,
+        stationaryHoldUntil,
+      });
 
         if (!best) {
           if (tripItems.length === 1) {

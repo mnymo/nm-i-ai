@@ -418,3 +418,32 @@ Purpose: keep an operational record of strategy experiments so we can avoid repe
     - best `handoff_first`: `19` score at tick `160`
 - Verdict: keep
 - Notes: `75@260` is the new offline candidate most worth a live handoff test because it preserves materially more score than the early modular scripts while returning `40` live ticks instead of `24`. The next improvement should focus on handoff state quality, not just score/tick compression.
+
+# 2026-03-08 - Checkpoint Rewriter + Early-Game Frontier Search
+
+- Hypothesis: the replay/oracle stack is still optimizing the wrong target. To reach leaderboard throughput, the offline search needs to optimize score inside the first `100` ticks, not late-prefix handoff only. Replay checkpoints plus early-game ranking should expose the real opening bottleneck.
+- Changes:
+  - added `src/oracle-script-checkpoints.mjs` to extract deterministic replay checkpoints and build `checkpoint_rewriter` candidates
+  - extended `src/oracle-script-evaluator.mjs` with score timelines and final bot state
+  - added `src/oracle-script-metrics.mjs` to compute:
+    - `score_at_tick_100`
+    - `tick_to_40`
+    - `tick_to_60`
+    - `tick_to_80`
+    - continuation metrics like stranded inventory and drop-off crowding
+  - updated `src/oracle-script-search.mjs` with new objectives:
+    - `score_by_tick_100`
+    - `tick_to_score`
+    - `throughput_frontier`
+  - updated batch reporting to emit a shared early frontier
+  - switched optimizer defaults toward early-game objectives
+- Validation:
+  - `node --test tools/grocery-bot/test/*.test.mjs` -> 20 pass
+  - `node tools/grocery-bot/optimize-oracle-script-batch.mjs --oracle tools/grocery-bot/config/oracle-expert.json --replay tools/grocery-bot/out/2026-03-08T10-50-21-635Z-expert-expert/replay.jsonl --out-script tools/grocery-bot/config/script-expert-score100.json --out-report tools/grocery-bot/out/oracle-script-score100-report.json --objective score_by_tick_100 --objectives score_by_tick_100,throughput_frontier,tick_to_score --iterations 180 --runs 18 --parallel 9 --seed 7004`
+  - resulting frontier:
+    - best `score_by_tick_100`: `22`
+    - best `tick_to_40`: `156`
+    - best `tick_to_60`: `237`
+    - best `tick_to_80`: `276`
+- Verdict: keep and iterate
+- Notes: this pass did not beat the baseline replay’s early pace. That is still useful because it proves the opening bottleneck is now isolated and measurable. The next offline improvement should attack the first `100` ticks directly with stronger opening orchestration rather than more late replay compression.

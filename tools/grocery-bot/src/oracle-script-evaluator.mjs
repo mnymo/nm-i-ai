@@ -71,6 +71,7 @@ export function evaluateOracleScript({ oracle, script, replayPath = null, maxTri
   let maxTickSeen = -1;
   const sanitizedTicks = [];
   let sanitizerOverrideCount = 0;
+  const scoreTimeline = [];
 
   for (const tickEntry of script.ticks || []) {
     const tick = tickEntry.tick;
@@ -286,6 +287,8 @@ export function evaluateOracleScript({ oracle, script, replayPath = null, maxTri
     if (invalid) {
       break;
     }
+
+    scoreTimeline.push({ tick, score });
   }
 
   const ordersCovered = orders.filter((order) => order.complete).length;
@@ -293,6 +296,11 @@ export function evaluateOracleScript({ oracle, script, replayPath = null, maxTri
     id: order.id,
     completionTick: order.completionTick,
     complete: order.complete,
+  }));
+  const finalBots = bots.map((bot) => ({
+    id: bot.id,
+    position: [...bot.position],
+    inventory: [...bot.inventory],
   }));
 
   return {
@@ -308,5 +316,8 @@ export function evaluateOracleScript({ oracle, script, replayPath = null, maxTri
     metadata,
     sanitizedTicks,
     sanitizerOverrideCount,
+    scoreTimeline,
+    finalBots,
+    dropOff: world.dropOff,
   };
 }

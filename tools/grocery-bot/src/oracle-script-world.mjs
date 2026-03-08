@@ -317,6 +317,9 @@ export const oracleScriptDefaults = {
   futureOrderPerOrderItemCap: 2,
   closeOrderReserveBots: 1,
   dropLaneConcurrency: 1,
+  openingFocus: false,
+  dropLaneScheduler: false,
+  aislePartitionWeight: 0,
   stagingCellCount: 12,
   horizon: 120,
 };

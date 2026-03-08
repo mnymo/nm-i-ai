@@ -157,6 +157,7 @@ export function compressOracleReplayScript({
     ? Math.max(0, scoreSeenTick - Math.max(1, normalizedRewindTicks || 1))
     : Math.max(0, scoreSeenTick - normalizedRewindTicks);
   const scoreAtScriptEnd = scoreAtOrBeforeTick(scoreTimeline, targetTick);
+  const scoreAtTick100 = scoreAtOrBeforeTick(scoreTimeline, targetTick >= 100 ? 100 : targetTick);
 
   const extracted = extractScriptFromReplay(replayPath, targetTick);
 
@@ -190,6 +191,8 @@ export function compressOracleReplayScript({
       target_tick: targetReachableWithinPrefix ? fullReplayTargetTick : null,
       target_reachable_within_prefix: targetReachableWithinPrefix,
       score_at_script_end: scoreAtScriptEnd,
+      score_at_tick_100: scoreAtTick100,
+      score_timeline: scoreTimeline.filter((entry) => entry.tick <= targetTick),
       script_cutoff_tick: targetTick,
       final_tick_delta: baselineLastTick - extracted.last_scripted_tick,
     },

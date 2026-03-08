@@ -1,11 +1,12 @@
 import path from 'node:path';
 
+import { extractReplayBaselineMetrics, getScriptMilestoneMetrics } from './oracle-script-metrics.mjs';
 import { compareGeneratedScripts } from './oracle-script-search.mjs';
 
 export function buildOptimizationJobs({
   runs = 8,
   seed = 7004,
-  objectives = ['live_worthy'],
+  objectives = ['score_by_tick_100'],
   strategy = 'auto',
   iterations = 150,
 }) {
@@ -38,6 +39,13 @@ export function buildBatchReport({
 }) {
   const sorted = [...results].sort((left, right) => compareOptimizationResults(left, right, objective));
   const best = sorted[0] || null;
+  const baseline = replayPath ? extractReplayBaselineMetrics(replayPath) : null;
+  const frontier = {
+    best_score_by_tick_100: null,
+    best_tick_to_40: null,
+    best_tick_to_60: null,
+    best_tick_to_80: null,
+  };
   const bestByObjective = [...new Set(results.map((result) => result.job.objective))].map((resultObjective) => {
     const ranked = [...results]
       .filter((result) => result.job.objective === resultObjective)
@@ -52,10 +60,54 @@ export function buildBatchReport({
       last_scripted_tick: top.script.last_scripted_tick,
     } : null;
   }).filter(Boolean);
+
+  for (const result of results) {
+    const milestones = getScriptMilestoneMetrics(result.script);
+    if (!frontier.best_score_by_tick_100 || milestones.score_at_tick_100 > frontier.best_score_by_tick_100.score_at_tick_100) {
+      frontier.best_score_by_tick_100 = {
+        id: result.job.id,
+        seed: result.job.seed,
+        objective: result.job.objective,
+        strategy: result.script.strategy,
+        score_at_tick_100: milestones.score_at_tick_100,
+        last_scripted_tick: result.script.last_scripted_tick,
+      };
+    }
+    for (const [label, key] of [['best_tick_to_40', 'tick_to_40'], ['best_tick_to_60', 'tick_to_60'], ['best_tick_to_80', 'tick_to_80']]) {
+      const tick = milestones[key];
+      if (tick === null) {
+        continue;
+      }
+      if (!frontier[label] || tick < frontier[label][key]) {
+        frontier[label] = {
+          id: result.job.id,
+          seed: result.job.seed,
+          objective: result.job.objective,
+          strategy: result.script.strategy,
+          [key]: tick,
+          score_at_tick_100: milestones.score_at_tick_100,
+        };
+      }
+    }
+  }
+  const promotableShortlist = sorted
+    .filter((result) => result.script.search_meta?.triage?.promotable)
+    .slice(0, 10)
+    .map((result, index) => ({
+      rank: index + 1,
+      id: result.job.id,
+      seed: result.job.seed,
+      objective: result.job.objective,
+      strategy: result.script.strategy,
+      score_at_tick_100: getScriptMilestoneMetrics(result.script).score_at_tick_100,
+      last_scripted_tick: result.script.last_scripted_tick,
+      triage: result.script.search_meta?.triage || null,
+    }));
   return {
     generated_at: new Date().toISOString(),
     oracle_source: oraclePath,
     replay: replayPath,
+    baseline,
     objective,
     parallel,
     jobs_requested: jobs.length,
@@ -72,7 +124,10 @@ export function buildBatchReport({
       out_report: best.paths.outReport,
     } : null,
     best_by_objective: bestByObjective,
+    frontier,
+    promotable_shortlist: promotableShortlist,
     top_results: sorted.slice(0, 20).map((result, index) => ({
+      ...getScriptMilestoneMetrics(result.script),
       rank: index + 1,
       id: result.job.id,
       seed: result.job.seed,
@@ -80,6 +135,10 @@ export function buildBatchReport({
       strategy: result.script.strategy,
       estimated_score: result.script.estimated_score,
       last_scripted_tick: result.script.last_scripted_tick,
+      baseline_match: result.script.search_meta?.triage?.baseline_match || false,
+      baseline_beat: result.script.search_meta?.triage?.baseline_beat || false,
+      promotable: result.script.search_meta?.triage?.promotable || false,
+      triage: result.script.search_meta?.triage || null,
       total_waits: result.script.aggregate_efficiency?.total_waits || 0,
       out_script: path.basename(result.paths.outScript),
       out_report: path.basename(result.paths.outReport),
