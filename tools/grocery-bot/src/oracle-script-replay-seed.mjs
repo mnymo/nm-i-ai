@@ -11,6 +11,18 @@ function snapshotRows(replayPath) {
     }));
 }
 
+function sampleEvenly(values, limit) {
+  if (values.length <= limit) {
+    return [...values];
+  }
+  const sampled = [];
+  for (let index = 0; index < limit; index += 1) {
+    const position = Math.round((index * (values.length - 1)) / Math.max(1, limit - 1));
+    sampled.push(values[position]);
+  }
+  return [...new Set(sampled)];
+}
+
 function deriveCompletionSequence(rows) {
   const seenOrders = new Map();
   const completions = [];
@@ -136,15 +148,32 @@ export function buildReplaySeededHandoffOptions({ skeleton }) {
 export function buildReplaySeededScoreTargets({ replayPath }) {
   const rows = snapshotRows(replayPath);
   const milestones = [];
-  let nextScore = 10;
+  let previousScore = -1;
 
   for (const row of rows) {
     const score = row.state_snapshot?.score ?? 0;
-    while (score >= nextScore) {
-      milestones.push(nextScore);
-      nextScore += 10;
+    if (score > 0 && score !== previousScore) {
+      milestones.push(score);
     }
+    previousScore = score;
   }
 
-  return milestones.slice(0, 8);
+  return sampleEvenly([...new Set(milestones)], 12);
+}
+
+export function buildReplaySeededRewindTicks({ targetScore }) {
+  if (!Number.isFinite(targetScore) || targetScore <= 0) {
+    return [0];
+  }
+
+  if (targetScore >= 80) {
+    return [0, 4, 8, 12, 16, 24];
+  }
+  if (targetScore >= 60) {
+    return [0, 4, 8, 12, 16];
+  }
+  if (targetScore >= 40) {
+    return [0, 4, 8, 12];
+  }
+  return [0, 4, 8];
 }

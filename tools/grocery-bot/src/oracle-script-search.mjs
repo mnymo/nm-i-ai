@@ -4,23 +4,55 @@ import { generateOracleScript } from './oracle-script-optimizer.mjs';
 import {
   buildReplaySeededHandoffOptions,
   buildReplaySeededModularOptions,
+  buildReplaySeededRewindTicks,
   buildReplaySeededScoreTargets,
   buildReplaySeededWaveOptions,
   extractReplaySeedSkeleton,
 } from './oracle-script-replay-seed.mjs';
 
 function scoreScript(script) {
+  const remainingTicks = Math.max(0, 300 - (script.last_scripted_tick ?? 300));
   return {
     ordersCovered: script.orders_covered || 0,
     estimatedScore: script.estimated_score || 0,
     lastScriptedTick: script.last_scripted_tick ?? Number.POSITIVE_INFINITY,
     waits: script.aggregate_efficiency?.total_waits || 0,
+    remainingTicks,
   };
+}
+
+function scoreBucket(estimatedScore) {
+  if (estimatedScore >= 70) {
+    return 2;
+  }
+  if (estimatedScore >= 50) {
+    return 1;
+  }
+  return 0;
 }
 
 export function compareGeneratedScripts(left, right, objective = 'score_first') {
   const leftScore = scoreScript(left);
   const rightScore = scoreScript(right);
+  if (objective === 'live_worthy') {
+    const leftBucket = scoreBucket(leftScore.estimatedScore);
+    const rightBucket = scoreBucket(rightScore.estimatedScore);
+    if (rightBucket !== leftBucket) {
+      return rightBucket - leftBucket;
+    }
+    const leftComposite = leftScore.estimatedScore + leftScore.remainingTicks;
+    const rightComposite = rightScore.estimatedScore + rightScore.remainingTicks;
+    if (rightComposite !== leftComposite) {
+      return rightComposite - leftComposite;
+    }
+    if (rightScore.estimatedScore !== leftScore.estimatedScore) {
+      return rightScore.estimatedScore - leftScore.estimatedScore;
+    }
+    if (leftScore.lastScriptedTick !== rightScore.lastScriptedTick) {
+      return leftScore.lastScriptedTick - rightScore.lastScriptedTick;
+    }
+    return leftScore.waits - rightScore.waits;
+  }
   if (objective === 'handoff_value') {
     if (rightScore.estimatedScore !== leftScore.estimatedScore) {
       return rightScore.estimatedScore - leftScore.estimatedScore;
@@ -78,12 +110,14 @@ function buildReplaySeededCandidateOptions({ oracle, replayPath }) {
       family: 'replay_seeded_preserve',
       targetScore,
       mode: 'preserve_score',
+      rewindTicks: 0,
     },
-    {
+    ...buildReplaySeededRewindTicks({ targetScore }).map((rewindTicks) => ({
       family: 'replay_seeded_handoff_rewind',
       targetScore,
       mode: 'handoff_early',
-    },
+      rewindTicks,
+    })),
   ]));
   return { modularFamilies, replayFamilies };
 }
@@ -306,18 +340,19 @@ export function generateOracleScriptCandidates({
         replayPath,
         targetScore: seeded.targetScore,
         mode: seeded.mode,
+        rewindTicks: seeded.rewindTicks,
       });
       candidates.push({
         strategy: seeded.family,
-        options: { targetScore: seeded.targetScore, mode: seeded.mode },
+        options: { targetScore: seeded.targetScore, mode: seeded.mode, rewindTicks: seeded.rewindTicks },
         script: {
           ...script,
           strategy: seeded.family,
-          settings: { targetScore: seeded.targetScore, mode: seeded.mode },
+          settings: { targetScore: seeded.targetScore, mode: seeded.mode, rewindTicks: seeded.rewindTicks },
         },
       });
-      if (!bestSoFar || compareGeneratedScripts(bestSoFar, { ...script, strategy: seeded.family, settings: { targetScore: seeded.targetScore, mode: seeded.mode } }, objective) > 0) {
-        bestSoFar = { ...script, strategy: seeded.family, settings: { targetScore: seeded.targetScore, mode: seeded.mode } };
+      if (!bestSoFar || compareGeneratedScripts(bestSoFar, { ...script, strategy: seeded.family, settings: { targetScore: seeded.targetScore, mode: seeded.mode, rewindTicks: seeded.rewindTicks } }, objective) > 0) {
+        bestSoFar = { ...script, strategy: seeded.family, settings: { targetScore: seeded.targetScore, mode: seeded.mode, rewindTicks: seeded.rewindTicks } };
       }
     } catch {
       // Replay-derived seeds should never block the wider search.

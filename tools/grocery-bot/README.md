@@ -175,6 +175,28 @@ This is the intended offline brute-force entrypoint. It:
 
 Use `--objective handoff_first` when the main goal is to finish known oracle work early and let the live planner score after handoff. Use `score_first` only when you explicitly want to maximize scripted score first.
 
+### 13b) Run a parallel offline optimization batch
+
+```bash
+node tools/grocery-bot/optimize-oracle-script-batch.mjs \
+  --oracle tools/grocery-bot/config/oracle-expert.json \
+  --replay tools/grocery-bot/out/2026-03-08T10-50-21-635Z-expert-expert/replay.jsonl \
+  --out-script tools/grocery-bot/config/script-expert-batch-liveworthy.json \
+  --out-report tools/grocery-bot/out/oracle-script-batch-liveworthy-report.json \
+  --objective live_worthy \
+  --objectives live_worthy,handoff_value,handoff_first \
+  --iterations 220 \
+  --runs 24 \
+  --parallel 12
+```
+
+Use this when the machine can support many offline searches at once. It:
+- spreads seeds across multiple workers
+- keeps separate bests for `live_worthy`, `handoff_value`, and `handoff_first`
+- writes a single best script for the chosen batch objective plus an aggregate report
+
+Use `live_worthy` when you want a strong handoff candidate instead of the latest high-score replay preserve. Current same-day offline best for that objective is `75` score by tick `260`.
+
 ### 14) Compress a proven replay backward
 
 ```bash

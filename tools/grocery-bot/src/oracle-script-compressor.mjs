@@ -134,6 +134,7 @@ export function compressOracleReplayScript({
   targetOrdersCovered = null,
   targetScore = null,
   mode = 'preserve_score',
+  rewindTicks = 0,
 }) {
   const tickRows = buildTickRows(replayPath);
   const { scoreTimeline, finalScore } = summarizeReplayProgress(tickRows);
@@ -151,9 +152,10 @@ export function compressOracleReplayScript({
   const scoreSeenTick = targetReachableWithinPrefix
     ? fullReplayTargetTick
     : baselineLastTick;
+  const normalizedRewindTicks = Number.isFinite(rewindTicks) ? Math.max(0, rewindTicks) : 0;
   const targetTick = mode === 'handoff_early'
-    ? Math.max(0, scoreSeenTick - 1)
-    : scoreSeenTick;
+    ? Math.max(0, scoreSeenTick - Math.max(1, normalizedRewindTicks || 1))
+    : Math.max(0, scoreSeenTick - normalizedRewindTicks);
   const scoreAtScriptEnd = scoreAtOrBeforeTick(scoreTimeline, targetTick);
 
   const extracted = extractScriptFromReplay(replayPath, targetTick);
@@ -184,6 +186,7 @@ export function compressOracleReplayScript({
       safe_prefix_tick: stablePrefixTick,
       compression_mode: mode,
       target_score: requiredScore,
+      rewind_ticks: normalizedRewindTicks,
       target_tick: targetReachableWithinPrefix ? fullReplayTargetTick : null,
       target_reachable_within_prefix: targetReachableWithinPrefix,
       score_at_script_end: scoreAtScriptEnd,

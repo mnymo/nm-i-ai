@@ -21,6 +21,8 @@ import {
 import {
   buildReplaySeededHandoffOptions,
   buildReplaySeededModularOptions,
+  buildReplaySeededRewindTicks,
+  buildReplaySeededScoreTargets,
   buildReplaySeededWaveOptions,
   extractReplaySeedSkeleton,
 } from '../src/oracle-script-replay-seed.mjs';
@@ -345,6 +347,30 @@ test('handoff-value objective prefers higher score before earlier cutoff', () =>
   assert.equal(compareGeneratedScripts(earlyLow, lateHigh, 'handoff_value') > 0, true);
 });
 
+test('live-worthy objective prefers strong middle handoff over late preserve script', () => {
+  const middleStrong = {
+    orders_covered: 6,
+    estimated_score: 75,
+    last_scripted_tick: 260,
+    aggregate_efficiency: { total_waits: 400 },
+  };
+  const lateHigher = {
+    orders_covered: 7,
+    estimated_score: 85,
+    last_scripted_tick: 276,
+    aggregate_efficiency: { total_waits: 350 },
+  };
+  const tooEarlyWeak = {
+    orders_covered: 4,
+    estimated_score: 50,
+    last_scripted_tick: 194,
+    aggregate_efficiency: { total_waits: 250 },
+  };
+
+  assert.equal(compareGeneratedScripts(middleStrong, lateHigher, 'live_worthy') < 0, true);
+  assert.equal(compareGeneratedScripts(middleStrong, tooEarlyWeak, 'live_worthy') < 0, true);
+});
+
 test('replay seed skeleton extracts stable completion cadence from replay', () => {
   const oracle = buildFixtureOracle();
   const replayPath = writeReplayWithActions(oracle, [
@@ -401,6 +427,41 @@ test('replay-seeded option builders are deterministic for the same replay', () =
   assert.deepEqual(buildReplaySeededModularOptions({ skeleton: first }), buildReplaySeededModularOptions({ skeleton: second }));
   assert.deepEqual(buildReplaySeededWaveOptions({ skeleton: first }), buildReplaySeededWaveOptions({ skeleton: second }));
   assert.deepEqual(buildReplaySeededHandoffOptions({ skeleton: first }), buildReplaySeededHandoffOptions({ skeleton: second }));
+});
+
+test('replay score targets and rewind ticks expose a richer handoff frontier', () => {
+  const oracle = buildFixtureOracle();
+  const replayPath = writeReplayWithActions(oracle, [
+    {
+      type: 'tick',
+      tick: 0,
+      state_snapshot: { score: 0, bots: [], items: [], orders: [] },
+    },
+    {
+      type: 'tick',
+      tick: 5,
+      state_snapshot: { score: 6, bots: [], items: [], orders: [] },
+    },
+    {
+      type: 'tick',
+      tick: 10,
+      state_snapshot: { score: 11, bots: [], items: [], orders: [] },
+    },
+    {
+      type: 'tick',
+      tick: 15,
+      state_snapshot: { score: 19, bots: [], items: [], orders: [] },
+    },
+    {
+      type: 'tick',
+      tick: 20,
+      state_snapshot: { score: 27, bots: [], items: [], orders: [] },
+    },
+  ]);
+
+  assert.deepEqual(buildReplaySeededScoreTargets({ replayPath }), [6, 11, 19, 27]);
+  assert.deepEqual(buildReplaySeededRewindTicks({ targetScore: 85 }), [0, 4, 8, 12, 16, 24]);
+  assert.deepEqual(buildReplaySeededRewindTicks({ targetScore: 45 }), [0, 4, 8, 12]);
 });
 
 test('oracle/script file loaders expose parsed oracle and tickMap data', () => {
@@ -475,6 +536,51 @@ test('replay compression preserves expected state and reports actual script-end 
   ]);
   assert.deepEqual(script.ticks[0].expected_state.items, []);
   assert.deepEqual(script.ticks[0].expected_state.orders, []);
+});
+
+test('replay compression supports wider rewind windows for handoff exploration', () => {
+  const oracle = buildFixtureOracle();
+  const replayPath = writeReplayWithActions(oracle, [
+    {
+      type: 'tick',
+      tick: 0,
+      actions_sent: [{ bot: 0, action: 'move_left' }],
+      state_snapshot: {
+        score: 0,
+        bots: [{ id: 0, position: [9, 8], inventory: [] }],
+      },
+    },
+    {
+      type: 'tick',
+      tick: 1,
+      actions_sent: [{ bot: 0, action: 'move_left' }],
+      state_snapshot: {
+        score: 0,
+        bots: [{ id: 0, position: [8, 8], inventory: [] }],
+      },
+    },
+    {
+      type: 'tick',
+      tick: 2,
+      actions_sent: [{ bot: 0, action: 'drop_off' }],
+      state_snapshot: {
+        score: 5,
+        bots: [{ id: 0, position: [1, 8], inventory: ['oats'] }],
+      },
+    },
+  ]);
+
+  const script = compressOracleReplayScript({
+    oracle,
+    replayPath,
+    targetScore: 5,
+    mode: 'handoff_early',
+    rewindTicks: 2,
+  });
+
+  assert.equal(script.last_scripted_tick, 0);
+  assert.equal(script.replay_target_meta.rewind_ticks, 2);
+  assert.equal(script.replay_target_meta.script_cutoff_tick, 0);
 });
 
 test('oracle evaluator allows stacked starting bots to wait on the same cell', () => {

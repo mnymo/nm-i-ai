@@ -397,3 +397,24 @@ Purpose: keep an operational record of strategy experiments so we can avoid repe
   - `node tools/grocery-bot/optimize-oracle-script.mjs --oracle tools/grocery-bot/config/oracle-expert.json --replay tools/grocery-bot/out/2026-03-08T10-50-21-635Z-expert-expert/replay.jsonl --out-script tools/grocery-bot/config/script-expert-eval.json --out-report tools/grocery-bot/out/oracle-script-optimizer-report-eval.json --objective handoff_value --iterations 150 --score-to-beat 19 --ticks-to-beat 176` -> best candidate `22` score, `2` orders, tick `282`
 - Verdict: keep and iterate
 - Notes: this improves the offline best score over the previous quick baseline (`19` -> `22`), proving the new search surface can beat the old result. It does not yet improve cutoff tick, so the next follow-up should focus on replay-seeded candidates that preserve more of the early `89`-run cadence instead of just raising pre-handoff score.
+
+# 2026-03-08 - Parallel Replay Frontier Search + Live-Worthy Ranking
+
+- Hypothesis: the offline search is still underperforming because replay-derived candidates are too coarse and the ranking collapses onto the latest high-score preserve script. Finer replay score targets, explicit rewind windows, and a handoff-aware `live_worthy` ranking should produce a better offline frontier for live handoff tests.
+- Changes:
+  - extended `compressOracleReplayScript()` with configurable `rewindTicks`
+  - changed replay score target extraction to use real replay score changes instead of only 10-point buckets
+  - added replay rewind families in `src/oracle-script-search.mjs` across multiple rewind windows per target score
+  - added `live_worthy` ranking:
+    - only gives time-credit once the prefix reaches a viable score bucket
+    - prefers strong mid-handoff prefixes over near-complete late preserves
+  - added `optimize-oracle-script-batch.mjs` aggregate reporting for `best_by_objective`
+  - documented the parallel batch optimizer in `README.md` and `NEXT_SESSION_PROMPT.md`
+- Validation:
+  - `node --test tools/grocery-bot/test/*.test.mjs` -> 19 pass
+  - `node tools/grocery-bot/optimize-oracle-script-batch.mjs --oracle tools/grocery-bot/config/oracle-expert.json --replay tools/grocery-bot/out/2026-03-08T10-50-21-635Z-expert-expert/replay.jsonl --out-script tools/grocery-bot/config/script-expert-batch-liveworthy.json --out-report tools/grocery-bot/out/oracle-script-batch-liveworthy-report.json --objective live_worthy --objectives live_worthy,handoff_value,handoff_first --iterations 220 --runs 24 --parallel 12 --seed 7004`
+    - best `live_worthy`: `75` score at tick `260`
+    - best `handoff_value`: `89` score at tick `298`
+    - best `handoff_first`: `19` score at tick `160`
+- Verdict: keep
+- Notes: `75@260` is the new offline candidate most worth a live handoff test because it preserves materially more score than the early modular scripts while returning `40` live ticks instead of `24`. The next improvement should focus on handoff state quality, not just score/tick compression.

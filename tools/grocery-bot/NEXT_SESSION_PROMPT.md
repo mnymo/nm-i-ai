@@ -11,6 +11,10 @@ What changed recently:
 - `index.mjs` now supports `--mode runs`, `--mode analyze`, and `--mode script-info`
 - `extract-oracle.mjs` is the supported expert oracle extractor
 - Replay/handoff tooling is instrumented and provenance-tagged, but remains archival until the live expert baseline is exhausted
+- offline oracle search now supports:
+  - replay rewind variants across multiple score targets
+  - `live_worthy` ranking for stronger mid-handoff prefixes
+  - `optimize-oracle-script-batch.mjs` for parallel offline sweeps
 
 Do first:
 1. Read:
@@ -28,6 +32,9 @@ Do first:
    - shrink the 32-tick opening ramp
    - reduce 10-18 tick delivery gaps
    - use the `89` run as the replay source for oracle/compactor work first
+   - prefer the current offline live-worthiness baseline:
+     - `tools/grocery-bot/config/script-expert-batch-liveworthy.json`
+     - `75` score by tick `260`
 5. Follow the repeat loop:
    - live planner baseline run
    - pick best replay with `runs` + `analyze`
@@ -52,3 +59,4 @@ Initial objective for tomorrow:
 - preserve the `89`-point live expert baseline
 - rebuild same-day oracle/script assets from that baseline
 - push the hybrid path toward the first `300+` expert run
+- spend CPU on batch offline search before spending more live tokens
