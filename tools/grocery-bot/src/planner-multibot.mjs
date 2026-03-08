@@ -3,6 +3,7 @@ import { findTimeAwarePath, reservePath } from './routing.mjs';
 import { countInventoryByType } from './world-model.mjs';
 import {
   hasDeliverableInventory,
+  countDeliverableInventory,
   shouldScheduleDropOff,
   getNeededTypes,
   estimateCongestion,
@@ -109,6 +110,9 @@ export function buildTasks(state, world, profile, phase, oracle, currentTick) {
       dropOff: nearestDropOff(bot.position, state),
       botCount: state.bots.length,
     })) {
+      const deliverableCount = countDeliverableInventory(bot, world.activeDemand);
+      const dropDist = manhattanDistance(bot.position, nearestDropOff(bot.position, state));
+      const distanceCompensation = Math.max(0, dropDist * 0.8);
       tasks.push({
         key: `drop:${bot.id}`,
         kind: 'drop_off',
@@ -116,7 +120,7 @@ export function buildTasks(state, world, profile, phase, oracle, currentTick) {
         botId: bot.id,
         target: nearestDropOff(bot.position, state),
         item: null,
-        demandScore: 4,
+        demandScore: 4 + deliverableCount * 3 + distanceCompensation,
       });
     }
   }
@@ -344,11 +348,16 @@ export function chooseParkingAction({
     if (edgeReservations.get(1)?.has(reverse)) continue;
 
     const dropDist = manhattanDistance(neighbor, dropOff);
-    const crowding = otherBots.filter(
-      (other) => other.id !== bot.id && manhattanDistance(neighbor, other.position) <= 2,
-    ).length;
+    let crowding = 0;
+    for (const other of otherBots) {
+      if (other.id === bot.id) continue;
+      const dist = manhattanDistance(neighbor, other.position);
+      if (dist <= 1) crowding += 4;
+      else if (dist <= 2) crowding += 2;
+      else if (dist <= 3) crowding += 1;
+    }
 
-    const score = dropDist - botDropDist + (dropDist > botDropDist ? 2 : 0) - crowding * 1.5;
+    const score = dropDist - botDropDist + (dropDist > botDropDist ? 2 : 0) - crowding;
     scored.push({ neighbor, score });
   }
 
