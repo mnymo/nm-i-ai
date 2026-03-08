@@ -97,8 +97,71 @@ function renderBoard(snapshot, layout, plannerMetrics) {
   const drops = new Set((layout.drop_offs || []).map(([x, y]) => `${x},${y}`));
   // Emoji map for item types (customize as needed)
   // Expanded emoji map for more item types
+  // Expanded and normalized emoji mapping for all known item types.
+  // Add new types as needed; keys must be lowercase and match replay data.
   const ITEM_EMOJIS = {
-    apple: '🍎', banana: '🍌', bread: '🍞', milk: '🥛', cheese: '🧀', egg: '🥚', fish: '🐟', meat: '🥩', orange: '🍊', tomato: '🍅', lettuce: '🥬', carrot: '🥕', onion: '🧅', potato: '🥔', grape: '🍇', lemon: '🍋', pepper: '🫑', cucumber: '🥒', chicken: '🍗', beef: '🥩', pork: '🍖', shrimp: '🦐', rice: '🍚', pasta: '🍝', cereal: '🥣', yogurt: '🥛', butter: '🧈', icecream: '🍦', chocolate: '🍫', coffee: '☕', tea: '🍵', water: '💧', soda: '🥤', juice: '🧃', beer: '🍺', wine: '🍷', applejuice: '🧃', pear: '🍐', kiwi: '🥝', pineapple: '🍍', watermelon: '🍉', strawberry: '🍓', blueberry: '🫐', raspberry: '🍇', blackberry: '🍇', mushroom: '🍄', corn: '🌽', pea: '🫛', bean: '🫘', garlic: '🧄', chili: '🌶️', pumpkin: '🎃', avocado: '🥑', broccoli: '🥦', spinach: '🥬', cabbage: '🥬', radish: '🌶️', beet: '🧃', default: '🛒'
+    apple: '🍎',
+    banana: '🍌',
+    bread: '🍞',
+    milk: '🥛',
+    cheese: '🧀',
+    egg: '🥚',
+    fish: '🐟',
+    meat: '🥩',
+    orange: '🍊',
+    tomato: '🍅',
+    lettuce: '🥬',
+    carrot: '🥕',
+    onion: '🧅',
+    potato: '🥔',
+    grape: '🍇',
+    lemon: '🍋',
+    pepper: '🫑',
+    cucumber: '🥒',
+    chicken: '🍗',
+    beef: '🥩',
+    pork: '🍖',
+    shrimp: '🦐',
+    rice: '🍚',
+    pasta: '🍝',
+    cereal: '🥣',
+    yogurt: '🥛', // explicitly present in replay
+    butter: '🧈', // explicitly present in replay
+    cheese: '🧀', // explicitly present in replay
+    milk: '🥛',   // explicitly present in replay
+    icecream: '🍦',
+    chocolate: '🍫',
+    coffee: '☕',
+    tea: '🍵',
+    water: '💧',
+    soda: '🥤',
+    juice: '🧃',
+    beer: '🍺',
+    wine: '🍷',
+    applejuice: '🧃',
+    pear: '🍐',
+    kiwi: '🥝',
+    pineapple: '🍍',
+    watermelon: '🍉',
+    strawberry: '🍓',
+    blueberry: '🫐',
+    raspberry: '🍇',
+    blackberry: '🍇',
+    mushroom: '🍄',
+    corn: '🌽',
+    pea: '🫛',
+    bean: '🫘',
+    garlic: '🧄',
+    chili: '🌶️',
+    pumpkin: '🎃',
+    avocado: '🥑',
+    broccoli: '🥦',
+    spinach: '🥬',
+    cabbage: '🥬',
+    radish: '🌶️',
+    beet: '🧃',
+    // fallback for unknown types
+    default: '🛒',
   };
   const itemsByCell = new Map();
   for (const item of snapshot?.items || []) {
