@@ -1,8 +1,10 @@
+import { compressOracleReplayScript } from './oracle-script-compressor.mjs';
 import { buildLegacyOracleScript } from './oracle-script-legacy.mjs';
 import { generateOracleScript } from './oracle-script-optimizer.mjs';
 import {
   buildReplaySeededHandoffOptions,
   buildReplaySeededModularOptions,
+  buildReplaySeededScoreTargets,
   buildReplaySeededWaveOptions,
   extractReplaySeedSkeleton,
 } from './oracle-script-replay-seed.mjs';
@@ -54,10 +56,10 @@ export function compareGeneratedScripts(left, right, objective = 'score_first') 
 
 function buildReplaySeededCandidateOptions({ oracle, replayPath }) {
   if (!replayPath) {
-    return [];
+    return { modularFamilies: [], replayFamilies: [] };
   }
   const skeleton = extractReplaySeedSkeleton({ replayPath, oracle });
-  return [
+  const modularFamilies = [
     ...buildReplaySeededModularOptions({ skeleton }).map((options) => ({
       family: 'replay_seeded_modular',
       options,
@@ -71,6 +73,19 @@ function buildReplaySeededCandidateOptions({ oracle, replayPath }) {
       options,
     })),
   ];
+  const replayFamilies = buildReplaySeededScoreTargets({ replayPath }).flatMap((targetScore) => ([
+    {
+      family: 'replay_seeded_preserve',
+      targetScore,
+      mode: 'preserve_score',
+    },
+    {
+      family: 'replay_seeded_handoff_rewind',
+      targetScore,
+      mode: 'handoff_early',
+    },
+  ]));
+  return { modularFamilies, replayFamilies };
 }
 
 function cartesianProduct(valuesByKey) {
@@ -206,10 +221,13 @@ export function generateOracleScriptCandidates({
       ? legacyBaseOptions.slice(0, Math.ceil(candidateLimit / (strategy === 'auto' ? 2 : 1)))
       : legacyBaseOptions)
     : [];
-  const replaySeededOptions = (strategy === 'auto' || strategy === 'modular') && replayPath
+  const replaySeeded = (strategy === 'auto' || strategy === 'modular') && replayPath
     ? buildReplaySeededCandidateOptions({ oracle, replayPath })
-    : [];
-  const totalPlanned = modularOptionsToRun.length + legacyOptionsToRun.length + replaySeededOptions.length;
+    : { modularFamilies: [], replayFamilies: [] };
+  const totalPlanned = modularOptionsToRun.length
+    + legacyOptionsToRun.length
+    + replaySeeded.modularFamilies.length
+    + replaySeeded.replayFamilies.length;
 
   function emitProgress(latestStrategy) {
     const bestScore = bestSoFar ? {
@@ -256,7 +274,7 @@ export function generateOracleScriptCandidates({
     }
   }
 
-  for (const seeded of replaySeededOptions) {
+  for (const seeded of replaySeeded.modularFamilies) {
     const merged = { ...seeded.options, ...modularOptions };
     try {
       const script = generateOracleScript({
@@ -275,6 +293,34 @@ export function generateOracleScriptCandidates({
       }
     } catch {
       // Replay-seeded candidates are opportunistic.
+    } finally {
+      progressCompleted += 1;
+      emitProgress(seeded.family);
+    }
+  }
+
+  for (const seeded of replaySeeded.replayFamilies) {
+    try {
+      const script = compressOracleReplayScript({
+        oracle,
+        replayPath,
+        targetScore: seeded.targetScore,
+        mode: seeded.mode,
+      });
+      candidates.push({
+        strategy: seeded.family,
+        options: { targetScore: seeded.targetScore, mode: seeded.mode },
+        script: {
+          ...script,
+          strategy: seeded.family,
+          settings: { targetScore: seeded.targetScore, mode: seeded.mode },
+        },
+      });
+      if (!bestSoFar || compareGeneratedScripts(bestSoFar, { ...script, strategy: seeded.family, settings: { targetScore: seeded.targetScore, mode: seeded.mode } }, objective) > 0) {
+        bestSoFar = { ...script, strategy: seeded.family, settings: { targetScore: seeded.targetScore, mode: seeded.mode } };
+      }
+    } catch {
+      // Replay-derived seeds should never block the wider search.
     } finally {
       progressCompleted += 1;
       emitProgress(seeded.family);

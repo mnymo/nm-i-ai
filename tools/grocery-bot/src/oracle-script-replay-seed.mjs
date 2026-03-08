@@ -132,3 +132,19 @@ export function buildReplaySeededHandoffOptions({ skeleton }) {
     },
   ]));
 }
+
+export function buildReplaySeededScoreTargets({ replayPath }) {
+  const rows = snapshotRows(replayPath);
+  const milestones = [];
+  let nextScore = 10;
+
+  for (const row of rows) {
+    const score = row.state_snapshot?.score ?? 0;
+    while (score >= nextScore) {
+      milestones.push(nextScore);
+      nextScore += 10;
+    }
+  }
+
+  return milestones.slice(0, 8);
+}
